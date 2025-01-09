@@ -1,0 +1,205 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.adminBody{
+    position: relative;
+}
+.disabled{
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.cartLogoDiv{
+    width: 150px;
+    background-color: white;
+    padding: 5px 6px;
+    border-radius: 10px;
+}
+.cartNameLogo{
+    color: #0d9191;
+    font-size: 20px;
+}
+.userTypeSpan{
+    color: white;
+    font-size: 14px;
+}
+.addCategoryDiv{
+    display: none;
+    box-shadow: 2px 2px 5px 5px #93c0c0;;
+}
+.addCategoryHeading{
+    font-size: 20px;
+    font-weight: bold;
+    color: #0d9191;
+}
+.logoutConfirm,.deleteConfirm{
+    flex-direction: column;
+    position: absolute;
+    top: 200px;
+    background-color: white;
+    box-shadow: 1px 1px 3px 3px rgb(231, 103, 103);
+    display:none;
+}
+.logourtAlertHead{
+    background-color: rgb(226, 62, 62);
+}
+
+
+
+.signupHead{
+    font-size: 25px;
+}
+.displayEditDiv{
+    width: 550px;
+    border: 3px solid  #0b7777;
+    border-radius: 5px;
+}
+.displayDiv{
+    width: 550px;
+    
+    border-radius: 5px;
+}
+.pageButton{
+    border-radius: 15px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+.adminDeleteColor,
+.adminEditColor{
+    background-color:#0d9191;
+}
+.displayEditDiv{ 
+    padding: 20px;
+}
+.signUpHeader{
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #0d9191;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: white;
+}
+.signupDiv{
+    width: 450px;
+    padding: 20px 40px;   
+    margin-top: 60px;
+    border-radius: 20px;
+    background-color: #0d9191;
+    box-shadow: 2px 2px 5px 5px #148d8d;
+}
+.textField{
+    padding: 10px 5px;
+    border: none;
+    border-radius: 20px;
+    color: #0b7777;
+}
+.textField::placeholder{
+    color: #0b7777;
+}
+.textField:focus{
+    outline: none;
+}
+.signUpButton{
+    border: none;
+    width: 200px;
+    border-radius: 20px;
+    padding: 10px 0px;
+    color: #0b7777;
+    font-weight:bold ;
+}
+.logoutBtn{
+    font-size: 16px;
+    border: none;
+    padding: 5px 18px;
+    color: #0d9191;
+    border-radius: 10px;
+}
+.pageHead{
+    padding: 18px 200px;
+    font-size: 20px;
+    border: 3px solid  #0b7777;
+    border-radius: 20px;
+    color: #0b7777;
+}
+.displayBtn{
+    background-color:  #0b7777;
+    padding: 10px 0px;
+    margin: 5px 10px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color:white;
+}
+.logoutConfirm,.deleteConfirm{
+    flex-direction: column;
+    position: absolute;
+    top: 200px;
+    background-color: white;
+    box-shadow: 1px 1px 3px 3px rgb(231, 103, 103);
+    display:none;
+}
+.logoutMesage{
+    padding: 20px 40px;
+}
+.pageListDiv{
+    position: relative;
+}
+.alertBtn{
+    border: none;
+    border-radius: 20px;
+    background-color:  rgb(226, 62, 62);
+    padding: 10px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+.alertCancelBtn{
+    border: none;
+    border-radius: 20px;
+    background-color:  rgb(238, 220, 220);
+    padding: 10px 10px;
+    font-size: 14px;
+    font-weight: bold; 
+}
+
+.logourtAlertHead{
+    background-color: rgb(226, 62, 62);
+}
+.pageDisplayDiv{
+    margin: 10px 5px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    background-color:  #0d9191;
+}
+.editInput{
+    border: none;
+    border-radius: 20px;
+    padding: 5px 10px;
+    background-color:  #bffafa;
+}
+.addCategory,.addCategoryButton{
+    background-color:#0d9191;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 20px;
+    border: none;
+    padding: 10px 20px;
+}
+.categoryFieldDiv{
+    padding: 30px 60px;
+}
+.iconBackground{
+    background-color: #0b7777;
+}
+.disabled{
+    pointer-events: none;
+    opacity: 0.5;
+}
+.addButton{
+    margin-left: 88.5%;
+}
