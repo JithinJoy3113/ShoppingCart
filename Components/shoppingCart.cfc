@@ -41,8 +41,9 @@
         <cfreturn local.result>
     </cffunction>
 
-    <cffunction  name="addCategory" returnType="boolean">
+    <cffunction  name="addCategory" returnType="string">
         <cfargument  name="categoryName" required="true">
+        <cfset local.result = "">
         <cfquery name="local.selectCategory">
             SELECT 1 
             FROM tblCategory
@@ -50,7 +51,7 @@
                 fldCategoryName = < cfqueryparam value = '#arguments.categoryName#' cfsqltype = "cf_sql_varchar" >
         </cfquery> 
         <cfif queryRecordCount(local.selectCategory)>
-            <cfreturn false>
+            <cfset local.result = "Error:Category Name Already Exist">
         <cfelse>
             <cfquery name="local.insertCategory">
                 INSERT INTO tblCategory
@@ -63,8 +64,9 @@
                     < cfqueryparam value = '#session.userId#' cfsqltype = "cf_sql_integer" >
                 )
             </cfquery>
+            <cfset local.result = "Success:Category Name Added">
         </cfif>
-        <cfreturn true>
+        <cfreturn local.result>
     </cffunction>
 
     <cffunction  name="editCategory" returnType = "struct" returnFormat = "JSON" access="remote">
@@ -94,15 +96,80 @@
     <cffunction  name="updateCategory">
         <cfargument  name="editId">
         <cfargument  name="categoryName">
-        <cfquery name="local.categoryUpadte">
-            UPDATE 
-                tblCategory
-            SET
-                fldCategoryName = < cfqueryparam value = '#arguments.categoryName#' cfsqltype = "cf_sql_varchar" >,
-                fldUpdatedBy = < cfqueryparam value = '#session.userId#' cfsqltype = "cf_sql_integer" >
+        <cfset local.result = "">
+        <cfquery name="local.selectCategory">
+            SELECT 1 
+            FROM tblCategory
+            WHERE 
+                fldCategoryName = < cfqueryparam value = '#arguments.categoryName#' cfsqltype = "cf_sql_varchar" >
+        </cfquery> 
+        <cfif queryRecordCount(local.selectCategory)>
+            <cfset local.result = "Error:Category Name Already Exist">
+        <cfelse>
+            <cfquery name="local.categoryUpadte">
+                UPDATE 
+                    tblCategory
+                SET
+                    fldCategoryName = < cfqueryparam value = '#arguments.categoryName#' cfsqltype = "cf_sql_varchar" >,
+                    fldUpdatedBy = < cfqueryparam value = '#session.userId#' cfsqltype = "cf_sql_integer" >
+                WHERE
+                    fldCategory_ID = < cfqueryparam value = '#arguments.editId#' cfsqltype = "cf_sql_integer" >
+            </cfquery>
+             <cfset local.result = "Success:Category Name Updated">
+        </cfif>
+        <cfreturn local.result>
+    </cffunction>
+
+    <cffunction  name="insertSubcategory" access="remote" returnFormat="json">
+        <cfargument  name="subCategoryName">
+        <cfargument  name="categoryID">
+        <cfset local.result = "">
+        <cfquery name="local.fetchSubcategory">
+            SELECT 1
+            FROM 
+                tblSubcategory
             WHERE
-                fldCategory_ID = < cfqueryparam value = '#arguments.editId#' cfsqltype = "cf_sql_integer" >,
+                fldSubcategoryName = < cfqueryparam value = '#arguments.subCategoryName#' cfsqltype = "varchar" >
         </cfquery>
+        <cfif queryRecordCount(fetchSubcategory)>
+            <cfset local.result = false>
+        <cfelse>
+            <cfquery name="local.insertSubcategory">
+                INSERT INTO tblSubcategory
+                    (
+                        fldSubcategoryName,
+                        fldCategoryId,
+                        fldCreatedBy
+                    )
+                VALUES(
+                    < cfqueryparam value = '#arguments.subCategoryName#' cfsqltype = "cf_sql_varchar" >,
+                    < cfqueryparam value = '#arguments.categoryID#' cfsqltype = "cf_sql_varchar" >,
+                    < cfqueryparam value = '#session.userId#' cfsqltype = "cf_sql_integer" >
+                )
+            </cfquery>
+            <cfset local.result = true>
+        </cfif>
+        <cfreturn local.result>
+    </cffunction>
+ 
+    <cffunction  name="viewSubcategory" returnType = "any" access="remote" returnFormat="json">
+        <cfargument  name="categoryId">
+        <cfset local.jsonData = {}>
+        <cfquery name="local.fetchSubcategory">
+            SELECT
+                fldSubcategoryName,
+                fldSubcategory_ID
+            FROM
+                tblSubcategory
+            WHERE
+                fldCategoryId = < cfqueryparam value = '#arguments.categoryID#' cfsqltype = "cf_sql_integer" >
+        </cfquery>
+        <cfset local.jsonData = SerializeJSON(local.fetchSubcategory)>
+        <!--- <cfloop query="local.fetchSubcategory">
+            <cfset local.dataArray = []>
+
+        </cfloop> --->
+        <cfreturn local.jsonData >
     </cffunction>
 
     <cffunction  name="userLogout" returnType="boolean" access="remote">

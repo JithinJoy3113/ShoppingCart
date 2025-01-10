@@ -29,6 +29,11 @@
     display: none;
     box-shadow: 2px 2px 5px 5px #93c0c0;;
 }
+.addSubcategoryDiv{
+    display: none;
+    box-shadow: 2px 2px 5px 5px #93c0c0;;
+}
+
 .addCategoryHeading{
     font-size: 20px;
     font-weight: bold;
@@ -56,10 +61,17 @@
     border: 3px solid  #0b7777;
     border-radius: 5px;
 }
+
+::-webkit-scrollbar {
+    width: 0;  
+    background: transparent;
+}
+
 .displayDiv{
     width: 550px;
-    
+    height: 380px;
     border-radius: 5px;
+    overflow-x: scroll;
 }
 .pageButton{
     border-radius: 15px;
@@ -183,6 +195,18 @@
 }
 .addCategory,.addCategoryButton{
     background-color:#0d9191;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 20px;
+    border: none;
+    padding: 10px 20px;
+}
+.updateCategoryButton{
+    display: none;
+    justify-content: center;
+    background-color:#0d9191;
     color: white;
     font-weight: 600;
     font-size: 16px;
@@ -192,6 +216,8 @@
 }
 .categoryFieldDiv{
     padding: 30px 60px;
+    overflow-y: scroll;
+    height: 350px;
 }
 .iconBackground{
     background-color: #0b7777;
@@ -202,4 +228,21 @@
 }
 .addButton{
     margin-left: 88.5%;
+}
+
+.subCategoryShowDiv{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #0d9191;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    width: 350px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.subCategoryeditButton{
+    background-color: #0d9191;
+    border: none;
+    margin-left: 10px;
 }
