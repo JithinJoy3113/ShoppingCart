@@ -62,18 +62,7 @@
                                     <button type="button" class="subAddButton border-0" name="subAddButton" value="" id="subAddButton" onclick="return addSubCategory(this)"><img src="Assets/Images/addBtn.png" alt="" width="25" height="25"></button>
                                 </div>
                                  <div class="categoryFieldDiv" id="categoryFieldDiv">
-                                   <!--- <input type="hidden" id="subCategoryHidden" name="subCategoryHidden" value="">
-                                   <cfif StructKeyExists(form, "subCategoryHidden") AND Len(Trim(form.subCategoryHidden)) GT 0>
-                                        <cfset local.obj = new Components.shoppingCart()>
-                                        <cfset local.result = local.obj.viewSubcategory(categoryId = 11)>
-                                        <cfif queryRecordCount(local.result)>
-                                            <cfloop query="local.result">
-                                                <div class="subCategoryItems">
-                                                    #local.result.fldSubCategoryName#
-                                                </div>
-                                            </cfloop>
-                                        </cfif> 
-                                    </cfif> --->
+                                   
                                 </div>
                             </div>
                         </div>
@@ -81,25 +70,31 @@
                       <div class="addCategoryDiv" id="addSubcategoryDiv">
                             <div class="d-flex flex-column">
                                 <div class="createCloseDiv d-flex justify-content-end">
-                                    <button type="button" class="createClose border-0" value="" id="addCategoryCloseValue" onclick="addSubCategoryClose(this)"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
+                                    <button type="button" class="createClose border-0" value="" id="addCategoryCloseValue" onclick="addSubCategoryClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                                 </div>
-                                <span class="addCategoryHeading">Add Subcategory</span>
-                                <div class="addSubcategoryInput">
-                                    <div class="addSubcategoryInputDiv">
+                                <div class="addSubcategoryInput categoryFieldDiv">
+                                    <span class="addCategoryHeading" id="addSubcategoryHeading"></span>
+                                    <div class="addSubcategoryInputDiv mt-4">
+                                        <cfset local.obj = new Components.shoppingCart()>
+                                        <cfset local.result = local.obj.displayCategory()>
+                                        <div class="categoryDropdown" id="categoryDropdownDiv">
+                                            <label for="categoryDropLabel" class="fw-bold">Category Name</label><br>
+                                            <select name="categoryDropdown" id="categoryDropdown">
+                                                <cfloop query="local.result">
+                                                    <option value="#local.result.fldCategoryName#">#local.result.fldCategoryName#</option>
+                                                </cfloop>
+                                            </select>
+                                        </div>
                                         <input type="hidden" id="categoryId" name="categoryIdHidden">
-                                        <input type="text" class="form-control" name="subCategoryInput" id="subCategoryInput">
+                                        <label for="subCategoryInput" class="mt-3 fw-bold">Subcategory Name</label>
+                                        <input type="text" class="form-control" name="subCategoryInput" id="subCategoryInput" placeholder="Subcategory Name">
                                         <span id="subcategoryError"></span>
                                         <button type="button" class="subCategorySubmit" name="subCategorySubmit" value="" id="subCategorySubmit" onclick="return addSubcategorySubmit(this)">Submit</button>
                                     </div>
                                 </div>
                             </div>
                         </div> 
-                                <!--- <div class="categoryInputDiv d-flex flex-column">
-                                    <select name="categorySelect" id="categorySelect" class="categorySelect">
-                                        <option value=""></option>
-                                    </select>
-                                    <input type="text" name="subCategoryInput" id="subCategoryInput">
-                                </div> --->
+                              
 
                         <div class="displayContent" id="displayContent">
                             <input type="hidden" name="editID" value="" id="editingID">
@@ -131,7 +126,7 @@
                                         <cfset local.obj = new components.shoppingCart()>
                                         <cfset local.result = local.obj.displayCategory()>
                                         <cfloop query="#local.result#" startRow = "1" endRow = "#QueryRecordCount(local.result)#">
-                                            <div class="pageDisplayDiv d-flex justify-content-between align-items-center">
+                                            <div class="pageDisplayDiv d-flex justify-content-between align-items-center" id="#local.result.fldCategory_ID#">
                                                 <a href="" class="text-decoration-none text-dark">
                                                     <div class="pageNameDiv d-flex text-dark fw-bold overflow-hidden text-truncate">
                                                         #local.result.fldCategoryName#
@@ -139,7 +134,7 @@
                                                 </a>
                                                 <div class="pageButtonDiv d-flex">
                                                     <button type="button" class="pageButton adminEditColor" name="editBtn" value=#local.result.fldCategory_ID#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                                    <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value=#local.result.fldCategory_ID# onClick="deleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                                    <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value='tblCategory,#local.result.fldCategory_ID#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
                                                     <button type="button" class="pageButton adminEditColor" name="viewBtn"  value=#local.result.fldCategory_ID# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
                                                 </div>
                                             </div>
@@ -165,7 +160,58 @@
                             <button class="alertCancelBtn mt-2" type="sumbit" name="alertDeleteBtn" id="alertDeleteBtn" onClick="return deleteAlert('no')">Cancel</button>
                         </div>
                     </div>
+
+                    <!-- ADD PRODUCT -->
+
+                    <div class="addProductModal" id="addProductModal">
+                        <!-- <cfset local.obj = new components.shoppingCart()>
+                        <cfset local.result = local.obj.displayCategory()> -->
+                        <span class="addProductHeading" id="addProductHeading"></span>
+                        <div class="addProductInputDiv d-flex flex-column">
+                            <div class="addProductCategoryDiv">
+                                <label for="addProductCategory">Category Name</label>
+                                <select name="addProductCategorySelect" id="addProductCategorySelect" value="">
+                                    <!-- <cfloop query="local.result">
+                                        <option value="#local.result.fldCategoryName#" id="#local.result.fldCategoryName#">#local.result.fldCategoryName#</option>
+                                    </cfloop> -->
+                                </select>
+                            </div>
+                            <div class="addProductSubcategoryDiv">
+                                <label for="addProductSubcategory">SubCategory Name</label>
+                                <select name="addProductSubcategorySelect" id="addProductSubcategorySelect" value="">
+                                    
+                                </select>
+                            </div>
+                            <label for="addProductName">Product Name</label>
+                            <input type="text" class="addProductNameInput" id = "addProductNameInput" value = "">
+                            <label for="addProductBrand">Product Brand</label>
+                            <input type="text" class="addProductBrandInput" id = "addProductBrandInput" value = "">
+                            <label for="addProductDescription">Product Description</label>
+                            <input type="text" class="addProductDescriptionInput" id = "addProductDescription" value = "">
+                            <label for="addProductPrice">Product Price</label>
+                            <input type="text" class="addProductPrice" id = "addProductPrice" value = "">
+                            <label for="addProductImage">Product Image</label>
+                            <input type="file" class="addProductImage" id = "addProductImage">
+                            <div class="addProductButtonDiv">
+                                <button type="button" class="addProductSubmit" value="" onclick="addProductSubmit()">Submit</button>
+                                <button type="button" class="addProductClose" value="" onclick="addProductClose()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
+                <div class="productViewMainDiv" id="productViewMainDiv">
+                    <div class="subCategoryHeadDiv">
+                        <span class = "subCategoryHead" id="subCategoryHead"></span>
+                        <button type="button" class="subAddButton border-0" name="addProductButton" value="" id="addProductButton" onclick="return addProduct(this)"><img src="Assets/Images/addBtn.png" alt="" width="25" height="25"></button>
+                    </div>
+                    <div class="subcategoryProductDiv">
+
+                    </div>
+                </div>
+
+
             </form>
         </cfoutput>
       
