@@ -68,8 +68,10 @@
 }
 
 .displayDiv{
+    padding-top: 125px;
     width: 550px;
-    height: 380px;
+    height: auto;
+    max-height: 400px;
     border-radius: 5px;
     overflow-x: scroll;
 }
@@ -218,6 +220,7 @@
     padding: 30px 60px;
     overflow-y: scroll;
     height: 350px;
+    min-width: 300px;
 }
 .iconBackground{
     background-color: #0b7777;
@@ -245,4 +248,11 @@
     background-color: #0d9191;
     border: none;
     margin-left: 10px;
+}
+
+.productViewMainDiv{
+    display: none;
+}
+.addProductModal{
+    display:none;
 }
