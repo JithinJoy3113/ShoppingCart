@@ -130,6 +130,7 @@ function viewSubButton(ID){
                 viewButton.classList.add('subCategoryeditButton');
                 viewButton.setAttribute('type', 'button');
                 viewButton.setAttribute('value', data.DATA[i][1])
+                viewButton.setAttribute('id', data.DATA[i][1])
                 viewButton.setAttribute('onClick','subcategoryViewButton(this)')
                 viewImg.setAttribute('src', "./Assets/Images/goArrow.png");
                 viewImg.setAttribute('width', '18');
@@ -193,7 +194,6 @@ function addSubcategorySubmit(ID){
         success : function(response){
             let data = JSON.parse(response);
             if (data){
-                console.log(data)
                 $("#subcategoryError").attr("class","text-success");
                 $("#subcategoryError").text('Subcategory Added');
                 $("#subCategoryInput").val('');
@@ -290,10 +290,187 @@ function subcategoryViewButton(ID){
         success : function(response){
             let data = JSON.parse(response)
             $("#subCategoryHead").text(data.DATA[0][0]);
-            $("#addProductButton").val(data.DATA[0][2]+','+data.DATA[0][3]+','+data.DATA[0][0]);
+            $("#addProductButton").val(data.DATA[0][2]+','+data.DATA[0][3]+','+data.DATA[0][0]+','+data.DATA[0][1]);
+            var subCategoryId=data.DATA[0][1];
             $('#productViewMainDiv').css({'display':'flex'})
             $("#addCategory").css({"display":"none"});
             $("#viewSubcategory").css({"display":"none"});
+            let div = $("#subcategoryProductDiv")
+            $.ajax({
+                
+                url : './Components/shoppingCart.cfc?method=viewProducts',
+                type : 'post',
+                data : {
+                    columnName : 'fldSubcategoryId',
+                    productSubId : subCategoryId
+                },
+                success : function(response) {
+                    let data=JSON.parse(response);
+                    for (let i = 0; i < data.DATA.length; i++) {
+                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2" id=${data.DATA[i][4]}>
+                                        <img src="Assets/uploadImages/#local.result.fldImageFileName#" class="similarImage mx-auto" height="186" alt="">
+                                        <div class="productDiscriptionsdiv d-flex align-items-center mt-3">
+                                            <img src="Assets/uploadImages/${data.DATA[i][3]}" class="" alt="" width="50" height="50">
+                                            <div class="d-flex flex-column">
+                                                <span class="productsNamespan">${data.DATA[i][0]}</span>
+                                                <span class="productsNamespan">${data.DATA[i][1]}</span>
+                                                <span class="similarPrice">RS.${data.DATA[i][2]}</span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <button type="button" class="border-0" name="editBtn" value=${data.DATA[i][4]}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                                <button type="button" class="border-0" name="deleteBtn" value=${data.DATA[i][4]} onClick="productDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        div.append(childDiv)
+                    }
+                  }
+                })
+        }
+    })
+}
+
+function productDeleteButton(ID){
+    let selectedValue = ID.value;
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=deleteRow',
+        type : 'post',
+        data : {
+            tableName : 'tblProducts',
+            deleteId : selectedValue
+        },
+        success : function(response){
+            if (response){
+                $('#'+selectedValue).remove();
+            }
+        }
+    })
+}
+
+
+function editProductsButton(ID){
+    let productId = ID.value;
+    alert(productId)
+    $('#productViewMainDiv').css({'display':'none'});
+    $('#addProductModal').css({'display':'flex'});
+    $('#addProductImage').css({'display':'none'});
+    $('#addProductLabel').css({'display':'none'});
+    $('#addProductSubmit').css({'display':'none'});
+    $('#updateProductSubmit').css({'display':'flex'});
+    $('#updateProductSubmit').val(productId);
+    $.ajax({
+        url:'./Components/shoppingCart.cfc?method=viewProducts',
+        type : 'post',
+        data :{
+            columnName : 'fldProduct_ID',
+            productSubId : productId
+        },
+        success : function(response){
+            let data = JSON.parse(response)
+            console.log(data)
+            $('#addProductNameInput').val(data.DATA[0][1]);
+            $('#addProductPrice').val(data.DATA[0][2]);
+            $('#addProductDescription').val(data.DATA[0][5]);
+            $('#addProductTax').val(data.DATA[0][6]);
+            let categorySelect=$('#addProductCategorySelect');
+            let option = $('<option>', {value : data.DATA[0][9], text : data.DATA[0][8]});
+            categorySelect.append(option)
+            let subCategorySelect=$('#addProductSubcategorySelect');
+            let subOption = $('<option>', {value : data.DATA[0][10], text : data.DATA[0][7]});
+            subCategorySelect.append(subOption)
+            let brandSelect=$('#brandSelect');
+            brandSelect.empty();
+            let brandOption = $('<option>', {value : data.DATA[0][11], text : data.DATA[0][0]});
+            brandSelect.append(brandOption)
+
+            $.ajax({
+                url : './Components/shoppingCart.cfc?method=viewCategory',
+                type : 'post',
+                success : function(response){
+                    let data=JSON.parse(response);
+                    let categorySelect=$('#addProductCategorySelect');
+                    for (let i = 0; i < data.DATA.length; i++) {
+                        if(data.DATA[i][1] !=  data.DATA[0][8]){
+                            var selectOption=document.createElement("option");
+                            selectOption.setAttribute('value', data.DATA[i][0])
+                            selectOption.text=data.DATA[i][1];
+                            categorySelect.append(selectOption);
+                        }
+                    }
+                }
+            }),
+            $.ajax({
+                url : './Components/shoppingCart.cfc?method=viewSubcategories',
+                type : 'post',
+                data :{
+                    categoryId : data.DATA[0][9]
+                },
+                success : function(response){
+                    let subData=JSON.parse(response);
+                    let subCategorySelect=$('#addProductSubcategorySelect');
+                    for (let i = 0; i < subData.DATA.length; i++) {
+                        if(subData.DATA[i][0] != data.DATA[0][7]){
+                        var selectSubOption=document.createElement("option");
+                        selectSubOption.setAttribute('value',  subData.DATA[i][1])
+                        selectSubOption.text=subData.DATA[i][0];
+                        subCategorySelect.append(selectSubOption);
+                    }
+                }
+            }
+            })
+            $.ajax({
+                url : './Components/shoppingCart.cfc?method=viewBrand',
+                type : 'post',
+                success : function(response){
+                    let subData=JSON.parse(response);
+                    let brandSelect=$('#brandSelect');
+                    for (let i = 0; i < subData.DATA.length; i++) {
+                        if(subData.DATA[i][0] != data.DATA[0][0]){
+                        var selectSubOption=document.createElement("option");
+                        selectSubOption.setAttribute('value',  subData.DATA[i][1])
+                        selectSubOption.text=subData.DATA[i][0];
+                        brandSelect.append(selectSubOption);
+                        }
+                    }
+                }
+            })
+
+        }
+    })
+}
+
+function updateProductsubmit(ID){
+    let productID = ID.value;
+    let formData = new FormData($('#productForm')[0]);
+    formData.append("productId",productID)
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=updateProduct',
+        type : 'post',
+        data : formData,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        success : function(response){
+            
+        }
+    })
+}
+
+function addProductClose(){
+    $('#productViewMainDiv').css({'display':'flex'});
+    $('#addProductModal').css({'display':'none'});
+}
+function addProductsubmit(){
+    let formData = new FormData($('#productForm')[0]);
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=insertProduct',
+        type : 'post',
+        data : formData,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        success : function(response){
+            
         }
     })
 }
@@ -304,11 +481,13 @@ function addProduct(ID){
     let select = $("#addProductCategorySelect");
     let selectSub = $("#addProductSubcategorySelect");
     var selectOption=document.createElement("option");
-    var selectSubOption=document.createElement("option");
+    selectOption.setAttribute('value',splitData[1]);
     selectOption.text=splitData[0];
+    var selectSubOption=document.createElement("option");
+    selectSubOption.setAttribute('value', splitData[3]);
     selectSubOption.text=splitData[2];
-    select.append(selectOption)
-    selectSub.append(selectSubOption)
+    select.append(selectOption);
+    selectSub.append(selectSubOption);
     $.ajax({
         url : './Components/shoppingCart.cfc?method=viewCategory',
         type : 'post',
@@ -316,9 +495,10 @@ function addProduct(ID){
             let data=JSON.parse(response);
             for (let i = 0; i < data.DATA.length; i++) {
                 if(data.DATA[i][1] != splitData[0]){
-                var selectOption=document.createElement("option");
-                selectOption.text=data.DATA[i][1];
-                select.append(selectOption);
+                    var selectOption=document.createElement("option");
+                    selectOption.setAttribute('value', data.DATA[i][0])
+                    selectOption.text=data.DATA[i][1];
+                    select.append(selectOption);
                 }
             }
         }
@@ -332,8 +512,9 @@ function addProduct(ID){
         success : function(response){
             let subData=JSON.parse(response);
             for (let i = 0; i < subData.DATA.length; i++) {
-                if(subData.DATA[i][1] != splitData[1]){
+                if(subData.DATA[i][0] != splitData[2]){
                 var selectSubOption=document.createElement("option");
+                selectSubOption.setAttribute('value',  subData.DATA[i][1])
                 selectSubOption.text=subData.DATA[i][0];
                 selectSub.append(selectSubOption);
                 }
@@ -342,8 +523,28 @@ function addProduct(ID){
     })
     $('#productViewMainDiv').css({'display':'none'});
     $('#addProductModal').css({'display':'flex'});
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method='
-    })
 }
+
+$(document).ready(function() {
+	$("#addProductCategorySelect").change(function() {
+		let categoryId = this.value;
+        $.ajax({
+            type: "POST",
+            url: "./Components/shoppingCart.cfc?method=viewSubcategory",
+            data: {
+                categoryId: categoryId
+            },
+            success: function(response) {
+                const data = JSON.parse(response);
+                $("#addProductSubcategorySelect").empty();
+                for(let i=0; i<data.DATA.length; i++) {
+                    let subCategoryName = data.DATA[i][0];
+                    let  subCategoryId= data.DATA[i][1];
+                    let optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
+                    $("#addProductSubcategorySelect").append(optionTag);
+                }
+            }
+        });	
+	});
+});
 

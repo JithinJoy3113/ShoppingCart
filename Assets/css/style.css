@@ -2,6 +2,39 @@
     margin: 0;
     padding: 0;
 }
+.updateProductSubmit{
+    display: none;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding : 10px 20px;
+    background-color: #0d9191;
+}
+.addProductSubmit{
+    border: none;
+    font-weight: bold;
+    color: white;
+    border-radius: 20px;
+    padding : 10px 20px;
+    background-color: #0d9191;
+}
+
+.addProductClose{
+    border: none;
+    font-weight: bold;
+    color:  #0d9191;
+    border-radius: 20px;
+    padding : 10px 20px;
+    background-color: #a0dfdf;
+}
+
+
+.productLabel{
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px 5px 5px 10px;
+}
 
 .adminBody{
     position: relative;
@@ -148,14 +181,7 @@
     font-weight: bold;
     color:white;
 }
-.logoutConfirm,.deleteConfirm{
-    flex-direction: column;
-    position: absolute;
-    top: 200px;
-    background-color: white;
-    box-shadow: 1px 1px 3px 3px rgb(231, 103, 103);
-    display:none;
-}
+
 .logoutMesage{
     padding: 20px 40px;
 }
@@ -233,6 +259,13 @@
     margin-left: 88.5%;
 }
 
+.subCategoryHead{
+    font-size: 20px;
+    font-weight: bold;
+    color: #0d9191;
+    padding: 50px 0px 50px 100px;
+}
+
 .subCategoryShowDiv{
     display: flex;
     justify-content: space-between;
@@ -252,7 +285,42 @@
 
 .productViewMainDiv{
     display: none;
+    flex-direction: column;
 }
 .addProductModal{
     display:none;
+    
+
+}
+.addProductInputDiv{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px 100px;
+    box-shadow: 2px 2px 5px 5px #93c0c0;
+}
+
+.subcategoryProductDiv{
+    flex-wrap: wrap;
+    width: 1100px
+}
+
+.similarProductcol {
+    padding: 16px;
+    min-width: 350px;
+    max-width: 350px;
+    max-height: 150px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.similarProductcol:hover > .productDiscriptionsdiv > .productsNamespan {
+    color: #2874f0;
+}
+.similarProductshead {
+    font-weight: bold;
+    padding: 20px;
+    font-size: 22px;
+}
+.similarImage {
+    max-width: 150px;
 }
