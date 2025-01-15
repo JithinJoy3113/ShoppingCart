@@ -166,10 +166,18 @@
                         <div class="subCategoryHeadDiv">
                             <span class = "subCategoryHead" id="subCategoryHead"></span>
                             <button type="button" class="subAddButton border-0" name="addProductButton" value="" id="addProductButton" onclick="return addProduct(this)"><img src="Assets/Images/addBtn.png" alt="" width="25" height="25"></button>
+                            <button type="button" class="createClose border-0" value="" onclick="viewProductsClose()">Close</button>
                         </div>
                         <div class="subcategoryProductDiv d-flex mx-auto" id="subcategoryProductDiv">
-                
-                        
+
+                        </div>
+                    </div>
+                    <div class="imagesUpdateDiv mt-4" id="imagesUpdateDiv">
+                        <div class="d-flex justify-content-end px-3 py-3">
+                            <button type="button" class="createClose border-0" value="" onclick="imageEditClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
+                        </div>
+                        <div  class="imagesUpdateSubDiv" id = "imagesUpdateSubDiv">
+
                         </div>
                     </div>
                 </div>
@@ -178,6 +186,7 @@
             <form id="productForm" method="post" enctype = "multipart/form-data">
                 <div class="addProductModal" id="addProductModal">
                     <span class="addProductHeading" id="addProductHeading"></span>
+                    <span class="" id="createSpan"></span>
                     <div class="addProductInputDiv d-flex flex-column mx-auto">
                         <div class="addProductCategoryDiv">
                             <label for="addProductCategory" class="productLabel">Category Name</label>

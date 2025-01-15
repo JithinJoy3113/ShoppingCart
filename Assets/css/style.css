@@ -2,6 +2,51 @@
     margin: 0;
     padding: 0;
 }
+.imagesUpdateDiv{
+    display: none;
+    flex-direction: column;
+    padding: 20px 20px;
+    box-shadow: 2px 2px 5px 5px #93c0c0;
+}
+.imagesUpdateSubDiv{
+    display: flex;
+    flex-wrap: wrap;
+    width: 500px;
+}
+.viewIamgesDiv{
+    padding :10px;
+}
+.productsBrandspan{
+    font-size: 14px;
+    font-weight: 600;
+}
+.productsNamespan{
+    font-size: 16px;
+    font-weight: Bold;
+}
+.productsPricespan{
+    font-size: 14px;
+    font-weight: 600;
+    color: #0b7777;
+}
+.imageThumbBtn{
+    border: none;
+    border-radius: 20px;
+    padding: 10px 12px;
+    background-color: #0d9191;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+.imageDltBtn{
+    border: none;
+    border-radius: 20px;
+    padding: 10px 12px;
+    background-color:rgb(204, 137, 137);
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+}
 .updateProductSubmit{
     display: none;
     font-weight: bold;
@@ -60,11 +105,11 @@
 }
 .addCategoryDiv{
     display: none;
-    box-shadow: 2px 2px 5px 5px #93c0c0;;
+    box-shadow: 2px 2px 5px 5px #93c0c0;
 }
 .addSubcategoryDiv{
     display: none;
-    box-shadow: 2px 2px 5px 5px #93c0c0;;
+    box-shadow: 2px 2px 5px 5px #93c0c0;
 }
 
 .addCategoryHeading{
@@ -300,8 +345,9 @@
 }
 
 .subcategoryProductDiv{
+    margin-top: 30px;
     flex-wrap: wrap;
-    width: 1100px
+    min-width: 1300px
 }
 
 .similarProductcol {

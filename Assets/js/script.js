@@ -297,7 +297,6 @@ function subcategoryViewButton(ID){
             $("#viewSubcategory").css({"display":"none"});
             let div = $("#subcategoryProductDiv")
             $.ajax({
-                
                 url : './Components/shoppingCart.cfc?method=viewProducts',
                 type : 'post',
                 data : {
@@ -306,15 +305,20 @@ function subcategoryViewButton(ID){
                 },
                 success : function(response) {
                     let data=JSON.parse(response);
+                    console.log(data)
                     for (let i = 0; i < data.DATA.length; i++) {
                         var childDiv=`<div class="similarProductcol d-flex flex-column ms-2" id=${data.DATA[i][4]}>
                                         <img src="Assets/uploadImages/#local.result.fldImageFileName#" class="similarImage mx-auto" height="186" alt="">
-                                        <div class="productDiscriptionsdiv d-flex align-items-center mt-3">
-                                            <img src="Assets/uploadImages/${data.DATA[i][3]}" class="" alt="" width="50" height="50">
-                                            <div class="d-flex flex-column">
-                                                <span class="productsNamespan">${data.DATA[i][0]}</span>
-                                                <span class="productsNamespan">${data.DATA[i][1]}</span>
-                                                <span class="similarPrice">RS.${data.DATA[i][2]}</span>
+                                        <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
+                                            <div class="d-flex">
+                                                <button class="border-0 imageEditButton" value=${data.DATA[i][4]} type="button" onClick="editImages(this)">
+                                                    <img src="Assets/uploadImages/${data.DATA[i][3]}" class="" alt="" width="50" height="50">
+                                                </button>
+                                            </div>
+                                            <div class="d-flex flex-column px-2">
+                                                <span class="productsNamespan px-2">${data.DATA[i][1]}</span>
+                                                <span class="productsBrandspan fw-bold px-2">${data.DATA[i][0]}</span>
+                                                <span class="productsPricespan px-2">RS.${data.DATA[i][2]}</span>
                                             </div>
                                             <div class="d-flex">
                                                 <button type="button" class="border-0" name="editBtn" value=${data.DATA[i][4]}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
@@ -328,6 +332,44 @@ function subcategoryViewButton(ID){
                 })
         }
     })
+}
+function editImages(ID){
+    let productId = ID.value;
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=viewImages',
+        type : 'post',
+        data : {productId:productId},
+        success : function(response){
+            let data = JSON.parse(response)
+            let div= $("#imagesUpdateSubDiv");
+            $("#imagesUpdateDiv").css({"display":"flex"});
+            $('#productViewMainDiv').css({'display':'none'})
+            for (let i = 0; i < data.DATA.length; i++) {
+                let childDiv = `<div class="viewIamgesDiv d-flex flex-column" id="${data.DATA[i][0]}">
+                                    <div class="productImageDiv d-flex justify-content-center align-items-center px-3 py-3">
+                                        <img src="Assets/uploadImages/${data.DATA[i][1]}" class="" width="80" height="80">
+                                    </div>
+                                    <div class="imageButtonDiv d-flex flex-column px-3">
+                                        <button type="button" id="" class="imageThumbBtn" value=${data.DATA[i][0]},${data.DATA[i][2]} onClick="setThumbnail(this)">Set Thumbnail</button>
+                                        <button type="button" id="" class="imageDltBtn mt-2" value="${data.DATA[i][0]}" onClick="deleteImage(this)">Delete</button>
+                                    </div>
+                                </div>`
+                div.append(childDiv)
+            }
+        }
+    })
+}
+
+function viewProductsClose(){
+    $('#productViewMainDiv').css({'display':'none'})
+    $("#viewSubcategory").css({"display":"flex"});
+    $("#subcategoryProductDiv").empty()
+}
+
+function imageEditClose(){
+    $("#imagesUpdateDiv").css({"display":"none"})
+    $('#productViewMainDiv').css({'display':'flex'})
+    $("#imagesUpdateSubDiv").empty()
 }
 
 function productDeleteButton(ID){
@@ -347,10 +389,47 @@ function productDeleteButton(ID){
     })
 }
 
+function deleteImage(ID){
+    let selectedValue = ID.value;
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=deleteRow',
+        type : 'post',
+        data : {
+            tableName : 'tblProductImages',
+            deleteId : selectedValue
+        },
+        success : function(response){
+            if (response){
+                $('#'+selectedValue).remove();
+            }
+        }
+    })
+}
+
+function setThumbnail(ID){
+    let selectedValue=ID.value;
+    let splitData=selectedValue.split(',');
+    let ImageId=splitData[0];
+    let productId=splitData[1]
+    alert(ImageId)
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=setThumbnail',
+        type : 'post',
+        data : {
+            ImageId : ImageId,
+            productId :productId
+        },
+        success : function(response){
+            if (response){
+                alert("sdf")
+            }
+        }
+    })
+}
+
 
 function editProductsButton(ID){
     let productId = ID.value;
-    alert(productId)
     $('#productViewMainDiv').css({'display':'none'});
     $('#addProductModal').css({'display':'flex'});
     $('#addProductImage').css({'display':'none'});
@@ -451,6 +530,14 @@ function updateProductsubmit(ID){
         processData: false,
         contentType: false,
         success : function(response){
+            let data=JSON.parse(response)
+            $('#createSpan').text(data);
+            if(data.includes("Success")){
+                $('#createSpan').css({'color':'green'});
+            }
+            else{
+                $('#createSpan').css({'color':'red'});
+            }
             
         }
     })
@@ -470,6 +557,14 @@ function addProductsubmit(){
         processData: false,
         contentType: false,
         success : function(response){
+            let data=JSON.parse(response)
+            $('#createSpan').text(data);
+            if(data.includes("Success")){
+                $('#createSpan').css({'color':'green'});
+            }
+            else{
+                $('#createSpan').css({'color':'red'});
+            }
             
         }
     })
