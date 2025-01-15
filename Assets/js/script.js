@@ -1,16 +1,16 @@
 $(document).on("click", function () {
     $(".removeSpan").hide();
 });
-
-
 function logoutValidate(){
     $("#logoutConfirm").css({"display":"flex"});
-    $("#displayContent").addClass("disabled");
     $("#addCategory").addClass("disabled");
+    $("#displayContent").addClass("disabled");
+    $("#addSubcategoryDiv").addClass("disabled");
+    $("#viewSubcategory").addClass("disabled");
+    $("#productViewMainDiv").addClass("disabled");
 }
 
 function logoutAlert(value){
-
     let valid = true;
     if(value == 'yes'){
         $.ajax({
@@ -21,6 +21,9 @@ function logoutAlert(value){
                     $("#logoutConfirm").css({"display":"none"});
                     $("#displayContent").removeClass("disabled");
                     $("#addCategory").removeClass("disabled");
+                    $("#addSubcategoryDiv").removeClass("disabled");
+                    $("#viewSubcategory").removeClass("disabled");
+                    $("#productViewMainDiv").removeClass("disabled");
                 }
                 else{
                     valid = false
@@ -33,6 +36,10 @@ function logoutAlert(value){
         $("#logoutConfirm").css({"display":"none"});
         $("#displayContent").removeClass("disabled");
         $("#addCategory").removeClass("disabled");
+        $("#addCategory").removeClass("disabled");
+        $("#addSubcategoryDiv").removeClass("disabled");
+        $("#viewSubcategory").removeClass("disabled");
+        $("#productViewMainDiv").removeClass("disabled");
     }
     return valid;
 }
@@ -206,7 +213,6 @@ function addSubcategorySubmit(ID){
             }
         }
     })
-    
 }
 
 function addCategoryClose(){
@@ -234,9 +240,7 @@ function addSubCategoryClose(){
 function loginValidation(){
     let email = $('#userName').val();
     let password = $('#password').val();
-
     let valid = true;
-
     if (email == ''){  
         $('#mailError').text("Please enter your user name");
         valid = false;
@@ -258,25 +262,55 @@ function loginValidation(){
     return valid;
 }
 
-
 function categoryDeleteButton(ID){
+    alert(ID.value)
     let selectedValue = ID.value;
-    let splitValue = selectedValue.split(",");
-    let tableName = splitValue[0];
-    let deleteId = splitValue[1];
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=deleteRow',
-        type : 'post',
-        data : {
-            tableName : tableName,
-            deleteId : deleteId
-        },
-        success : function(response){
-            if (response){
-                $('#'+deleteId).remove();
+    $("#alertDeleteBtn").val(selectedValue);
+    $("#deleteConfirm").css({"display":"flex"})
+    $("#displayContent").addClass("disabled");
+    $("#addCategory").addClass("disabled");
+    $("#addSubcategoryDiv").addClass("disabled");
+    $("#viewSubcategory").addClass("disabled");
+    $("#productViewMainDiv").addClass("disabled");
+    $("#imagesUpdateDiv").addClass("disabled");
+}
+
+function deleteAlert(ID){
+    let selectedValue = ID.value;
+    if(selectedValue=='cancel'){
+        $("#deleteConfirm").css({"display":"none"})
+        $("#displayContent").removeClass("disabled");
+        $("#addCategory").removeClass("disabled");
+        $("#addSubcategoryDiv").removeClass("disabled");
+        $("#viewSubcategory").removeClass("disabled");
+        $("#productViewMainDiv").removeClass("disabled");
+        $("#imagesUpdateDiv").removeClass("disabled");
+    }
+    else{
+        let splitValue = selectedValue.split(",");
+        let tableName = splitValue[0];
+        let deleteId = splitValue[1];
+        $.ajax({
+            url : './Components/shoppingCart.cfc?method=deleteRow',
+            type : 'post',
+            data : {
+                tableName : tableName,
+                deleteId : deleteId
+            },
+            success : function(response){
+                if (response){
+                    $('#'+deleteId).remove();
+                    $("#deleteConfirm").css({"display":"none"})
+                    $("#displayContent").removeClass("disabled");
+                    $("#addCategory").removeClass("disabled");
+                    $("#addSubcategoryDiv").removeClass("disabled");
+                    $("#viewSubcategory").removeClass("disabled");
+                    $("#productViewMainDiv").removeClass("disabled");
+                    $("#imagesUpdateDiv").removeClass("disabled");
+                }
             }
-        }
-    })
+        })
+    }
 }
 
 function subcategoryViewButton(ID){
@@ -305,10 +339,8 @@ function subcategoryViewButton(ID){
                 },
                 success : function(response) {
                     let data=JSON.parse(response);
-                    console.log(data)
                     for (let i = 0; i < data.DATA.length; i++) {
-                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2" id=${data.DATA[i][4]}>
-                                        <img src="Assets/uploadImages/#local.result.fldImageFileName#" class="similarImage mx-auto" height="186" alt="">
+                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${data.DATA[i][4]}>
                                         <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
                                             <div class="d-flex">
                                                 <button class="border-0 imageEditButton" value=${data.DATA[i][4]} type="button" onClick="editImages(this)">
@@ -322,7 +354,7 @@ function subcategoryViewButton(ID){
                                             </div>
                                             <div class="d-flex">
                                                 <button type="button" class="border-0" name="editBtn" value=${data.DATA[i][4]}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                                <button type="button" class="border-0" name="deleteBtn" value=${data.DATA[i][4]} onClick="productDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${data.DATA[i][4]}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
                                             </div>
                                         </div>
                                     </div>`;
@@ -333,6 +365,7 @@ function subcategoryViewButton(ID){
         }
     })
 }
+
 function editImages(ID){
     let productId = ID.value;
     $.ajax({
@@ -351,7 +384,7 @@ function editImages(ID){
                                     </div>
                                     <div class="imageButtonDiv d-flex flex-column px-3">
                                         <button type="button" id="" class="imageThumbBtn" value=${data.DATA[i][0]},${data.DATA[i][2]} onClick="setThumbnail(this)">Set Thumbnail</button>
-                                        <button type="button" id="" class="imageDltBtn mt-2" value="${data.DATA[i][0]}" onClick="deleteImage(this)">Delete</button>
+                                        <button type="button" id="" class="imageDltBtn mt-2" value="tblProductImages,${data.DATA[i][0]}" onClick="categoryDeleteButton(this)">Delete</button>
                                     </div>
                                 </div>`
                 div.append(childDiv)
@@ -372,40 +405,6 @@ function imageEditClose(){
     $("#imagesUpdateSubDiv").empty()
 }
 
-function productDeleteButton(ID){
-    let selectedValue = ID.value;
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=deleteRow',
-        type : 'post',
-        data : {
-            tableName : 'tblProducts',
-            deleteId : selectedValue
-        },
-        success : function(response){
-            if (response){
-                $('#'+selectedValue).remove();
-            }
-        }
-    })
-}
-
-function deleteImage(ID){
-    let selectedValue = ID.value;
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=deleteRow',
-        type : 'post',
-        data : {
-            tableName : 'tblProductImages',
-            deleteId : selectedValue
-        },
-        success : function(response){
-            if (response){
-                $('#'+selectedValue).remove();
-            }
-        }
-    })
-}
-
 function setThumbnail(ID){
     let selectedValue=ID.value;
     let splitData=selectedValue.split(',');
@@ -421,7 +420,7 @@ function setThumbnail(ID){
         },
         success : function(response){
             if (response){
-                alert("sdf")
+
             }
         }
     })
@@ -436,6 +435,7 @@ function editProductsButton(ID){
     $('#addProductLabel').css({'display':'none'});
     $('#addProductSubmit').css({'display':'none'});
     $('#updateProductSubmit').css({'display':'flex'});
+    $('#addProductHeading').text("Edit Product");
     $('#updateProductSubmit').val(productId);
     $.ajax({
         url:'./Components/shoppingCart.cfc?method=viewProducts',
@@ -461,7 +461,7 @@ function editProductsButton(ID){
             brandSelect.empty();
             let brandOption = $('<option>', {value : data.DATA[0][11], text : data.DATA[0][0]});
             brandSelect.append(brandOption)
-
+            $("#addProductClose").val(data.DATA[0][10]);
             $.ajax({
                 url : './Components/shoppingCart.cfc?method=viewCategory',
                 type : 'post',
@@ -513,7 +513,6 @@ function editProductsButton(ID){
                     }
                 }
             })
-
         }
     })
 }
@@ -531,22 +530,31 @@ function updateProductsubmit(ID){
         contentType: false,
         success : function(response){
             let data=JSON.parse(response)
-            $('#createSpan').text(data);
-            if(data.includes("Success")){
-                $('#createSpan').css({'color':'green'});
+            for(const key in data){
+                $('#'+key).text(data[key]);
+                if(data[key].includes("Success")){
+                    $('#'+key).css({'color':'green'});
+                }
+                else{
+                    $('#'+key).css({'color':'red'});
+                }
             }
-            else{
-                $('#createSpan').css({'color':'red'});
-            }
-            
         }
     })
 }
 
-function addProductClose(){
+function addProductCloseBtn(ID){
     $('#productViewMainDiv').css({'display':'flex'});
     $('#addProductModal').css({'display':'none'});
+    $("#subcategoryProductDiv").empty()
+    $("#createSpan").text('')
+    $('#addProductCategorySelect').empty()
+    $('#addProductSubcategorySelect').empty()
+    $('#brandSelect').empty()
+    subcategoryViewButton(ID)
+    $('#productForm')[0].reset()
 }
+
 function addProductsubmit(){
     let formData = new FormData($('#productForm')[0]);
     $.ajax({
@@ -558,14 +566,15 @@ function addProductsubmit(){
         contentType: false,
         success : function(response){
             let data=JSON.parse(response)
-            $('#createSpan').text(data);
-            if(data.includes("Success")){
-                $('#createSpan').css({'color':'green'});
+            for(const key in data){
+                $('#'+key).text(data[key]);
+                if(data[key].includes("Success")){
+                    $('#'+key).css({'color':'green'});
+                }
+                else{
+                    $('#'+key).css({'color':'red'});
+                }
             }
-            else{
-                $('#createSpan').css({'color':'red'});
-            }
-            
         }
     })
 }
@@ -576,6 +585,7 @@ function addProduct(ID){
     let select = $("#addProductCategorySelect");
     let selectSub = $("#addProductSubcategorySelect");
     var selectOption=document.createElement("option");
+    $('#addProductHeading').text("Add Product");
     selectOption.setAttribute('value',splitData[1]);
     selectOption.text=splitData[0];
     var selectSubOption=document.createElement("option");
@@ -583,6 +593,7 @@ function addProduct(ID){
     selectSubOption.text=splitData[2];
     select.append(selectOption);
     selectSub.append(selectSubOption);
+    $("#addProductClose").val(splitData[3]);
     $.ajax({
         url : './Components/shoppingCart.cfc?method=viewCategory',
         type : 'post',
@@ -613,6 +624,20 @@ function addProduct(ID){
                 selectSubOption.text=subData.DATA[i][0];
                 selectSub.append(selectSubOption);
                 }
+            }
+        }
+    })
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=viewBrand',
+        type : 'post',
+        success : function(response){
+            let subData=JSON.parse(response);
+            let brandSelect=$('#brandSelect');
+            for (let i = 0; i < subData.DATA.length; i++) {
+                var selectSubOption=document.createElement("option");
+                selectSubOption.setAttribute('value',  subData.DATA[i][1])
+                selectSubOption.text=subData.DATA[i][0];
+                brandSelect.append(selectSubOption);
             }
         }
     })

@@ -156,8 +156,8 @@
                         <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Delete Page</span>
                         <div class="logoutMesage  d-flex flex-column justify-content-center">
                             <span class="confirmMessage fw-bold">Are you sure want to Delete?</span>
-                            <button class="alertBtn mt-3" type="submit" name="alertDeleteBtn" id="alertDeleteBtn" onClick="return deleteAlert('yes')">Delete</button>
-                            <button class="alertCancelBtn mt-2" type="sumbit" name="alertDeleteBtn" id="alertDeleteBtn" onClick="return deleteAlert('no')">Cancel</button>
+                            <button class="alertBtn mt-3" type="button" name="alertDeleteBtn" id="alertDeleteBtn" value="" onClick="return deleteAlert(this)">Delete</button>
+                            <button class="alertCancelBtn mt-2" type="button" name="alertDeleteBtn" id="" value="cancel" onClick="return deleteAlert(this)">Cancel</button>
                         </div>
                     </div>
 
@@ -166,9 +166,9 @@
                         <div class="subCategoryHeadDiv">
                             <span class = "subCategoryHead" id="subCategoryHead"></span>
                             <button type="button" class="subAddButton border-0" name="addProductButton" value="" id="addProductButton" onclick="return addProduct(this)"><img src="Assets/Images/addBtn.png" alt="" width="25" height="25"></button>
-                            <button type="button" class="createClose border-0" value="" onclick="viewProductsClose()">Close</button>
+                            <button type="button" class="productClose border-0" value="" onclick="viewProductsClose()">Back To Subcategory</button>
                         </div>
-                        <div class="subcategoryProductDiv d-flex mx-auto" id="subcategoryProductDiv">
+                        <div class="subcategoryProductDiv d-flex" id="subcategoryProductDiv">
 
                         </div>
                     </div>
@@ -185,43 +185,47 @@
             <!-- ADD PRODUCT -->
             <form id="productForm" method="post" enctype = "multipart/form-data">
                 <div class="addProductModal" id="addProductModal">
-                    <span class="addProductHeading" id="addProductHeading"></span>
-                    <span class="" id="createSpan"></span>
                     <div class="addProductInputDiv d-flex flex-column mx-auto">
+                        <span class="addProductHeading mx-auto" id="addProductHeading"></span>
+                        <span class="fw-bold" id="insertError"></span>
                         <div class="addProductCategoryDiv">
                             <label for="addProductCategory" class="productLabel">Category Name</label>
                             <select name="addProductCategorySelect" id="addProductCategorySelect" value="" class="form-control">
                             
                             </select>
+                            <span class="fw-bold text-danger" id="categoryError"></span>
                         </div>
                         <div class="addProductSubcategoryDiv">
                             <label for="addProductSubcategory" class="productLabel">SubCategory Name</label>
                             <select name="addProductSubcategorySelect" id="addProductSubcategorySelect" value="" class="form-control">
                                 
                             </select>
+                            <span class="fw-bold text-danger" id="subCategoryError"></span>
                         </div>
                         <label for="addProductName" class="productLabel">Product Name</label>
                         <input type="text" class="addProductNameInput form-control" name="addProductNameInput" id = "addProductNameInput" value = "" >
+                        <span class="fw-bold text-danger" id="nameError"></span>
                         <label for="addProductBrand" class="productLabel">Product Brand</label>
-                        <cfset local.obj = new Components.shoppingCart()>
-                        <cfset local.result = local.obj.viewBrand()>
                         <select name="addProductBrandInput" id="brandSelect" class="form-control">
-                            <cfloop query="local.result">
-                                <option value="#local.result.fldBrand_ID#">#local.result.fldBrandName#</option>
-                            </cfloop>
+                           
                         </select>
+                        <span class="fw-bold text-danger" id="brandError"></span>
                         <label for="addProductDescription" class="productLabel">Product Description</label>
                         <input type="text" class="addProductDescription form-control" name = "addProductDescription" id = "addProductDescription" value = "">
+                        <span class="fw-bold text-danger" id="descriptionError"></span>
                         <label for="addProductPrice" class="productLabel">Product Price</label>
                         <input type="text" class="addProductPrice form-control" name = "addProductPrice" id = "addProductPrice" value = "">
+                        <span class="fw-bold text-danger" id="priceError"></span>
                         <label for="addProductTax" class="productLabel">Product Tax</label>
                         <input type="text" class="addProductTax form-control" name = "addProductTax" id = "addProductTax" value = "">
+                        <span class="fw-bold text-danger" id="taxError"></span>
                         <label for="addProductImage" id="addProductLabel" class="productLabel">Product Image</label>
                         <input type="file" class="addProductImage form-control" name="addProductImage" id = "addProductImage" multiple>
+                        <span class="fw-bold text-danger" id="fileError"></span>
                         <div class="addProductButtonDiv d-flex ms-auto mt-3">
                             <button type="button" class="addProductSubmit" name="addProductSubmit" id="addProductSubmit" value="" onclick="return addProductsubmit()">Submit</button>
                             <button type="button" class="updateProductSubmit" name="updateProductSubmit" id="updateProductSubmit" value="" onclick="return updateProductsubmit(this)">Update</button>
-                            <button type="button" class="addProductClose ms-2" value="" onclick="addProductClose()">Close</button>
+                            <button type="button" class="addProductClose ms-2" value="" id="addProductClose" onclick="addProductCloseBtn(this)">Close</button>
                         </div>
                     </div>
                 </div>

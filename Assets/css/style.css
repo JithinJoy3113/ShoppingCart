@@ -11,7 +11,7 @@
 .imagesUpdateSubDiv{
     display: flex;
     flex-wrap: wrap;
-    width: 500px;
+    width: 515px;
 }
 .viewIamgesDiv{
     padding :10px;
@@ -334,8 +334,11 @@
 }
 .addProductModal{
     display:none;
-    
-
+}
+.addProductHeading{
+    font-size: 20px;
+    color: #0d9191;
+    font-weight: bold;
 }
 .addProductInputDiv{
     margin-top: 30px;
@@ -344,18 +347,26 @@
     box-shadow: 2px 2px 5px 5px #93c0c0;
 }
 
+.productClose{
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 11px;
+}
+
 .subcategoryProductDiv{
     margin-top: 30px;
     flex-wrap: wrap;
-    min-width: 1300px
+    min-width: 1300px;
+    margin-left: 80px;
+    padding-left: 60px;
 }
 
 .similarProductcol {
-    padding: 16px;
+    padding: 15px 25px;
     min-width: 350px;
     max-width: 350px;
     max-height: 150px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #c9c2c2;
     border-radius: 4px;
     cursor: pointer;
 }
