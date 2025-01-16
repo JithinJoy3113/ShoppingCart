@@ -1,16 +1,20 @@
 <cfcomponent>
-    
-    <cfset this.name = 'this.cart'>
+    <cfset this.name = "shoppingCart">
     <cfset this.sessionManagement = true>
     <cfset this.datasource = "cartDatasource">
     
-    <!--- <cffunction  name="onRequest" returnType="void">
+    <cffunction  name="onApplicationStart" returnType="void">
+        <cfset application.obj = createObject("component", "Components.shoppingCart")>
+    </cffunction>
 
-        <cfargument  name="requestPage" required="true"> 
+     <cffunction  name="onRequestStart" returnType="void">
+        <cfset onApplicationStart()>
 
-        <cfset local.pages = {1:["/jithin/coldfusion/qstn-28/admin.cfm","/jithin/coldfusion/qstn-28/add.cfm"],
-                              2:["/jithin/coldfusion/qstn-28/user.cfm"]}>
-        <cfset local.excludePages = ["/jithin/coldfusion/qstn-28/signup.cfm","/jithin/coldfusion/qstn-28/login.cfm"]> 
+        <!--- <cfargument  name="requestPage" required="true"> 
+
+        <cfset local.pages = {1:["/jithin/ShoppingCart/ShoppingCart/admin.cfm","/jithin/ShoppingCart/ShoppingCart/user.cfm"],
+                              2:["/jithin/ShoppingCart/ShoppingCart/home.cfm"]}>
+        <cfset local.excludePages = ["/jithin/ShoppingCart/ShoppingCart/userLogin.cfm","/jithin/ShoppingCart/ShoppingCart/userSignUp.cfm"]> 
 
         <cfif ArrayContains(local.excludePages,arguments.requestPage)>
             <cfinclude  template="#arguments.requestPage#">         
@@ -18,7 +22,15 @@
             <cfinclude  template="#arguments.requestPage#">
         <cfelse>
             <cfset structClear(session)>
-            <cfinclude  template="login.cfm">
-        </cfif>
-    </cffunction> --->
+            <cfinclude  template="userLogin.cfm">
+        </cfif> --->
+    </cffunction>
+
+    <cffunction  name = "onRequest">
+        <cfargument  name = "requestPage" required = "true"> 
+        <cfinclude  template = "header.cfm">
+        <cfinclude  template = "#arguments.requestPage#">
+        <cfinclude  template = "footer.cfm">
+    </cffunction>
+    
  </cfcomponent>
