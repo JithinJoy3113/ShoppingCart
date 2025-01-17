@@ -1,4 +1,3 @@
-<cfdump  var="#application#">
 <div class="w-100">  
     <cfoutput>
         <cfif structKeyExists(form, "alertBtn")>

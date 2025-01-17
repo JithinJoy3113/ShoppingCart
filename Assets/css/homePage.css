@@ -1,0 +1,105 @@
+.subCategoryListDiv{
+    display: none;
+    flex-direction: column;
+    z-index: 1;
+    padding: 10px 10px;
+    top: 25px;
+    position: absolute;
+    background-color: white;
+}
+.categoryNameDiv{
+    position: relative;
+}
+.subcategoryBtn{
+    border: none;
+    min-width: 100px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+}
+.navMenuDiv{
+    padding: 10px 20px;
+    border-bottom: 1px solid #6cdada;
+}
+.categoryHeadDiv{
+    font-size: 16px;
+    font-weight: 600;
+}
+.userBodyMainDiv,.randomProductsMainDiv{
+    padding: 30px 30px;
+}
+.subCategoryHeadDiv{
+    font-size: 20px;
+    font-weight: 700;
+    padding: 10px 0px 10px 0px;
+}
+.randumHead{
+    font-weight: bold;
+    font-size: 20px;
+}
+.randomProductsDiv{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.searchDiv{
+    width: 200px;
+    height: 35px;
+    border-radius: 20px;
+    background-color: white;
+}
+.searchBarDiv{
+    width: 195px;
+    height: 35px;
+}
+.searchBar{
+    width: 195px;
+    height: 35px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+input:focus{
+	outline:none;
+}
+.menuLink,.menuCartLink{
+    font-size: 18px;
+}
+.menuCartLink{
+    position: relative;
+}
+.cartNumber{
+    position: absolute;
+    right: 125px;
+    bottom: 38px;
+    font-size: 14px;
+    background-color: red;
+    padding: 0px 6px;
+    border-radius: 100px;
+}
+.productSearch{
+
+}
+.categoryLink{
+    color: black;
+}
+
+.randomProducts {
+    padding: 15px 25px;
+    width: 220px;
+    height: 300px;
+    border: 1px solid #c9c2c2;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.randomProducts:hover > .productDiscriptionsdiv > .productsNamespan {
+    color: #0d9191;
+}
+.similarProductshead {
+    font-weight: bold;
+    padding: 20px;
+    font-size: 22px;
+}
+.similarImage {
+    max-width: 150px;
+}
