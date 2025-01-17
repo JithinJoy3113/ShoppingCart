@@ -8,6 +8,19 @@
     padding: 20px 20px;
     box-shadow: 2px 2px 5px 5px #93c0c0;
 }
+.subCategoryUpdate{
+    display: none;
+}
+
+.subCategorySubmit,.subCategoryUpdate{
+    border: none;
+    padding: 10px 10px;
+    border-radius: 20px;
+    background-color: #0d9191;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
 .imagesUpdateSubDiv{
     display: flex;
     flex-wrap: wrap;

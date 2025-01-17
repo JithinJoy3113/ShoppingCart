@@ -1,6 +1,7 @@
 $(document).on("click", function () {
-    $(".removeSpan").hide();
+    $(".removeSpan").empty()
 });
+
 function logoutValidate(){
     $("#logoutConfirm").css({"display":"flex"});
     $("#addCategory").addClass("disabled");
@@ -153,6 +154,7 @@ function viewSubButton(ID){
     });
 }
 
+
 function editSubcategory(ID){
     let editID = ID.value;
     $.ajax({
@@ -168,9 +170,10 @@ function editSubcategory(ID){
             $("#addSubcategoryDiv").css({"display":"flex"});
             $("#viewSubcategory").css({"display":"none"});
             $("#displayContent").css({"display":"none"});
-            $('#categoryDropdown').val(data.DATA[0][2]);
             $('#subCategoryInput').val(data.DATA[0][0]);
-            $('#subCategorySubmit').val('edit' +','+ data.DATA[0][1]);
+            $('#subCategoryUpdate').val(data.DATA[0][1]);
+            $('#subCategoryUpdate').css({"display":"flex"});
+            $('#subCategorySubmit').css({"display":"none"})
         }
     })
 }
@@ -187,31 +190,58 @@ function addSubCategory(ID){
 }
 
 function addSubcategorySubmit(ID){
-    let categoryId = ID.value;
-    let categoryName =  $("#categoryDropdown").val();
+    let subCategoryID = ID.value;
+    let categoryId =  $("#categoryDropdown").val();
     let subcategoryName =  $("#subCategoryInput").val();
+    alert(categoryId)
     $.ajax({
         url : './Components/shoppingCart.cfc?method=insertSubcategory',
         type : 'post',
         data : {
             subCategoryName : subcategoryName,
-            categoryName : categoryName,
-            categoryID : categoryId
+            categoryId : categoryId,
         },
         success : function(response){
             let data = JSON.parse(response);
-            if (data){
-                $("#subcategoryError").attr("class","text-success");
-                $("#subcategoryError").text('Subcategory Added');
-                $("#subCategoryInput").val('');
-                return true;
+            for(const key in data){
+                $('#'+key).text(data[key]);
+                if(data[key].includes("Success")){
+                    $('#'+key).css({'color':'green'});
+                }
+                else{
+                    $('#'+key).css({'color':'red'});
+                }
             }
-            else{
-                $("#subcategoryError").attr("class","text-danger");
-                $("#subcategoryError").text('Subcategory already exist');
-                $("#subCategoryInput").val('');
+            $("#subCategoryInput").val('');
             }
-        }
+    })
+}
+
+function updateSubcategorySubmit(ID){
+    let subCategoryID = ID.value;
+    let categoryId =  $("#categoryDropdown").val();
+    let subcategoryName =  $("#subCategoryInput").val();
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=updateSubcategory',
+        type : 'post',
+        data : {
+            subCategoryName : subcategoryName,
+            categoryId : categoryId,
+            subCategoryID : subCategoryID
+        },
+        success : function(response){
+            let data = JSON.parse(response);
+            for(const key in data){
+                $('#'+key).text(data[key]);
+                if(data[key].includes("Success")){
+                    $('#'+key).css({'color':'green'});
+                }
+                else{
+                    $('#'+key).css({'color':'red'});
+                }
+            }
+            $("#subCategoryInput").val('');
+            }
     })
 }
 
@@ -223,6 +253,8 @@ function addCategoryClose(){
     $("#categoryInput").val('')
     let parentDiv = document.getElementById("categoryFieldDiv");
     parentDiv.innerHTML = ''
+    $('#subCategoryUpdate').css({"display":"none"});
+    $('#subCategorySubmit').css({"display":"flex"})
 }
 
 function addSubCategoryClose(){
@@ -235,31 +267,6 @@ function addSubCategoryClose(){
     $("#subcategoryError").text('');
     let categoryId = $("#addCategoryCloseValue").val();
     viewSubButton(document.getElementById('addCategoryCloseValue'));
-}
-
-function loginValidation(){
-    let email = $('#userName').val();
-    let password = $('#password').val();
-    let valid = true;
-    if (email == ''){  
-        $('#mailError').text("Please enter your user name");
-        valid = false;
-    }
-    else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) && !/^\d{10}$/.test(email)){
-        $('#mailError').text("Invalid UserName");
-        valid = false;
-    }
-    else{
-        $('#mailError').text("");
-    }
-    if (password == ''){  
-        $('#passwordError').text("Please enter your password");
-        valid = false;
-    }
-    else{
-        $('#passwordError').text("");
-    } 
-    return valid;
 }
 
 function categoryDeleteButton(ID){
@@ -479,7 +486,7 @@ function editProductsButton(ID){
                 }
             }),
             $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewSubcategories',
+                url : './Components/shoppingCart.cfc?method=viewSubcategory',
                 type : 'post',
                 data :{
                     categoryId : data.DATA[0][9]
@@ -551,6 +558,7 @@ function addProductCloseBtn(ID){
     $('#addProductCategorySelect').empty()
     $('#addProductSubcategorySelect').empty()
     $('#brandSelect').empty()
+    $('#insertError').text('')
     subcategoryViewButton(ID)
     $('#productForm')[0].reset()
 }
@@ -584,6 +592,9 @@ function addProduct(ID){
     let splitData=categoryId.split(',');
     let select = $("#addProductCategorySelect");
     let selectSub = $("#addProductSubcategorySelect");
+    $("#addProductSubmit").css({"display":"flex"});
+    $("#addProductImage").css({"display":"flex"});
+    $("#updateProductSubmit").css({"display":"none"});
     var selectOption=document.createElement("option");
     $('#addProductHeading').text("Add Product");
     selectOption.setAttribute('value',splitData[1]);
@@ -610,7 +621,7 @@ function addProduct(ID){
         }
     }),
     $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewSubcategories',
+        url : './Components/shoppingCart.cfc?method=viewSubcategory',
         type : 'post',
         data :{
             categoryId : splitData[1]
@@ -631,6 +642,7 @@ function addProduct(ID){
         url : './Components/shoppingCart.cfc?method=viewBrand',
         type : 'post',
         success : function(response){
+            alert(response)
             let subData=JSON.parse(response);
             let brandSelect=$('#brandSelect');
             for (let i = 0; i < subData.DATA.length; i++) {
