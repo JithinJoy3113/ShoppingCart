@@ -95,6 +95,9 @@ input:focus{
 .randomProducts:hover > .productDiscriptionsdiv > .productsNamespan {
     color: #0d9191;
 }
+.productsNamespan{
+    width: 180px;
+}
 .similarProductshead {
     font-weight: bold;
     padding: 20px;
@@ -102,4 +105,7 @@ input:focus{
 }
 .similarImage {
     max-width: 150px;
+}
+.productbtn{
+    color: black;
 }

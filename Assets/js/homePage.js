@@ -29,4 +29,21 @@ $(document).ready(function () {
     $('.subcategoryBtn').on('mouseout', function () {
         btn.css({"background-color":"white","color":"black"});
     })
-  });
+});
+
+function filterButton(){
+    $('#filterDiv').css({"display":"flex"})
+}
+
+function filterValidate(){
+    let min = $('#filterMax').val();
+    let max = $('#filterMin').val();
+    if (min == '' || max == ''){
+        $('#filterError').text('Enter Min and Max')
+        return false
+    }
+    else{
+        $('#filterError').text('')
+        return true
+    }
+}

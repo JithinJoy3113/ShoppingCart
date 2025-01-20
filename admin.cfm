@@ -1,15 +1,12 @@
 <div class="w-100">  
     <cfoutput>
-        <cfif structKeyExists(form, "alertBtn")>
-            <cflocation  url="adminLogin.cfm">
-        </cfif> 
-        <form action="" method="post" id="loginForm" enctype = "multipart/form-data">
+        <form action = "" method = "post" id="loginForm" enctype = "multipart/form-data">
             <button type="button" class="addCategory mt-3 addButton" name="addBtn" id="addCategory" value=""  onclick="categoryAdd(this)">Add Category</button>   
             <div class="d-flex justify-content-center">
                 <div class="addCategoryDiv" id="addCategoryDiv">
                     <div class="d-flex flex-column">
                         <div class="createCloseDiv d-flex justify-content-end">
-                            <button type="button" class="createClose border-0" value="" onclick="addCategoryClose(this)"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
+                            <button type = "button" class = "createClose border-0" value = "" onclick="addCategoryClose(this)"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                         </div>
                         <div class="categoryFieldDiv d-flex flex-column justify-content-center">
                             <div class="addCategoryHeading d-flex justify-content-center" id="addCategoryHeading">
@@ -64,7 +61,7 @@
                                 </div>
                                 <span id="addCategoryError" class=""></span>
                                 <input type="hidden" id="categoryId" name="categoryIdHidden">
-                                <label for="subCategoryInput" class="mt-3 fw-bold">Subcategory Name</label>
+                                <label for="subCategoryInputLabel" class="mt-3 fw-bold">Subcategory Name</label>
                                 <input type="text" class="form-control" name="subCategoryInput" id="subCategoryInput" placeholder="Subcategory Name">
                                 <span id="addSubCategoryError" class=""></span>
                                 <button type="button" class="subCategorySubmit" name="subCategorySubmit" value="" id="subCategorySubmit" onclick="return addSubcategorySubmit(this)">Submit</button>
@@ -130,7 +127,7 @@
                     <div class="logoutMesage  d-flex flex-column justify-content-center">
                         <span class="confirmMessage fw-bold">Are you sure want to logout?</span>
                         <button class="alertBtn mt-3" type="submit" name="alertBtn" id="alertBtn" onClick="return logoutAlert('yes')">Logout</button>
-                        <button class="alertCancelBtn mt-2" type="submit" name="alertBtn" id="alertBtn" onClick="return logoutAlert('no')">Cancel</button>
+                        <button class="alertCancelBtn mt-2" type="button" name="alertBtn" id="alertBtn" onClick="return logoutAlert('no')">Cancel</button>
                     </div>
                 </div>
                 <div class="deleteConfirm mx-auto" id="deleteConfirm">

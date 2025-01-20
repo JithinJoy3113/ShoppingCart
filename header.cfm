@@ -7,6 +7,7 @@
         <link rel = "stylesheet" href = "Assets/css/bootstrap.min.css">
         <link rel = "stylesheet" href = "Assets/css/style.css">
         <link rel = "stylesheet" href = "Assets/css/homePage.css">
+        <link rel = "stylesheet" href = "Assets/css/product.css">
     </head>
     <body>
         <cfoutput>
@@ -47,29 +48,39 @@
                     </cfif>
                 </div>
             </div>
-            <div class="homePageDiv">
-                <div class="navMenuDiv d-flex justify-content-between">
-                    <cfset local.result= application.obj.viewCategory('Home')>
-                    <cfset local.parsedData = DeserializeJSON(local.result)>
-                    <cfset local.data = local.parsedData.DATA>
-                    <cfset local.count = 1>
-                    <cfloop array="#local.data#" item="array">
-                        <div class="categoryNameDiv ">
-                            <div class="categoryHeadDiv" data-value="#array[1]#">
-                                <a href="productListing.cfm?categoryId=#array[1]#&categoryName=#array[2]#" class="categoryLink text-decoration-none">#array[2]#</a>
+            <cfif structKeyExists(session, "role") AND session.roleId EQ 2>
+                <div class="homePageDiv">
+                    <div class="navMenuDiv d-flex justify-content-between">
+                        <cfset local.result= application.obj.viewCategory('Home')>
+                        <cfset local.parsedData = DeserializeJSON(local.result)>
+                        <cfset local.data = local.parsedData.DATA>
+                        <cfset local.count = 1>
+                        <cfloop array="#local.data#" item="array">
+                            <div class="categoryNameDiv ">
+                                <div class="categoryHeadDiv" data-value="#array[1]#">
+                                    <a href="productListing.cfm?categoryId=#array[1]#&categoryName=#array[2]#" class="categoryLink text-decoration-none">#array[2]#</a>
+                                </div>
+                                <div class="subCategoryListDiv" id="#array[1]#">
+                                    <cfset local.subCategoryResult= application.obj.viewSubcategory(
+                                                                                            categoryId = #array[1]#
+                                                                                            )>
+                                    <cfset local.subCategoryParsedData = DeserializeJSON(local.subCategoryResult)>
+                                    <cfset local.subCategorydata = local.subCategoryParsedData.DATA>
+                                    <cfloop array="#local.subCategorydata#" item="item">
+                                        <a href="subcategory.cfm?subCategoryId=#item[2]#&subCategoryName=#item[1]#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#item[2]#">#item[1]#</a>
+                                    </cfloop>
+                                </div>
                             </div>
-                            <div class="subCategoryListDiv" id="#array[1]#">
-                                <cfset local.subCategoryResult= application.obj.viewSubcategory(
-                                                                                        categoryId = #array[1]#
-                                                                                        )>
-                                <cfset local.subCategoryParsedData = DeserializeJSON(local.subCategoryResult)>
-                                <cfset local.subCategorydata = local.subCategoryParsedData.DATA>
-                                <cfloop array="#local.subCategorydata#" item="item">
-                                    <a href="subcategory.cfm?subCategoryId=#item[2]#&subCategoryName=#item[1]#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#item[2]#">#item[1]#</a>
-                                </cfloop>
-                            </div>
-                        </div>
-                    </cfloop> 
+                        </cfloop> 
+                    </div>
+                </div>
+            </cfif>
+            <div class="logoutConfirm mx-auto" id="logoutConfirm">
+                <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Logout Alert</span>
+                <div class="logoutMesage  d-flex flex-column justify-content-center">
+                    <span class="confirmMessage fw-bold">Are you sure want to logout?</span>
+                    <button class="alertBtn mt-3" type="button" name="alertBtn" id="alertBtn" onClick="return logoutAlert('yes')">Logout</button>
+                    <button class="alertCancelBtn mt-2" type="button" name="alertBtn" id="alertBtn" onClick="return logoutAlert('no')">Cancel</button>
                 </div>
             </div>
         </cfoutput>

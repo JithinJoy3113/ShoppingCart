@@ -16,7 +16,7 @@
                     <div class="randomProductsDiv pt-3">
                         <cfloop array="#local.randomProducts#" item="item">
                             <div class="randomProducts d-flex flex-column ms-4">
-                                <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto" height="186" alt="">
+                                <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                                 <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
                                     <span class="productsNamespan">#item.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">

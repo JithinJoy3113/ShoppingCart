@@ -168,9 +168,8 @@
         <cfreturn local.selectCategory>
     </cffunction>
 
-    <cffunction  name = "viewCategory" access = "remote" returnformat = "json" returnType = "string">
+    <cffunction  name = "viewCategory" access = "remote" returnformat = "json" returnType = "array">
         <cfargument  name="homeView" default="">
-        <cfset local.jsonData = {}>
         <cfquery name = "local.selectCategory" datasource = "cartDatasource">
             SELECT 
                 fldCategory_ID,
@@ -182,8 +181,14 @@
                 LIMIT 10
             </cfif>
         </cfquery>
-        <cfset local.jsonData = SerializeJSON(local.selectCategory)>
-        <cfreturn local.jsonData>
+        <cfset local.dataArray = []>
+        <cfloop query="local.selectCategory">
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['categoryId'] = local.selectCategory.fldCategory_ID>
+            <cfset local.jsonData['categoryName'] = local.selectCategory.fldCategoryName>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray>
     </cffunction>
 
     <cffunction  name = "updateCategory" returnType = "struct">
@@ -308,9 +313,8 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name = "viewSubcategory" returnType = "string" access = "remote" returnFormat = "json">
+    <cffunction  name = "viewSubcategory" returnType = "array" access = "remote" returnFormat = "json">
         <cfargument  name = "categoryId" required = "true" type = "integer">
-        <cfset local.jsonData = {}>
         <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
             SELECT
                 fldSubcategoryName,
@@ -321,13 +325,18 @@
                 fldCategoryId = < cfqueryparam value = '#arguments.categoryID#' cfsqltype = "integer" > 
                 AND fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
         </cfquery>
-        <cfset local.jsonData = SerializeJSON(local.fetchSubcategory)>
-        <cfreturn local.jsonData >
+        <cfset local.dataArray = []>
+        <cfloop query="local.fetchSubcategory">
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['subcategoryName'] = local.fetchSubcategory.fldSubcategoryName>
+            <cfset local.jsonData['subcategoryId'] = local.fetchSubcategory.fldSubcategory_ID>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray >
     </cffunction>
 
-    <cffunction  name = "viewSubcategoryEdit" returnType = "string" access = "remote" returnFormat = "json">
+    <cffunction  name = "viewSubcategoryEdit" returnType = "array" access = "remote" returnFormat = "json">
         <cfargument  name = "subCategoryId" required = "true" type = "integer">
-        <cfset local.jsonData = {}>
         <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
             SELECT
                 S.fldSubcategoryName,
@@ -341,8 +350,16 @@
             WHERE
                 fldSubcategory_ID = < cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer" >
         </cfquery>
-        <cfset local.jsonData = SerializeJSON(local.fetchSubcategory)>
-        <cfreturn local.jsonData >
+        <cfset local.dataArray = []>
+        <cfloop query="local.fetchSubcategory">
+             <cfset local.jsonData = {}>
+            <cfset local.jsonData['subcategoryId'] = local.fetchSubcategory.fldSubcategory_ID>
+            <cfset local.jsonData['subcategoryName'] = local.fetchSubcategory.fldSubcategoryName>
+            <cfset local.jsonData['categoryId'] = local.fetchSubcategory.fldCategory_ID>
+            <cfset local.jsonData['categoryName'] = local.fetchSubcategory.fldCategoryName>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray >
     </cffunction>
 
     <cffunction  name = "deleteRow" returnType = "boolean" access = "remote">
@@ -375,8 +392,8 @@
 
     <cffunction  name = "userLogout" returnType = "boolean" access = "remote">
         <cfset structClear(session)>
-        <cflocation  url = "adminLogin.cfm">
-    </cffunction>
+        <cfreturn true>
+ </cffunction>
 
     <cffunction  name = "insertProduct" returnType = "struct"  access = "remote" returnFormat = "json">
 
@@ -509,7 +526,7 @@
         <cfreturn local.fetchSubcategory >
     </cffunction>
 
-    <cffunction  name = "viewBrand" returnType = "any" access = "remote" returnFormat = "json">
+    <cffunction  name = "viewBrand" returnType = "array" access = "remote" returnFormat = "json">
         <cfquery name = "local.selectBrand" datasource = "cartDatasource">
             SELECT
                 fldBrandName,
@@ -519,53 +536,16 @@
             WHERE
                 fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
         </cfquery>
+        <cfset local.arrayData = expression>
+        <cfloop query="local.selectBrand">
             <cfset local.jsonData = {}>
-            <cfset local.jsonData = SerializeJSON(local.selectBrand)>
-            <cfreturn local.jsonData>
-        <cfreturn local.selectBrand>
+            <cfset local.jsonData['brandName'] = local.selectBrand.fldBrandName>
+            <cfset local.jsonData['brandId'] = local.selectBrand.fldBrand_ID>
+        </cfloop>
+        <cfreturn local.arrayData>
     </cffunction>
 
-    <cffunction  name="viewProducts" returnType = "any" returnFormat = "json" access = "remote">
-        <cfargument  name = "columnName" required = "true" type = "string">
-        <cfargument  name = "productSubId" required = "true" type = "integer">
-        <cfset local.jsonData = {}>
-        <cfquery name = "local.viewProduct" datasource = "cartDatasource">
-            SELECT
-                B.fldBrandName,
-                P.fldProductName,
-                P.fldPrice,
-                I.fldImageFileName,
-                P.fldProduct_ID,
-                P.fldDescription,
-                P.fldTax,
-                S.fldSubcategoryName,
-                C.fldCategoryName,
-                C.fldCategory_ID,
-                S.fldSubcategory_ID,
-                B.fldBrand_ID
-            FROM
-                tblBrand B
-            RIGHT JOIN
-                tblProducts P ON B.fldBrand_ID = P.fldBrandId
-            RIGHT JOIN
-                tblProductImages I ON P.fldProduct_ID = I.fldProductId
-            RIGHT JOIN
-                tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
-            RIGHT JOIN
-                tblCategory C ON C.fldCategory_ID = S.fldCategoryId
-            WHERE
-                P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND I.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND B.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND S.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND C.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND P.#arguments.columnName# = < cfqueryparam value ="#arguments.productSubId#" cfsqltype = "integer" >
-        </cfquery>
-        <cfset local.jsonData = SerializeJSON(local.viewProduct)>
-        <cfreturn local.jsonData>
-    </cffunction>
-
+    
     <cffunction  name = "updateProduct" access = "remote" returnType = "struct" returnFormat = "json">
 
         <cfargument  name = "addProductCategorySelect" required = "true" type = "integer">
@@ -638,23 +618,32 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name = "viewImages" access = "remote" returnFormat = "json" returnType="string">
+    <cffunction  name = "viewImages" access = "remote"  returnType="array" returnFormat = "json">
         <cfargument  name = "productId" required = "true" type = "integer">
-        <cfset local.jsonData = {}>
-        <cfquery name = "local.fetchIamges" datasource = "cartDatasource">
+        <cfquery name = "local.fetchImages" datasource = "cartDatasource">
             SELECT 
                 fldProductImage_ID,
                 fldImageFileName,
-                fldProductId
+                fldProductId,
+                fldDefaultImage
             FROM
                 tblProductImages
             WHERE
-                fldProductId = < cfqueryparam value = "#arguments.productId#" cfsqltype = "integer" > AND
-                fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                fldProductId = < cfqueryparam value = "#arguments.productId#" cfsqltype = "integer" >
+                AND fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
         </cfquery>
-        <cfset local.jsonData = SerializeJSON(local.fetchIamges)>
-        <cfreturn local.jsonData>
+        <cfset local.dataArray = []>
+        <cfloop query="local.fetchImages">
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['imageId'] = local.fetchImages.fldProductImage_ID>
+            <cfset local.jsonData['imageFileName'] = local.fetchImages.fldImageFileName>
+            <cfset local.jsonData['productId'] = local.fetchImages.fldProductId>
+            <cfset local.jsonData['defaultImage'] = local.fetchImages.fldDefaultImage>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray>
     </cffunction>
+
 
     <cffunction  name = "setThumbnail" access = "remote" returnType = "boolean">
         <cfargument  name = "ImageId" required = "true" type = "integer">
@@ -680,8 +669,52 @@
         <cfreturn true>
     </cffunction>
 
+    <cffunction  name="viewProducts" returnType = "any" returnFormat = "json" access = "remote">
+        <cfargument  name = "columnName" required = "true" type = "string">
+        <cfargument  name = "productSubId" required = "true" type = "integer">
+        <cfset local.jsonData = {}>
+        <cfquery name = "local.viewProduct" datasource = "cartDatasource">
+            SELECT
+                B.fldBrandName,
+                P.fldProductName,
+                P.fldPrice,
+                I.fldImageFileName,
+                P.fldProduct_ID,
+                P.fldDescription,
+                P.fldTax,
+                S.fldSubcategoryName,
+                C.fldCategoryName,
+                C.fldCategory_ID,
+                S.fldSubcategory_ID,
+                B.fldBrand_ID
+            FROM
+                tblBrand B
+            RIGHT JOIN
+                tblProducts P ON B.fldBrand_ID = P.fldBrandId
+            RIGHT JOIN
+                tblProductImages I ON P.fldProduct_ID = I.fldProductId
+            RIGHT JOIN
+                tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
+            RIGHT JOIN
+                tblCategory C ON C.fldCategory_ID = S.fldCategoryId
+            WHERE
+                P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND I.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND B.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND S.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND C.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND P.#arguments.columnName# = < cfqueryparam value ="#arguments.productSubId#" cfsqltype = "integer" >
+        </cfquery>
+        <cfset local.jsonData = SerializeJSON(local.viewProduct)>
+        <cfreturn local.jsonData>
+    </cffunction>
+
     <cffunction  name = "randomProducts" returnType = "array">
-        <cfargument  name = "subCategoryId" type = "ANY" default=0>
+        <cfargument  name = "subCategoryId" type = "any" default = 0 required = "false">
+        <cfargument  name = "sortBy" type = "string" default = "noSort" required = "false">
+        <cfargument  name = "min" type = "string" default = 0 required = "false">
+        <cfargument  name = "max" type = "string" default = 0 required = "false">
         <cfquery name = "local.fetchProducts" datasource = "cartDatasource">
             SELECT
                 P.fldProduct_ID, 
@@ -698,12 +731,23 @@
                 </cfif>
                 P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
                 AND I.fldDefaultImage = < cfqueryparam value =1 cfsqltype = "integer" >
-            ORDER BY 
-                RAND()
-            LIMIT 10
+            <cfif arguments.subCategoryId EQ 0>
+                ORDER BY 
+                    RAND()
+                LIMIT 10
+            <cfelseif arguments.sortBy EQ "min">
+                ORDER BY P.fldPrice
+            <cfelseif arguments.sortBy EQ "max">
+                ORDER BY P.fldPrice DESC;
+            <cfelseif arguments.min NEQ 0 AND arguments.max NEQ 0>
+                AND P.fldPrice >= < cfqueryparam value ="#arguments.min#" cfsqltype = "varchar" >
+                <cfif NOT Find("+", arguments.max)>
+                    AND P.fldPrice <= < cfqueryparam value ="#arguments.max#" cfsqltype = "varchar" >
+                </cfif>
+            </cfif>
         </cfquery>
         <cfset local.dataArray = []>
-        <cfloop query="local.fetchProducts">
+        <cfloop query = "local.fetchProducts">
             <cfset local.jsonData = {}>
             <cfset local.jsonData['productId'] = local.fetchProducts.fldProduct_ID>
             <cfset local.jsonData['productName'] = local.fetchProducts.fldProductName>
@@ -713,6 +757,84 @@
         </cfloop>
         <cfreturn local.dataArray>
     </cffunction>
+
+    <cffunction  name = "displayProduct" returnType = "struct" returnFormat = "json" access = "remote">
+        <cfargument  name = "productId" type = "integer" required = "true">
+        <cfquery name = "local.fetchProduct" datasource = "cartDatasource">
+            SELECT 
+                P.fldProduct_ID,
+                P.fldProductName,
+                P.fldDescription,
+                P.fldPrice,
+                P.fldTax,
+                B.fldBrand_ID,
+                B.fldBrandName,
+                I.fldImageFileName,
+                S.fldSubcategoryName,
+                S.fldSubcategory_ID,
+                C.fldCategoryName,
+                C.fldCategory_ID
+            FROM
+                tblProducts P
+            INNER JOIN
+                tblBrand B ON B.fldBrand_ID = P.fldBrandId
+            INNER JOIN
+                tblProductImages I ON P.fldProduct_ID = I.fldProductId
+            INNER JOIN
+                tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
+            INNER JOIN
+                tblCategory C ON C.fldCategory_ID = S.fldCategoryId
+            WHERE 
+                P.fldProduct_ID = < cfqueryparam value ="#arguments.productId#" cfsqltype = "integer" >
+                AND I.fldDefaultImage = < cfqueryparam value =1 cfsqltype = "integer" >
+        </cfquery>
+        <cfset local.jsonData = {}>
+        <cfloop query = "local.fetchProduct">
+            <cfset local.jsonData['productId'] = local.fetchProduct.fldProduct_ID>
+            <cfset local.jsonData['productName'] = local.fetchProduct.fldProductName>
+            <cfset local.jsonData['description'] = local.fetchProduct.fldDescription>
+            <cfset local.jsonData['price'] = local.fetchProduct.fldPrice>
+            <cfset local.jsonData['tax'] = local.fetchProduct.fldTax>
+            <cfset local.jsonData['brand'] = local.fetchProduct.fldBrandName>
+            <cfset local.jsonData['brandId'] = local.fetchProduct.fldBrand_ID>
+            <cfset local.jsonData['file'] = local.fetchProduct.fldImageFileName>
+            <cfset local.jsonData['subCategoryName'] = local.fetchProduct.fldSubcategoryName>
+            <cfset local.jsonData['subCategoryId'] = local.fetchProduct.fldSubcategory_ID>
+            <cfset local.jsonData['categoryName'] = local.fetchProduct.fldCategoryName>
+            <cfset local.jsonData['categoryId'] = local.fetchProduct.fldCategory_ID>
+        </cfloop>
+        <cfreturn local.jsonData>
+    </cffunction>
+
+<!---     <cffunction  name = "displayProduct" returnType = "struct">
+        <cfargument  name = "productId" type = "integer" required = "true">
+        <cfquery name = "local.fetchProduct" datasource = "cartDatasource">
+            SELECT 
+                P.fldProduct_ID,
+                P.fldProductName,
+                P.fldDescription,
+                P.fldPrice,
+                P.fldTax,
+                B.fldBrand_ID,
+                B.fldBrandName
+            FROM
+                tblProducts P
+            LEFT JOIN
+                tblBrand B ON P.fldBrandId = B.fldBrand_ID
+            WHERE 
+                P.fldProduct_ID = < cfqueryparam value ="#arguments.productId#" cfsqltype = "integer" >
+        </cfquery>
+        <cfset local.jsonData = {}>
+        <cfloop query = "local.fetchProduct">
+            <cfset local.jsonData['productId'] = local.fetchProduct.fldProduct_ID>
+            <cfset local.jsonData['productName'] = local.fetchProduct.fldProductName>
+            <cfset local.jsonData['description'] = local.fetchProduct.fldDescription>
+            <cfset local.jsonData['price'] = local.fetchProduct.fldPrice>
+            <cfset local.jsonData['tax'] = local.fetchProduct.fldTax>
+            <cfset local.jsonData['brand'] = local.fetchProduct.fldBrandName>
+        </cfloop>
+        <cfreturn local.jsonData>
+    </cffunction> --->
 
     <cffunction  name = "subcategoryListing" returnType = "array" access = "public">
         <cfargument  name = "categoryId" required = "true" type = "integer">
