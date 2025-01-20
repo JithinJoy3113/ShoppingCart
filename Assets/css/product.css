@@ -1,0 +1,558 @@
+body {
+    overflow-x: hidden;
+}
+.productDetailsdiv {
+    width: 62%;
+}
+
+.productBodydiv {
+    padding: 16px;
+}
+.productLeft {
+    width: 40%;
+    position: sticky;
+    top: 60px;
+    height: 100%;
+}
+.productImg {
+    width: 64px;
+    height: 64px;
+}
+.productButtondiv {
+    margin-left: 64px;
+    margin-top: 12px;
+}
+.cartButtondiv {
+    background: #ff9f00;
+    padding: 18px 8px;
+    border-radius: 2px;
+    height: 56px;
+}
+.cartBtn {
+    background: #ff9f00;
+    font-size: 15px;
+    font-weight: bold;
+    width: 98%;
+}
+.buyButtondiv {
+    background: #fb641b;
+    padding: 18px 8px;
+    border-radius: 2px;
+    height: 56px;
+}
+.buy {
+    background: #fb641b;
+    font-size: 15px;
+    font-weight: bold;
+    width: 98%;
+}
+.productDetailsdiv {
+    padding-left: 24px;
+}
+.pathLink {
+    font-size: 12px;
+    color: #878787;
+}
+.compare,
+.share {
+    font-size: 13.5px;
+}
+.shareDiv:hover {
+    color: #2874f0;
+}
+.shareIcon {
+    fill: #c2c2c2;
+}
+.shareIcon:hover {
+    fill: #2874f0;
+}
+.headingDiv {
+    margin-top: 7px;
+    font-size: 17.5px;
+}
+.ratingSpan {
+    font-size: 13.5px;
+    color: #878787;
+    font-weight: bold;
+}
+.discount {
+    font-size: 14px;
+    font-weight: bold;
+}
+.price {
+    font-size: 28px;
+}
+.actualAmount {
+    font-size: 16px;
+    color: #878787;
+    margin-left: 12px;
+}
+.off {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 12px;
+}
+.fee,
+.offerSpan,
+.offerView,
+.answers {
+    font-size: 14px;
+}
+.offerHead {
+    font-size: 15px;
+    font-weight: bold;
+}
+.withoutExchangediv {
+    padding: 24px 0px;
+}
+.exchangeTable {
+    width: 400px;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    border-radius: 2px;
+}
+.tableRowone {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 16px;
+}
+.buyExchange,
+.withExchangediv {
+    margin-left: 18px;
+    width: 100%;
+}
+.spanOne {
+    font-size: 14px;
+}
+.spanTwo {
+    font-size: 14px;
+    font-weight: bold;
+}
+.buyGrey {
+    color: #878787;
+    cursor: not-allowed;
+}
+.checkPin {
+    padding-top: 10px;
+    margin-left: 31px;
+}
+.forColor {
+    background-color: #f5faff;
+}
+.warrantyDiv {
+    font-size: 14px;
+    margin-top: 24px;
+}
+.logoDiv {
+    width: 76px;
+    height: 32px;
+    border: 1px solid #f0f0f0;
+}
+.oppoImg {
+    width: 100%;
+    padding: 4px;
+    margin: 3px 0px;
+}
+.warrantyText {
+    margin-left: 35px;
+}
+.warrantySpan {
+    font-size: 14px;
+    line-height: 2;
+}
+.specRow1 {
+    margin-top: 16px;
+}
+.specImg {
+    width: 100%;
+    height: 100%;
+}
+.specImgdiv {
+    height: 52px;
+    width: 52px;
+    margin: 0 12px 6px 0;
+    border-radius: 2px;
+    border: 2px solid #e0e0e0;
+    padding: 0px 4px;
+}
+.colorSpan {
+    font-size: 14px;
+    margin-top: 2px;
+    font-weight: bold;
+    color: #878787;
+}
+.specImgrow,
+.storageRow,
+.ramRow {
+    margin-left: 73px;
+}
+.colorDiv,
+.storageDiv,
+.easyPaymentdiv,
+.highlightDiv {
+    width: 50%;
+}
+.storage {
+    margin: 0 12px 4px 0;
+    border: 2px solid #2874f0;
+    color: #2874f0;
+    padding: 6px 10px;
+    border-radius: 2px;
+    min-width: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 34px;
+}
+.storageGrey {
+    margin: 0 12px 4px 0;
+    border: 2px dotted #c2c2c2;
+    opacity: 0.6;
+    color: #878787;
+    padding: 6px 10px;
+    border-radius: 2px;
+    min-width: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 34px;
+}
+.ram {
+    margin: 0 12px 4px 0;
+    border: 2px solid #2874f0;
+    color: #2874f0;
+    padding: 6px 10px;
+    border-radius: 2px;
+    min-width: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 34px;
+}
+.ramGrey {
+    margin: 0 12px 4px 0;
+    border: 2px dotted #c2c2c2;
+    opacity: 0.6;
+    color: #878787;
+    padding: 6px 10px;
+    border-radius: 2px;
+    min-width: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 34px;
+}
+.ramDiv {
+    padding-top: 16px;
+}
+.deliveryPin {
+    margin-top: 24px;
+}
+.pinInput {
+    font-weight: bold;
+    font-size: 14px;
+    color: #878787;
+    padding-left: 6px;
+}
+.pinInputdiv {
+    border-bottom: 2px solid #2874f0;
+}
+.enterPindiv {
+    background: black;
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.input:focus {
+    display: none;
+}
+.checkSpan,
+.deliveryDate,
+.ratingButton,
+.similarPrice {
+    font-weight: bold;
+    font-size: 14px;
+}
+.pinInputdiv {
+    margin-left: 50px;
+}
+.expectedDeliveydiv {
+    margin: 8px 0 0 105px;
+}
+.deliveryFree {
+    color: #878787;
+}
+.orderDate {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+.highlightLi {
+    font-size: 14px;
+    padding: 0 0 8px 0px;
+}
+.highlightLi::marker {
+    color: #878787;
+}
+.highlightView {
+    list-style-type: none;
+}
+.easy {
+    max-width: 95px;
+}
+.highlightMaindiv {
+    padding-top: 24px;
+}
+.sellerDetailsdiv {
+    margin-left: 46px;
+}
+.superCoindiv {
+    padding: 24px 0px 0px;
+    width: 35%;
+    margin-left: 25px;
+}
+.discriptionDiv {
+    font-size: 14px;
+    margin-top: 24px;
+}
+.discription {
+    margin-left: 36px;
+}
+.productDecriptiondiv,
+.reviewsRatingdiv,
+.questionAnswerdiv {
+    margin-top: 24px;
+    border-radius: 2px 2px 0 0;
+    border: 1px solid #f0f0f0;
+}
+.descriptionHead,
+.questionAnswerrow {
+    padding: 24px;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 1px solid #f0f0f0;
+}
+.ultraThindiv,
+.pocketDiv {
+    padding: 24px 24px 10px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.ultraLeft,
+.pocketRight {
+    width: 168px;
+}
+.ultraRight {
+    margin-left: 32px;
+}
+.ultraHead {
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+.ultraDescription {
+    font-size: 14px;
+    line-height: 1.29;
+}
+.viewFeatureslink {
+    margin: 24px;
+    font-size: 16px;
+}
+.generalDiv {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 24px 24px 0px 24px;
+}
+.generalHead {
+    padding-bottom: 16px;
+    font-size: 18px;
+}
+.tableDataleft,
+.tableDataright {
+    padding-bottom: 16px;
+}
+.tableDataleft,
+.reviewSpan {
+    font-size: 14px;
+    color: #878787;
+}
+.reviewSpan {
+    min-width: 110px;
+}
+.tableDataright {
+    padding-left: 100px;
+    font-size: 14px;
+}
+.reviewHeaddiv {
+    padding: 24px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.rateDiv {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.26);
+    padding: 16px 36px;
+    cursor: pointer;
+}
+.progressBardiv {
+    border-right: 1px solid #f0f0f0;
+}
+.progressBar {
+    width: 114px;
+    height: 5px;
+    border-radius: 50px;
+    background-color: #f0f0f0;
+}
+.progressColor {
+    height: 5px;
+    border-radius: 50px;
+}
+.colorOne {
+    width: 100%;
+    background-color: green;
+}
+.colorTwo {
+    width: 40%;
+    background-color: green;
+}
+.colorThree {
+    width: 20%;
+    background-color: green;
+}
+.colorFour {
+    width: 5%;
+    background-color: orange;
+}
+.colorFive {
+    width: 10%;
+    background-color: red;
+}
+.starRatenum {
+    font-size: 32px;
+}
+.starRate {
+    font-size: 28px;
+    padding: 0 0 0 4px;
+}
+.ratingDiv,
+.reviewPhotosdiv {
+    padding: 0px 24px 24px 24px;
+}
+.reviewPhotosdiv {
+    overflow: hidden;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+.reviewPhotosdiv::-webkit-scrollbar {
+    display: none;
+}
+.progressStar,
+.customerReviewspan {
+    font-size: 12.5px;
+}
+.progressNum,
+.customerLocation,
+.likeCount,
+.customerName {
+    font-size: 12.5px;
+    color: #878787;
+}
+.progressImg {
+    margin: 12px 20px 0;
+}
+.progressCategory,
+.customerName,
+.similarOff {
+    font-size: 12.5px;
+    font-weight: bold;
+}
+.reviewPhotosdiv,
+.customerReviewdiv {
+    border-bottom: 1px solid #f0f0f0;
+}
+.customerReviewdiv {
+    padding: 24px;
+}
+.reviewHead,
+.questions {
+    font-size: 13px;
+    font-weight: bold;
+}
+.customerQuestiondiv {
+    padding: 10px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.similarProductcol {
+    padding: 16px;
+    min-width: 220px;
+    max-width: 220px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.similarProductcol:hover > .productDiscriptionsdiv > .productsNamespan {
+    color: #2874f0;
+}
+.similarProductshead {
+    font-weight: bold;
+    padding: 20px;
+    font-size: 22px;
+}
+.similarImage {
+    max-width: 150px;
+}
+.productsReviewspan,
+.safeBottom {
+    font-size: 14px;
+    color: #878787;
+    font-weight: bold;
+}
+.similarProductsrow {
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+.bottomContentsdiv {
+    padding: 25px;
+}
+.similarProductsrow::-webkit-scrollbar {
+    display: none;
+}
+.bottomHead {
+    color: #848484;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 14px;
+    padding: 14px 0;
+}
+.linkSpan {
+    color: #848484;
+    font-size: 12px;
+}
+.questionAnswerrow {
+    padding: 24px;
+}
+.productImg:hover{
+     border: 2px solid #2455f4;
+     cursor:pointer;
+     
+}
+.productImg:hover > .sideImage{
+     width:58px;
+     height:58px;
+}
+.specImg:hover,.storage:hover,.storageGrey:hover,.ram:hover,.ramGrey:hover{
+     cursor:pointer;
+}
+.filterDiv{
+    flex-direction: column;
+    padding: 10px 10px;
+    display: none;
+    top:50px;
+    position: absolute;
+}
+.sortingDiv{
+    position: relative;
+    padding: 10px 20px;
+}
+.sortDiv{
+    padding: 5px 10px;
+    border: 1px solid #96ebeb;
+}
+.filterDiv{
+    padding: 20px 10px;
+}
+.zoomHover:hover,.suggestImgone:hover,.suggestImgtwo:hover{
+	transform:scale(1.045);
+}
