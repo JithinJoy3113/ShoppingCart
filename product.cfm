@@ -1,7 +1,8 @@
 <cfoutput>
     <cfset local.productId = URL.productId>
+    <cfset local.subCategoryId = URL.subcategoryId>
     <cfset local.file = "">
-    <div class="productBodydiv">
+    <div class="productBodydiv" id="userBodyMainDiv">
             <div class="productImgMaindiv d-flex flex-column flex-md-row">
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
@@ -18,14 +19,14 @@
                         </div>
                         <div class="productImagesdivRight ps-2 pt-3">
                             <div class="productMainimg ms-md-5">
-                                <img src="Assets/uploadImages/#local.file#" class="mainImg" alt="">
+                                <img src="Assets/uploadImages/#local.file#" data-value = "Assets/uploadImages/#local.file#" class="mainImg" alt="" id="mainImg">
                             </div>
                         </div>
                     </div>
                     <div class="productButtondiv d-none d-md-flex ">
                         <div class="cartButtondiv w-50 me-1">
                             <button class="cartBtn border-0 text-white ">
-                                <img src="assets/images/cart.png" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
+                                <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
                             </button>
                         </div>
                         <div class="buyButtondiv w-50 ms-1">
@@ -817,118 +818,22 @@
             <div class="similarProductsdiv d-flex flex-column mb-5 mb-lg-0">
                 <span class="similarProductshead mt-4">Similar Products</span>
                 <div class="similarProductsrow d-flex">
-                    <div class="similarProductcol d-flex flex-column">
-                        <img src="assets/images/moto.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">Moto G85 5G</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="ms-2" alt="">
+                    <cfset local.similarProducts = application.obj.randomProducts(subCategoryId = local.subcategoryId)>
+                    <cfloop array="#local.similarProducts#" item="item">
+                        <a href="product.cfm?productId=#item.productId#&subcategoryId=#item.subcategoryId#" class ="productbtn text-decoration-none">
+                            <div class="randomProducts d-flex flex-column ms-4">
+                                <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
+                                <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
+                                    <span class="productsNamespan text-truncate">#item.productName#</span>
+                                    <div class="similarPriceDiv d-flex align-items-center mt-2">
+                                        <span class="similarPrice">RS.#item.price#</span>
+                                        <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>
+                                        <span class="similarOff text-success ms-2">23% off</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="similarProductcol d-flex flex-column ms-2">
-                        <img src="assets/images/a40.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">Samsung A40</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="w-100 ms-2" alt="">
-                            </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="similarProductcol d-flex flex-column ms-2">
-                        <img src="assets/images/oppo1.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">Moto G85 5G</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="w-100 ms-2" alt="">
-                            </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="similarProductcol d-flex flex-column ms-2">
-                        <img src="assets/images/pixel.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">Google Pixel 7a</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="w-100 ms-2" alt="">
-                            </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="similarProductcol d-flex flex-column ms-2">
-                        <img src="assets/images/oppo3.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">OPPO Reno 12 Pro 5G</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="w-100 ms-2" alt="">
-                            </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="similarProductcol d-flex flex-column ms-2">
-                        <img src="assets/images/oppoviolet.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">OPPO Reno 12 Pro 5G</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="w-100 ms-2" alt="">
-                            </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="similarProductcol d-flex flex-column ms-2">
-                        <img src="assets/images/oppo6.webp" class="similarImage mx-auto" height="186" alt="">
-                        <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                            <span class="productsNamespan">OPPO K12x 5G with 45W</span>
-                            <div class="d-flex mt-1 align-items-center">
-                                <img src="assets/images/rating.png" class="w-100" alt="">
-                                <span class="productsReviewspan ms-2">(71,876)</span>
-                                <img src="assets/images/assured.png" class="w-100 ms-2" alt="">
-                            </div>
-                            <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                <span class="similarPrice">₹12,999</span>
-                                <span class="productsReviewspan text-decoration-line-through ms-2">₹16,999</span>
-                                <span class="similarOff text-success ms-2">23% off</span>
-                            </div>
-                        </div>
-                    </div>
+                        </a>
+                    </cfloop>
                 </div>
             </div>
         </div>

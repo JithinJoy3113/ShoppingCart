@@ -536,11 +536,12 @@
             WHERE
                 fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
         </cfquery>
-        <cfset local.arrayData = expression>
+        <cfset local.arrayData = []>
         <cfloop query="local.selectBrand">
             <cfset local.jsonData = {}>
             <cfset local.jsonData['brandName'] = local.selectBrand.fldBrandName>
             <cfset local.jsonData['brandId'] = local.selectBrand.fldBrand_ID>
+            <cfset arrayAppend(local.arrayData, local.jsonData)>
         </cfloop>
         <cfreturn local.arrayData>
     </cffunction>
@@ -669,24 +670,23 @@
         <cfreturn true>
     </cffunction>
 
-    <cffunction  name="viewProducts" returnType = "any" returnFormat = "json" access = "remote">
+    <cffunction  name="viewProducts" returnType = "array" returnFormat = "json" access = "remote">
         <cfargument  name = "columnName" required = "true" type = "string">
         <cfargument  name = "productSubId" required = "true" type = "integer">
-        <cfset local.jsonData = {}>
         <cfquery name = "local.viewProduct" datasource = "cartDatasource">
             SELECT
-                B.fldBrandName,
                 P.fldProductName,
                 P.fldPrice,
-                I.fldImageFileName,
                 P.fldProduct_ID,
                 P.fldDescription,
                 P.fldTax,
-                S.fldSubcategoryName,
                 C.fldCategoryName,
                 C.fldCategory_ID,
                 S.fldSubcategory_ID,
-                B.fldBrand_ID
+                S.fldSubcategoryName,
+                I.fldImageFileName,
+                B.fldBrand_ID,
+                B.fldBrandName
             FROM
                 tblBrand B
             RIGHT JOIN
@@ -706,8 +706,24 @@
                 AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
                 AND P.#arguments.columnName# = < cfqueryparam value ="#arguments.productSubId#" cfsqltype = "integer" >
         </cfquery>
-        <cfset local.jsonData = SerializeJSON(local.viewProduct)>
-        <cfreturn local.jsonData>
+        <cfset local.dataArray = []>
+        <cfloop query="local.viewProduct">
+            <cfset local.jsonData = {}>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+            <cfset local.jsonData['productName'] = local.viewProduct.fldProductName>
+            <cfset local.jsonData['price'] = local.viewProduct.fldPrice>
+            <cfset local.jsonData['tax'] = local.viewProduct.fldTax>
+            <cfset local.jsonData['description'] = local.viewProduct.fldDescription>
+            <cfset local.jsonData['productId'] = local.viewProduct.fldProduct_ID>
+            <cfset local.jsonData['categoryId'] = local.viewProduct.fldCategory_ID>
+            <cfset local.jsonData['categoryName'] = local.viewProduct.fldCategoryName>
+            <cfset local.jsonData['subcategoryName'] = local.viewProduct.fldSubcategoryName>
+            <cfset local.jsonData['subcategoryId'] = local.viewProduct.fldSubcategory_ID>
+            <cfset local.jsonData['file'] = local.viewProduct.fldImageFileName>
+            <cfset local.jsonData['brandId'] = local.viewProduct.fldBrand_ID>
+            <cfset local.jsonData['brandName'] = local.viewProduct.fldBrandName>
+        </cfloop>
+        <cfreturn local.dataArray>
     </cffunction>
 
     <cffunction  name = "randomProducts" returnType = "array">
@@ -715,23 +731,27 @@
         <cfargument  name = "sortBy" type = "string" default = "noSort" required = "false">
         <cfargument  name = "min" type = "string" default = 0 required = "false">
         <cfargument  name = "max" type = "string" default = 0 required = "false">
+        <cfargument  name = "search" type = "string" default = "" required = "false">
         <cfquery name = "local.fetchProducts" datasource = "cartDatasource">
             SELECT
                 P.fldProduct_ID, 
                 P.fldProductName,
                 P.fldPrice,
                 P.fldTax,
-                I.fldImageFileName
+                P.fldSubcategoryId,
+                P.fldDescription,
+                I.fldImageFileName,
+                I.fldDefaultImage
             FROM tblProducts P
             RIGHT JOIN
                 tblProductImages I ON P.fldProduct_ID = I.fldProductId
             WHERE 
-                <cfif arguments.subCategoryId NEQ 0>
-                    P.fldSubcategoryId = < cfqueryparam value ="#arguments.subCategoryId#" cfsqltype = "integer" > AND
-                </cfif>
                 P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND I.fldDefaultImage = < cfqueryparam value =1 cfsqltype = "integer" >
-            <cfif arguments.subCategoryId EQ 0>
+                AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
+                <cfif arguments.subCategoryId NEQ 0>
+                    AND P.fldSubcategoryId = < cfqueryparam value ="#arguments.subCategoryId#" cfsqltype = "integer" > 
+                </cfif>
+            <cfif arguments.subCategoryId EQ 0 AND arguments.search EQ "">
                 ORDER BY 
                     RAND()
                 LIMIT 10
@@ -744,6 +764,10 @@
                 <cfif NOT Find("+", arguments.max)>
                     AND P.fldPrice <= < cfqueryparam value ="#arguments.max#" cfsqltype = "varchar" >
                 </cfif>
+            <cfelseif arguments.search NEQ "">
+                AND P.fldProductName LIKE < cfqueryparam value ="%#arguments.search#%" cfsqltype = "varchar" >
+                OR P.fldDescription LIKE < cfqueryparam value ="%#arguments.search#%" cfsqltype = "varchar" >
+                AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
             </cfif>
         </cfquery>
         <cfset local.dataArray = []>
@@ -753,6 +777,7 @@
             <cfset local.jsonData['productName'] = local.fetchProducts.fldProductName>
             <cfset local.jsonData['price'] = local.fetchProducts.fldPrice>
             <cfset local.jsonData['productFileName'] = local.fetchProducts.fldImageFileName>
+            <cfset local.jsonData['subcategoryId'] = local.fetchProducts.fldSubcategoryId>
             <cfset arrayAppend(local.dataArray, local.jsonData)>
         </cfloop>
         <cfreturn local.dataArray>

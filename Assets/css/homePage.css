@@ -3,7 +3,7 @@
     flex-direction: column;
     z-index: 1;
     padding: 10px 10px;
-    top: 25px;
+    top: 20px;
     position: absolute;
     background-color: white;
 }
@@ -44,17 +44,17 @@
 }
 
 .searchDiv{
-    width: 200px;
+    width: 250px;
     height: 35px;
     border-radius: 20px;
     background-color: white;
 }
 .searchBarDiv{
-    width: 195px;
+    width: 245px;
     height: 35px;
 }
 .searchBar{
-    width: 195px;
+    width: 245px;
     height: 35px;
     border-radius: 20px;
     font-size: 14px;
@@ -71,7 +71,7 @@ input:focus{
 .cartNumber{
     position: absolute;
     right: 125px;
-    bottom: 38px;
+    bottom: 85px;
     font-size: 14px;
     background-color: red;
     padding: 0px 6px;
@@ -82,6 +82,9 @@ input:focus{
 }
 .categoryLink{
     color: black;
+}
+.categoryLink:hover{
+    color: #0d9191;
 }
 
 .randomProducts {

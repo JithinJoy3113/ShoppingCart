@@ -131,9 +131,13 @@
     flex-direction: column;
     position: absolute;
     top: 200px;
+    z-index: 1;
     background-color: white;
     box-shadow: 1px 1px 3px 3px rgb(231, 103, 103);
     display:none;
+}
+#userBodyMainDiv{
+    position: relative;
 }
 .logourtAlertHead{
     background-color: rgb(226, 62, 62);
@@ -216,6 +220,7 @@
     padding: 5px 18px;
     color: #0d9191;
     border-radius: 10px;
+    background-color: white;
 }
 .pageHead{
     padding: 18px 200px;

@@ -9,6 +9,8 @@ function logoutValidate(){
     $("#addSubcategoryDiv").addClass("disabled");
     $("#viewSubcategory").addClass("disabled");
     $("#productViewMainDiv").addClass("disabled");
+    $("#userBodyMainDiv").addClass("disabled");
+    $("#headerNav").addClass("disabled");
 }
 
 function logoutAlert(value){
@@ -25,7 +27,9 @@ function logoutAlert(value){
                     $("#addSubcategoryDiv").removeClass("disabled");
                     $("#viewSubcategory").removeClass("disabled");
                     $("#productViewMainDiv").removeClass("disabled");
-                    location.href = "./adminLogin.cfm"
+                    $("#userBodyMainDiv").removeClass("disabled");
+                    $("#headerNav").removeClass("disabled");
+                    location.href = "./login.cfm"
                 }
                 else{
                     valid = false
@@ -42,6 +46,8 @@ function logoutAlert(value){
         $("#addSubcategoryDiv").removeClass("disabled");
         $("#viewSubcategory").removeClass("disabled");
         $("#productViewMainDiv").removeClass("disabled");
+        $("#userBodyMainDiv").removeClass("disabled");
+        $("#headerNav").removeClass("disabled");
     }
     return valid;
 }
@@ -155,6 +161,26 @@ function viewSubButton(ID){
     });
 }
 
+function viewCategoryCommon(categoryName){
+    alert(categoryName)
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=viewCategory',
+        type : 'post',
+        success : function(response){
+            let categorySelect = $('#categoryDropdown');
+            let select = $("#addProductCategorySelect");
+            let data=JSON.parse(response);
+            for (let struct of data) {
+                if(struct.categoryName !=  categoryName){
+                    option = $('<option>', {value : struct.categoryId, text : struct.categoryName});
+                    categorySelect.append(option);
+                    select.append(option)
+                }
+            }
+        }
+    })
+    return true;
+}
 
 function editSubcategory(ID){
     let editID = ID.value;
@@ -173,6 +199,12 @@ function editSubcategory(ID){
             $("#displayContent").css({"display":"none"});
             $('#subCategoryInput').val(data[0].subcategoryName);
             $('#subCategoryUpdate').val(data[0].subcategoryId);
+            let categorySelect = $('#categoryDropdown');
+            categorySelect.empty() 
+            let option = $('<option>', {value : data[0].categoryId, text : data[0].categoryName});
+            let categoryName = data[0].categoryName;
+            categorySelect.append(option)
+            let valid = viewCategoryCommon(categoryName);
             $('#subCategoryUpdate').css({"display":"flex"});
             $('#subCategorySubmit').css({"display":"none"})
         }
@@ -214,7 +246,7 @@ function addSubcategorySubmit(ID){
                 }
             }
             $("#subCategoryInput").val('');
-            }
+        }
     })
 }
 
@@ -331,9 +363,9 @@ function subcategoryViewButton(ID){
         },
         success : function(response){
             let data = JSON.parse(response)
-            $("#subCategoryHead").text(data.DATA[0][0]);
-            $("#addProductButton").val(data.DATA[0][2]+','+data.DATA[0][3]+','+data.DATA[0][0]+','+data.DATA[0][1]);
-            var subCategoryId=data.DATA[0][1];
+            $("#subCategoryHead").text(data[0].subcategoryName);
+            $("#addProductButton").val(data[0].categoryName+','+data[0].categoryId+','+data[0].subcategoryName+','+data[0].subcategoryId);
+            var subCategoryId=data[0].subcategoryId;
             $('#productViewMainDiv').css({'display':'flex'})
             $("#addCategory").css({"display":"none"});
             $("#viewSubcategory").css({"display":"none"});
@@ -347,22 +379,22 @@ function subcategoryViewButton(ID){
                 },
                 success : function(response) {
                     let data=JSON.parse(response);
-                    for (let i = 0; i < data.DATA.length; i++) {
-                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${data.DATA[i][4]}>
+                    for (let struct of data) {
+                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${struct.productId}>
                                         <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
                                             <div class="d-flex">
-                                                <button class="border-0 imageEditButton" value=${data.DATA[i][4]} type="button" onClick="editImages(this)">
-                                                    <img src="Assets/uploadImages/${data.DATA[i][3]}" class="" alt="" width="50" height="50">
+                                                <button class="border-0 imageEditButton" value=${struct.productId} type="button" onClick="editImages(this)">
+                                                    <img src="Assets/uploadImages/${struct.file}" class="" alt="" width="50" height="50">
                                                 </button>
                                             </div>
                                             <div class="d-flex flex-column px-2">
-                                                <span class="productsNamespan px-2">${data.DATA[i][1]}</span>
-                                                <span class="productsBrandspan fw-bold px-2">${data.DATA[i][0]}</span>
-                                                <span class="productsPricespan px-2">RS.${data.DATA[i][2]}</span>
+                                                <span class="productsNamespan px-2">${struct.productName}</span>
+                                                <span class="productsBrandspan fw-bold px-2">${struct.brandName}</span>
+                                                <span class="productsPricespan px-2">RS.${struct.price}</span>
                                             </div>
                                             <div class="d-flex">
-                                                <button type="button" class="border-0" name="editBtn" value=${data.DATA[i][4]}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${data.DATA[i][4]}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                                <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${struct.productId}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
                                             </div>
                                         </div>
                                     </div>`;
@@ -434,7 +466,6 @@ function setThumbnail(ID){
     })
 }
 
-
 function editProductsButton(ID){
     let productId = ID.value;
     $('#productViewMainDiv').css({'display':'none'});
@@ -449,7 +480,7 @@ function editProductsButton(ID){
         url:'./Components/shoppingCart.cfc?method=displayProduct',
         type : 'post',
         data :{
-            productId : 22
+            productId : productId
         },
         success : function(response){
             let data = JSON.parse(response)
@@ -472,57 +503,12 @@ function editProductsButton(ID){
             var categoryId = data.categoryId
             let brand = data.brand
             $("#addProductClose").val(data.subCategoryId);
-            $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewCategory',
-                type : 'post',
-                success : function(response){
-                    let data=JSON.parse(response);
-                    let categorySelect=$('#addProductCategorySelect');
-                    for (let struct of data) {
-                        if(struct.categoryName !=  categoryName){
-                            var selectOption=document.createElement("option");
-                            selectOption.setAttribute('value', struct.categoryId)
-                            selectOption.text=struct.categoryName;
-                            categorySelect.append(selectOption);
-                        }
-                    }
-                }
-            }),
-            $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewSubcategory',
-                type : 'post',
-                data :{
-                    categoryId : categoryId
-                },
-                success : function(response){
-                    let subData=JSON.parse(response);
-                    let subCategorySelect=$('#addProductSubcategorySelect');
-                    for (let struct of subData) {
-                        if(struct.subcategoryName != subcategoryName){
-                            var selectSubOption=document.createElement("option");
-                            selectSubOption.setAttribute('value',  struct.subcategoryId)
-                            selectSubOption.text=struct.subcategoryName;
-                            subCategorySelect.append(selectSubOption);
-                        }
-                    }
-                }
-            })
-            $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewBrand',
-                type : 'post',
-                success : function(response){
-                    let brandData=JSON.parse(response);
-                    let brandSelect=$('#brandSelect');
-                    for (let struct of brandData) {
-                        if(brandData.brandName != brand){
-                        var selectSubOption=document.createElement("option");
-                        selectSubOption.setAttribute('value',  brandData.brandId)
-                        selectSubOption.text=brandData.brandName;
-                        brandSelect.append(selectSubOption);
-                        }
-                    }
-                }
-            })
+
+            let valid = viewCategoryCommon(categoryName);
+
+            let subValid = viewSubcategoryCommon(categoryId, subcategoryName)
+
+            let brandValid = viewBrandCommon()
         }
     })
 }
@@ -590,6 +576,27 @@ function addProductsubmit(){
     })
 }
 
+function viewSubcategoryCommon(categoryId,subCategoryName){
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=viewSubcategory',
+        type : 'post',
+        data :{
+            categoryId : categoryId
+        },
+        success : function(response){
+            let subData=JSON.parse(response);
+            let selectSub = $("#addProductSubcategorySelect");
+            for (let struct of subData) {
+                if(struct.subcategoryName != subCategoryName){
+                    let option = $('<option>', {value : struct.subcategoryId, text : struct.subcategoryName});
+                    selectSub.append(option);
+                }
+            }
+        }
+    })
+    return true;
+}
+
 function addProduct(ID){
     let Id = ID.value;
     let splitData = Id.split(',');
@@ -612,39 +619,16 @@ function addProduct(ID){
     select.append(selectOption);
     selectSub.append(selectSubOption);
     $("#addProductClose").val(subCategoryId);
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewCategory',
-        type : 'post',
-        success : function(response){
-            let data=JSON.parse(response);
-            for (let struct of data) {
-                if(struct.categoryName != categoryName){
-                    var selectOption=document.createElement("option");
-                    selectOption.setAttribute('value', struct.categoryId)
-                    selectOption.text=data.struct.categoryName;
-                    select.append(selectOption);
-                }
-            }
-        }
-    }),
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewSubcategory',
-        type : 'post',
-        data :{
-            categoryId : categoryId
-        },
-        success : function(response){
-            let subData=JSON.parse(response);
-            for (let struct of subData) {
-                if(struct.subcategoryName != subCategoryName){
-                    var selectSubOption=document.createElement("option");
-                    selectSubOption.setAttribute('value',  struct.subcategoryId)
-                    selectSubOption.text=struct.subcategoryName;
-                    selectSub.append(selectSubOption);
-                }
-            }
-        }
-    })
+    let valid = viewCategoryCommon(categoryName);
+
+    let subValid = viewSubcategory(categoryId, subCategoryName)
+
+    let brandValid = viewBrandCommon()
+    $('#productViewMainDiv').css({'display':'none'});
+    $('#addProductModal').css({'display':'flex'});
+}
+
+function viewBrandCommon(){
     $.ajax({
         url : './Components/shoppingCart.cfc?method=viewBrand',
         type : 'post',
@@ -652,15 +636,11 @@ function addProduct(ID){
             let brandData=JSON.parse(response);
             let brandSelect=$('#brandSelect');
             for (let struct of brandData) {
-                var selectSubOption=document.createElement("option");
-                selectSubOption.setAttribute('value',  brandData.brandId)
-                selectSubOption.text=brandData.brandName;
-                brandSelect.append(selectSubOption);
+                let option = $('<option>', {value : struct.brandId, text : struct.brandName});
+                brandSelect.append(option);
             }
         }
     })
-    $('#productViewMainDiv').css({'display':'none'});
-    $('#addProductModal').css({'display':'flex'});
 }
 
 $(document).ready(function() {
@@ -685,7 +665,3 @@ $(document).ready(function() {
         });	
 	});
 });
-
-
-
-

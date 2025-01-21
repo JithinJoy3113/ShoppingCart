@@ -31,6 +31,22 @@ $(document).ready(function () {
     })
 });
 
+$(document).ready(function () {
+    $('.sideImage').on('mouseover', function () {
+        var img=$(this).attr('src');
+        $('#mainImg').attr('src', img);
+    })
+    $('.sideImage').on('mouseout', function () {
+        var mainImg = $('#mainImg').attr('data-value');
+        $('#mainImg').attr('src', mainImg);
+    })
+    $('.sideImage').on('click', function () {
+        var img=$(this).attr('src');
+        $('#mainImg').attr('src', img);
+        $('#mainImg').attr('data-value', img);
+    })
+})
+
 function filterButton(){
     $('#filterDiv').css({"display":"flex"})
 }
@@ -47,3 +63,18 @@ function filterValidate(){
         return true
     }
 }
+
+
+const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+    e.preventDefault();
+    const searchValue = searchInput.value.trim();
+    if (searchInput) {
+        const button = document.getElementById('myButton');
+        button.click();
+    } else {
+        alert('Please enter a search term!');
+    }
+    }
+});
