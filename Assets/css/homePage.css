@@ -26,8 +26,8 @@
     font-size: 16px;
     font-weight: 600;
 }
-.userBodyMainDiv,.randomProductsMainDiv{
-    padding: 30px 30px;
+.randomProductsMainDiv{
+    padding: 30px 50px;
 }
 .subCategoryHeadDiv{
     font-size: 20px;
@@ -36,7 +36,7 @@
 }
 .randumHead{
     font-weight: bold;
-    font-size: 20px;
+    font-size: 30px;
 }
 .randomProductsDiv{
     display: flex;

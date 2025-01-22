@@ -831,36 +831,6 @@
         <cfreturn local.jsonData>
     </cffunction>
 
-<!---     <cffunction  name = "displayProduct" returnType = "struct">
-        <cfargument  name = "productId" type = "integer" required = "true">
-        <cfquery name = "local.fetchProduct" datasource = "cartDatasource">
-            SELECT 
-                P.fldProduct_ID,
-                P.fldProductName,
-                P.fldDescription,
-                P.fldPrice,
-                P.fldTax,
-                B.fldBrand_ID,
-                B.fldBrandName
-            FROM
-                tblProducts P
-            LEFT JOIN
-                tblBrand B ON P.fldBrandId = B.fldBrand_ID
-            WHERE 
-                P.fldProduct_ID = < cfqueryparam value ="#arguments.productId#" cfsqltype = "integer" >
-        </cfquery>
-        <cfset local.jsonData = {}>
-        <cfloop query = "local.fetchProduct">
-            <cfset local.jsonData['productId'] = local.fetchProduct.fldProduct_ID>
-            <cfset local.jsonData['productName'] = local.fetchProduct.fldProductName>
-            <cfset local.jsonData['description'] = local.fetchProduct.fldDescription>
-            <cfset local.jsonData['price'] = local.fetchProduct.fldPrice>
-            <cfset local.jsonData['tax'] = local.fetchProduct.fldTax>
-            <cfset local.jsonData['brand'] = local.fetchProduct.fldBrandName>
-        </cfloop>
-        <cfreturn local.jsonData>
-    </cffunction> --->
-
     <cffunction  name = "subcategoryListing" returnType = "array" access = "public">
         <cfargument  name = "categoryId" required = "true" type = "integer">
         <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
@@ -882,44 +852,6 @@
         <cfreturn local.dataArray>
 
     </cffunction>
-
-<!---         <cffunction  name = "subcategoryListing" returnType = "array" access = "public">
-        <cfargument  name = "categoryId" required = "true" type = "integer">
-        <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
-            SELECT
-                S.fldSubCategoryName,
-                S.fldSubcategory_ID,
-                P.fldProduct_ID, 
-                P.fldProductName,
-                P.fldPrice,
-                P.fldTax,
-                I.fldImageFileName
-            FROM
-                tblSubcategory S
-            RIGHT JOIN
-                tblProducts P ON S.fldSubcategory_ID = P.fldSubcategoryId
-            RIGHT JOIN
-                tblProductImages I ON P.fldProduct_ID = I.fldProductId
-            WHERE
-                S.fldCategoryId = < cfqueryparam value ="#arguments.categoryId#" cfsqltype = "integer" >
-                AND S.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-        </cfquery>
-         <cfset local.dataArray = []>
-        <cfloop query="local.fetchSubcategory">
-            <cfset local.jsonData = {}>
-            <cfset local.jsonData['subcategoryId'] = local.fetchSubcategory.fldSubcategory_ID>
-            <cfset local.jsonData['subcategoryName'] = local.fetchSubcategory.fldSubCategoryName>
-            <cfset local.jsonData['productId'] = local.fetchSubcategory.fldProduct_ID>
-            <cfset local.jsonData['productName'] = local.fetchSubcategory.fldProductName>
-            <cfset local.jsonData['productFileName'] = local.fetchSubcategory.fldImageFileName>
-            <cfset local.jsonData['price'] = local.fetchSubcategory.fldPrice>
-            <cfset local.jsonData['tax'] = local.fetchSubcategory.fldTax>
-            <cfset arrayAppend(local.dataArray, local.jsonData)>
-        </cfloop>
-        <cfreturn local.dataArray>
-
-    </cffunction> --->
 
 </cfcomponent>
 

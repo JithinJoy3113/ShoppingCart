@@ -7,6 +7,7 @@
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
                         <div class="productImagesdivLeft d-none d-md-flex flex-md-column">
+                            <cfset local.productDetails = application.obj.displayProduct(productId = local.productId )>
                             <cfset local.imageResult = application.obj.viewImages(productId = local.productId)>
                             <cfloop array="#local.imageResult#" item="item">
                                 <div class="productImg d-flex align-items-center justify-content-center">
@@ -50,23 +51,19 @@
                     <div class="pathMaindiv d-flex">
                         <div class="pathDiv d-none d-md-flex">
                             <div class="pathMobile">
-                                <a href="" class="pathLink text-decoration-none">Home</a>
-                                <img src="assets/images/rightarrowgrey.png" class="me-1" alt="">
+                                <a href="homePage.cfm" class="pathLink text-decoration-none">Home</a>
+                                <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile">
-                                <a href="" class="pathLink mobile text-decoration-none">Mobile & Accessories</a>
-                                <img src="assets/images/rightarrowgrey.png" class="me-1" alt="">
+                                <a href="productListing.cfm?categoryId=#local.productDetails.categoryId#&categoryName=#local.productDetails.categoryName#" class="pathLink mobile text-decoration-none">#local.productDetails.categoryName#</a>
+                                <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile">
-                                <a href="" class="pathLink text-decoration-none">Mobiles</a>
-                                <img src="assets/images/rightarrowgrey.png" class="me-1" alt="">
+                                <a href="subcategory.cfm?subCategoryId=#local.productDetails.subCategoryId#&subCategoryName=#local.productDetails.subCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
+                                <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile">
-                                <a href="" class="pathLink text-decoration-none">OPPO Mobile</a>
-                                <img src="assets/images/rightarrowgrey.png" class="me-1" alt="">
-                            </div>
-                            <div class="pathMobile pt-1">
-                                <span class="pathLink">OPPO K12x...</span>
+                                <a href="" class="pathLink text-decoration-none">#local.productDetails.productName#</a>
                             </div>
                         </div>
                         <div class="compareDiv d-none d-md-flex ms-auto">
@@ -94,35 +91,7 @@
                                 <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt="">BUY NOW </button>
                         </div>
                     </div>
-                    <div class="mobileSelectdiv d-flex flex-column d-md-none">
-                        <div class="selectVarient">Select Varient</div>
-                        <div class="selectVarient d-flex justify-content-between">
-                            <div class="selectColorspan">Color:
-                                <span class="colerType">Feather Pink</span>
-                            </div>
-                            <div class="colorNum">3 more
-                                <img src="assets/images/rightarrow.png" alt="">
-                            </div>
-                        </div>
-                        <div class="selectVarient d-flex justify-content-between">
-                            <div class="selectColorspan">Storage:
-                                <span class="colerType">256 GB</span>
-                            </div>
-                            <div class="colorNum">3 more
-                                <img src="assets/images/rightarrow.png" alt="">
-                            </div>
-                        </div>
-                        <div class="selectVarient d-flex justify-content-between">
-                            <div class="selectColorspan">RAM:
-                                <span class="colerType">8 GB</span>
-                            </div>
-                            <div class="colorNum">3 more
-                                <img src="assets/images/rightarrow.png" alt="">
-                            </div>
-                        </div>
-                    </div>
                     <div class="mobileDetailsdiv">
-                        <cfset local.productDetails = application.obj.displayProduct(productId = local.productId )>
                         <div class="headingDiv">#local.productDetails.productName#</div>
                         <div class="mobileRatingdiv">
                             <div class="rating d-none d-md-flex align-items-center py-1">
@@ -139,19 +108,9 @@
                                     <img src="assets/images/flipassured.png" class="ms-auto" alt="">
                                 </div>
                             </div>
-                            <!--- <div class="discountDiv mt-1">
-                                <span class="discount text-success">Extra ₹4000 off</span>
-                            </div> --->
                             <div class="priceDiv d-none d-md-flex align-items-center">
                                 <span class="price">RS. #local.productDetails.price#</span>
-                                <!--- <span class="actualAmount text-decoration-line-through">₹16,999</span>
-                                <span class="off text-success">23% off</span> --->
                             </div>
-                            <!--- <div class="priceDiv d-flex d-md-none align-items-center">
-                                <span class="off text-success">23% off</span>
-                                <span class="actualAmount text-decoration-line-through">₹16,999</span>
-                                <span class="price">₹12,999</span>
-                            </div> --->
                             <div class="fee mt-2 m-sm-none">+ ₹59 Secured Packaging Fee</div>
                             <div class="freeDeliver d-flex d-sm-none">Free delivery by Oct 10</div>
                             <div class="fee d-flex">No cost EMI RS.2,345/month<a href="" class="d-flex d-sm-none deliverPlans text-decoration-none ms-1">View Plans</a></div>
@@ -189,42 +148,6 @@
                                     <span class="replacementSpan mx-auto mt-4">F-Assured</span>
                                 </div>
                             </div>
-                            <!--- <div class="offersMaindiv d-none d-sm-flex flex-column">
-                                <div class="offerHeaddiv py-2">
-                                    <span class="offerHead">Available offers</span>
-                                </div>
-                                <div class="offersDiv d-flex flex-column">
-                                    <span class="offerSpan pb-2">
-                                            <img src="assets/images/tag.png" class="me-1" alt="">
-                                            <span class="offer">
-                                                <b>Bank Offer </b>5% Unlimited Cashback on Flipkart Axis Bank Credit Card <a href="" class="text-decoration-none">T&C</a>
-                                            </span>
-                                    </span>
-                                    <span class="offerSpan pb-2">
-                                            <img src="assets/images/tag.png" class="me-1" alt="">
-                                            <span class="offer">
-                                                <b>Bank Offer </b>10% off up to ₹500 on HDFC Bank Credit Card and Credit EMI Transactions. Min Txn Value: ₹4,999 <a href="" class="text-decoration-none">T&C</a>
-                                            </span>
-                                    </span>
-                                    <span class="offerSpan pb-2">
-                                            <img src="assets/images/tag.png" class="me-1" alt="">
-                                            <span class="offer">
-                                                <b>Bank Offer </b>5% Additional ₹600 off on Credit and Debit card Transaction <a href="" class="text-decoration-none">T&C</a>
-                                            </span>
-                                    </span>
-                                    <span class="offerSpan pb-2">
-                                            <img src="assets/images/tag.png" class="me-1" alt="">
-                                            <span class="offer">
-                                                <b>Bank Offer </b>5% Get extra ₹4000 off (price inclusive of cashback/coupon) <a href="" class="text-decoration-none">T&C</a>
-                                            </span>
-                                    </span>
-                                    <div class="offerViewdiv">
-                                        <a href="" class="offerView text-decoration-none">
-                                            <b>View 3 more offers</b>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div> --->
                         </div>
                     </div>
                     <div class="withoutExchangediv d-none d-sm-flex">
@@ -233,7 +156,7 @@
                                 <input type="radio" class="radioInput">
                                 <div class="buyExchange d-flex">
                                     <span class="spanOne">Buy without Exchange</span>
-                                    <span class="spanTwo ms-auto">₹12,999</span>
+                                    <span class="spanTwo ms-auto">Rs.12,999</span>
                                 </div>
                             </div>
                             <div class="tableRowone">
@@ -242,7 +165,7 @@
                                         <input type="radio" class="radioInput" disabled>
                                         <div class="withExchangediv d-flex">
                                             <span class="spanOne buyGrey">Buy with Exchange</span>
-                                            <span class="spanTwo buyGrey ms-auto">up to ₹7,950 off</span>
+                                            <span class="spanTwo buyGrey ms-auto">up to Rs.7,950 off</span>
                                         </div>
                                     </div>
                                     <span class="checkPin text-danger">Enter pincode to check if exchange is available</span>
@@ -250,107 +173,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--- <div class="manufactureWarrantydiv">
-                        <div class="warrantyDiv d-flex">
-                            <div class="logoDiv">
-                                <img src="assets/images/oppoText.jpg" class="oppoImg" alt="">
-                            </div>
-                            <div class="warrantyText d-flex">
-                                <span class="warrantySpan">1 Year Manufacturer Warranty for Device and 6 Months Manufacturer Warranty for Inbox Accessories
-                                   <a href="" class="checkSpan text-decoration-none">Know More</a>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="otherHighlightsdiv d-flex flex-column d-sm-none">
-                        <div class="otherHighlightsHead">
-                            Highlights
-                        </div>
-                        <div class="highDiv d-flex align-items-center mt-3">
-                            <img src="assets/images/ram.webp" class="" alt="" height="32" width="32">
-                            <div class="partDiv d-flex flex-column ms-4">
-                                <span class="part mb-2">RAM | ROM</span>
-                                <span class="capability">8 GB RAM | 256 GB ROM </span>
-                            </div>
-                        </div>
-                        <div class="highDiv d-flex align-items-center mt-3">
-                            <img src="assets/images/processor.webp" class="" alt="" height="32" width="32">
-                            <div class="partDiv d-flex flex-column ms-4">
-                                <span class="part mb-2">Processor</span>
-                                <span class="capability">Dimensity 6300 | Octa Core | 2.4 GHz</span>
-                            </div>
-                        </div>
-                        <div class="highDiv d-flex align-items-center mt-3">
-                            <img src="assets/images/rcamera.webp" class="" alt="" height="32" width="32">
-                            <div class="partDiv d-flex flex-column ms-4">
-                                <span class="part mb-2">Rear Camera</span>
-                                <span class="capability">32MP + 2MP</span>
-                            </div>
-                        </div>
-                        <div class="highDiv d-flex align-items-center mt-3">
-                            <img src="assets/images/fcamera.webp" class="" alt="" height="32" width="32">
-                            <div class="partDiv d-flex flex-column ms-4">
-                                <span class="part mb-2">Front Camera</span>
-                                <span class="capability">8 MP</span>
-                            </div>
-                        </div>
-                        <div class="highDiv d-flex align-items-center mt-3">
-                            <img src="assets/images/display.webp" class="" alt="" height="32" width="32">
-                            <div class="partDiv d-flex flex-column ms-4">
-                                <span class="part mb-2">display</span>
-                                <span class="capability">6.67 inch LCD</span>
-                            </div>
-                        </div>
-                        <div class="highDiv d-flex align-items-center mt-3">
-                            <img src="assets/images/battery.webp" class="" alt="" height="32" width="32">
-                            <div class="partDiv d-flex flex-column ms-4">
-                                <span class="part">Battery</span>
-                                <span class="capability">5100 mAh</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="specDiv d-flex flex-column d-none d-sm-flex">
-                        <div class="specRow1 d-flex">
-                            <div class="colorDiv d-flex">
-                                <span class="colorSpan">Color</span>
-                                <div class="specImgrow d-flex">
-                                    <div class="specImgdiv">
-                                        <img src="assets/images/oppoblue.webp" class="specImg" alt="">
-                                    </div>
-                                    <div class="specImgdiv">
-                                        <img src="assets/images/oppopink.webp" class="specImg" alt="">
-                                    </div>
-                                    <div class="specImgdiv">
-                                        <img src="assets/images/oppoviolet.webp" class="specImg" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="storageDiv d-flex d-flex">
-                                <span class="colorSpan">Storage</span>
-                                <div class="storageRow d-flex">
-                                    <div class="storage">
-                                        128 GB
-                                    </div>
-                                    <div class="storageGrey">
-                                        256 GB
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="specRow2">
-                            <div class="ramDiv d-flex">
-                                <span class="colorSpan">RAM</span>
-                                <div class="ramRow d-flex">
-                                    <div class="ram">
-                                        6 GB
-                                    </div>
-                                    <div class="ramGrey">
-                                        8 GB
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --->
                     <div class="deliveryPindiv d-none d-sm-flex">
                         <div class="deliveryPin d-flex flex-column">
                             <div class="pinDin d-flex">
@@ -365,9 +187,9 @@
                                 </div>
                             </div>
                             <div class="expectedDeliveydiv d-flex flex-column">
-                                <span class="deliveryDate d-flex">Delivery by9 Oct, Wednesday 
+                                <span class="deliveryDate d-flex">Delivery by 9 Oct, Wednesday 
                                                <span class="deliveryFree ms-1"> | Free</span>
-                                <span class="text-decoration-line-through ms-1">₹40</span>
+                                <span class="text-decoration-line-through ms-1">Rs.40</span>
                                 <img src="assets/images/roundquestion.png" class="ms-1" alt="">
                                 </span>
                                 <span class="orderDate">if ordered before 12:24 PM</span>
@@ -375,27 +197,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--- <div class="highlightMaindiv d-none d-sm-flex flex-column flex-md-row">
-                        <div class="highlightDiv d-flex">
-                            <span class="colorSpan">Highlights</span>
-                            <ul class="highlightUl ms-md-3 pe-5">
-                                <li class="highlightLi">6 GB RAM | 128 GB ROM | Expandable Upto 1 TB</li>
-                                <li class="highlightLi">16.94 cm (6.67 inch) HD Display</li>
-                                <li class="highlightLi">32MP + 2MP | 8MP Front Camera</li>
-                                <li class="highlightLi">5100 mAh Battery</li>
-                                <li class="highlightLi">Dimensity 6300 Processor</li>
-                            </ul>
-                        </div>
-                        <div class="easyPaymentdiv d-flex">
-                            <span class="colorSpan easy">Easy Payment Options</span>
-                            <ul class="highlightUl">
-                                <li class="highlightLi">No cost EMI starting from ₹4,333/month</li>
-                                <li class="highlightLi">Cash on Delivery</li>
-                                <li class="highlightLi">Net banking & Credit/ Debit/ ATM card</li>
-                                <li class="highlightView"><a href="" class="checkSpan text-decoration-none">View Details</a>
-                            </ul>
-                        </div>
-                    </div> --->
                     <div class="productSeller d-none d-sm-flex">
                         <span class="colorSpan">Seller</span>
                         <div class="sellerDetailsdiv d-flex flex-column">
@@ -417,100 +218,6 @@
                         <span class="colorSpan">Discription</span>
                         <span class="discription"># local.productDetails.description#</span>
                     </div>
-                    <!--- <div class="productDecriptiondiv d-none d-sm-flex flex-column">
-                        <span class="descriptionHead">Product Description</span>
-                        <div class="ultraThindiv d-flex">
-                            <div class="ultraLeft">
-                                <img src="assets/images/ultrathin.webp" class="" width="168" alt="">
-                            </div>
-                            <div class="ultraRight d-flex flex-column">
-                                <span class="ultraHead">7.68 mm Ultra-Slim Premium Gleaming Design</span>
-                                <span class="ultraDescription">Sleek, aesthetic and light, this is the ultimate stylish device that will turn heads wherever you go. Classy, cool and bright vibes, this phone packs a big battery in a slim 7.68 mm casing. - Weight about 186 g</span>
-                            </div>
-                        </div>
-                        <div class="pocketDiv d-flex">
-                            <div class="pocketLeft d-flex flex-column">
-                                <span class="ultraHead">Carry the Sky in Your Pocket</span>
-                                <span class="ultraDescription">Imagine taking a clear blue sky over lush meadows with you wherever you go. The innovative magnetic particle design creates a feeling of movement, evoking a gentle summer’s breeze. Evoking the night sky touched by glittering moonlight, this sophisticated colour with shimmering OPPO Glow texture whispers fashion classic and understated elegance.</span>
-                            </div>
-                            <div class="pocketRight">
-                                <img src="assets/images/pocket.webp" class="" width="168" alt="">
-                            </div>
-                        </div>
-                        <a href="" class="viewFeatureslink text-decoration-none">View all features</a>
-                    </div> --->
-                    <!--- <div class="productDecriptiondiv d-none d-sm-flex flex-column">
-                        <span class="descriptionHead">Specifications</span>
-                        <div class="generalDiv d-flex flex-column">
-                            <span class="generalHead">General</span>
-                            <table class="generalTable">
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">In The Box</td>
-                                    <td class="tableDataright">Handset, Charger, USB Data Cable, Sim Ejector Tool, Quick Guide, Protective Case</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Model Number</td>
-                                    <td class="tableDataright">CPH2667</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Model Name</td>
-                                    <td class="tableDataright">K12x 5G</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Color</td>
-                                    <td class="tableDataright">Feather Pink</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Browse Type</td>
-                                    <td class="tableDataright">Smartphones</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">SIM Type</td>
-                                    <td class="tableDataright">Duel Sim</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Hybrid Slot</td>
-                                    <td class="tableDataright">Yes</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Touch Screen</td>
-                                    <td class="tableDataright">Yes</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <a href="" class="viewFeatureslink text-decoration-none">Read More</a>
-                    </div> --->
-                    <!--- <div class="productDecriptiondiv d-flex d-sm-none flex-column">
-                        <div class="generalDiv d-flex flex-column">
-                            <span class="generalHead">Other Details</span>
-                            <table class="generalTable">
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Network Type</td>
-                                    <td class="tableDataright">5G, 4G, 3G, 2G</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Sim Type</td>
-                                    <td class="tableDataright">Duel Sim</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Expandale Storage</td>
-                                    <td class="tableDataright">Yes</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Audio Jack</td>
-                                    <td class="tableDataright">No</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">Quick Charging</td>
-                                    <td class="tableDataright">Yes</td>
-                                </tr>
-                                <tr class="tableRow">
-                                    <td class="tableDataleft">In the box</td>
-                                    <td class="tableDataright">Handset, Charger, USB Data Cable, Sim Ejector Tool, Quick Guide, Protective Case</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div> --->
                     <div class="productHighlightdiv d-flex flex-column d-sm-none">
                         <div class="d-flex align-items-center justify-content-between">
                             <span class="productHighlightHead px-4 py-3">Product Highlights</span>
@@ -826,116 +533,15 @@
                                 <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
                                     <span class="productsNamespan text-truncate">#item.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                        <span class="similarPrice">RS.#item.price#</span>
-                                        <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>
-                                        <span class="similarOff text-success ms-2">23% off</span>
+                                        <span class="similarPrice text-success">RS.#item.price#</span>
+                                        <!-- <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>
+                                        <span class="similarOff text-success ms-2">23% off</span> -->
                                     </div>
                                 </div>
                             </div>
                         </a>
                     </cfloop>
                 </div>
-            </div>
-        </div>
-        <div class="bottomContentsdiv d-none d-lg-flex flex-column">
-            <span class="bottomHead">Top Stories:Brand Directory</span>
-            <a href="" class="bottomLinks text-decoration-none">
-                <span class="linkSpan">
-                                  MOST SEARCHED IN MOBILES & ACCESSORIES: 
-                                 BLACKBERRY CLASSIC PRICE IN INDIA | GIONEE P4 PRICE | INTEX AQUA Y2 PRO | KARBONN TITANIUM HEXA | LENOVO SISLEY S90 | LG G2 PRICE IN INDIA | MICROMAX CANVAS KNIGHT 2 PRICE | MICROSOFT 535 PRICE IN INDIA | 8GB MEMORY CARD | APPLE ALL MOBILE PRICE | XIAOMI PHONE PRICE | NOKIA MOBILE UNDER 1000 | SAMSUNG PHONE PRICE IN INDIA | SONY MOBILES | 
-                                     MOBILES BELOW 15000 | NOKIA 210 | S4 MINI | SAMSUNG S5 MINI PRICE | XPERIA Z1 | SONY ZL | DELL TABS | SWIPE TABLET | HTC M8 PRICE IN INDIA | MICROMAX FIRE 2 | BUY LENOVO K6 POWER | MI NOTE 4 SPECS | MOTO C FEATURES | PANASONIC ELUGA A | SONY EXPERIA | ONEPLUS TWO PRICE IN INDIAs
-                           </span>
-            </a>
-        </div>
-    </div>
-    <div class="footerDiv d-none d-sm-flex flex-column bg-dark">
-        <div class="footerContents d-flex flex-column flex-xl-row px-5 pt-5">
-            <div class="footerColOne d-flex flex-column flex-md-row w-75 justify-content-between ps-3 pe-5 me-4">
-                <div class="contentOne d-flex flex-column">
-                    <div class="footerHead  mb-2">ABOUT</div>
-                    <a href="" class="footerFont">Contact Us</a>
-                    <a href="" class="footerFont">About Us</a>
-                    <a href="" class="footerFont">Careers</a>
-                    <a href="" class="footerFont">Flipkart Stories</a>
-                    <a href="" class="footerFont">Press</a>
-                    <a href="" class="footerFont">Corporate Information</a>
-                </div>
-                <div class="contentOne companyDiv d-flex flex-column ">
-                    <div class="footerHead mb-2">GROUP COMPANIES</div>
-                    <a href="" class="footerFont">Myntra</a>
-                    <a href="" class="footerFont">Cleartrip</a>
-                    <a href="" class="footerFont">Shopsy</a>
-                </div>
-                <div class="contentOne d-flex flex-column ">
-                    <div class="footerHead mb-2">HELP</div>
-                    <a href="" class="footerFont">Payments</a>
-                    <a href="" class="footerFont">Shipping</a>
-                    <a href="" class="footerFont">Cancellation & Returns</a>
-                    <a href="" class="footerFont">FQA</a>
-                    <a href="" class="footerFont">Report Infringement</a>
-                    <a href="" class="footerFont">Corporate Information</a>
-                </div>
-            </div>
-            <div class="d-flex  flex-column flex-md-row footerColTwo w-100 justify-content-between  ps-3 pe-4">
-                <div class="d-flex flex-column a">
-                    <div class="footerHead mb-2">CONSUMER POLICY</div>
-                    <a href="" class="footerFont">Cancellation & Returns</a>
-                    <a href="" class="footerFont">Terms Of Use</a>
-                    <a href="" class="footerFont">Security</a>
-                    <a href="" class="footerFont">Privacy</a>
-                    <a href="" class="footerFont">Sitemap</a>
-                    <a href="" class="footerFont">Grievance Redressal</a>
-                    <a href="" class="footerFont">EPR Compliance</a>
-                </div>
-                <div class="mailDiv d-flex flex-column ps-5">
-                    <div class="footerHead mb-2">Mail Us:</div>
-                    <p class="footerPara">Flipkart Internet Private Limited,</p>
-                    <p class="footerPara">Buildings Alyssa, Begonia &</p>
-                    <p class="footerPara">Clove Embassy Tech Village,</p>
-                    <p class="footerPara">Outer Ring Road, Devarabeesanahalli Village,</p>
-                    <p class="footerPara">Bengaluru, 560103,</p>
-                    <p class="footerPara">Karnataka, India</p>
-                    <div class="footerHead mb-2 mt-3">Social:</div>
-                    <div class="socialImg">
-                        <img src="assets/images/social.png" width="105" height="25" alt="">
-                    </div>
-                </div>
-                <div class="d-flex flex-column">
-                    <div class="footerHead mb-2">Registered Office Address:</div>
-                    <p class="footerPara">Flipkart Internet Private Limited,</p>
-                    <p class="footerPara">Buildings Alyssa, Begonia &</p>
-                    <p class="footerPara">Clove Embassy Tech Village,</p>
-                    <p class="footerPara">Outer Ring Road, Devarabeesanahalli Village,</p>
-                    <p class="footerPara">Bengaluru, 560103,</p>
-                    <p class="footerPara">Karnataka, India</p>
-                    <p class="footerPara">CIN : U51109KA2012PTC066107</p>
-                    <p class="footerPara">Telephone: 044-45614700 / 044-67415800</p>
-                </div>
-            </div>
-        </div>
-        <div class="footerBase d-flex flex-column flex-md-row justify-content-between mt-4 py-4 px-xl-5 mx-xl-3">
-            <div class="baseContents">
-                <img src="assets/images/seller.png" alt="">
-                <a href="" class="baseLink">Become a Seller</a>
-            </div>
-            <div class="baseContents">
-                <img src="assets/images/star.png" alt="">
-                <a href="" class="baseLink">Advertise </a>
-            </div>
-            <div class="baseContents">
-                <img src="assets/images/gift.png" alt="">
-                <a href="" class="baseLink">Gift Cards</a>
-            </div>
-            <div class="baseContents">
-                <img src="assets/images/help.png" alt="">
-                <a href="" class="baseLink">Help Center</a>
-            </div>
-            <div class="baseContents">
-                <img src="assets/images/since.png" alt="">
-                <span class="baseLink">2007-2024 Flipkart.com</span>
-            </div>
-            <div class="footerImgdiv">
-                <img class="footerImg" src="assets/images/footerimg.png" alt="">
             </div>
         </div>
     </div>

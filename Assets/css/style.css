@@ -393,8 +393,44 @@
 .similarImage {
     max-width: 150px;
 }
+.footerDiv{
 
-
+    padding: 25px;
+    border-top: 1px solid #ddd;
+    margin-top: 25px;
+}
+.footerSpan,.returnLink{
+    font-size:13px;
+    color: #565656;
+    font-weight: 300;
+}
+.footerFont{
+	color:white;
+        text-decoration:none;
+        font-size:12px;
+        font-weight:bold;
+}
+.footerHead{
+	color:#878787;
+        font-size:12px;
+}
+.footerPara{
+	color:white;
+        font-size:12px;
+        margin:0px;
+        line-height:19px;
+}
+.baseLink{
+	color:white;
+        text-decoration:none;
+        font-size:12px;
+}
+.footerBase{
+    border-top: 1px solid #454d5e;
+}
+.mailDiv{
+    border-left: 1px solid #454d5e;
+}
 
 
 
