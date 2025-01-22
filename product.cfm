@@ -2,7 +2,7 @@
     <cfset local.productId = URL.productId>
     <cfset local.subCategoryId = URL.subcategoryId>
     <cfset local.file = "">
-    <div class="productBodydiv" id="userBodyMainDiv">
+    <div class="productBodydiv" id="randomProductsMainDiv">
             <div class="productImgMaindiv d-flex flex-column flex-md-row">
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
@@ -62,8 +62,8 @@
                                 <a href="subcategory.cfm?subCategoryId=#local.productDetails.subCategoryId#&subCategoryName=#local.productDetails.subCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
-                            <div class="pathMobile">
-                                <a href="" class="pathLink text-decoration-none">#local.productDetails.productName#</a>
+                            <div class="pathMobile productName d-flex align-items-center">
+                                <a href="" class="text-decoration-none pathLink text-truncate">#local.productDetails.productName#</a>
                             </div>
                         </div>
                         <div class="compareDiv d-none d-md-flex ms-auto">
@@ -531,7 +531,7 @@
                             <div class="randomProducts d-flex flex-column ms-4">
                                 <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                                 <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                                    <span class="productsNamespan text-truncate">#item.productName#</span>
+                                    <span class="productsNamespan">#item.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">
                                         <span class="similarPrice text-success">RS.#item.price#</span>
                                         <!-- <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>

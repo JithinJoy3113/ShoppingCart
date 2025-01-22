@@ -11,6 +11,7 @@ function logoutValidate(){
     $("#productViewMainDiv").addClass("disabled");
     $("#userBodyMainDiv").addClass("disabled");
     $("#headerNav").addClass("disabled");
+    $("#randomProductsMainDiv").addClass("disabled");
 }
 
 function logoutAlert(value){
@@ -29,6 +30,7 @@ function logoutAlert(value){
                     $("#productViewMainDiv").removeClass("disabled");
                     $("#userBodyMainDiv").removeClass("disabled");
                     $("#headerNav").removeClass("disabled");
+                    $("#randomProductsMainDiv").removeClass("disabled");
                     location.href = "./login.cfm"
                 }
                 else{
@@ -48,6 +50,8 @@ function logoutAlert(value){
         $("#productViewMainDiv").removeClass("disabled");
         $("#userBodyMainDiv").removeClass("disabled");
         $("#headerNav").removeClass("disabled");
+        $("#randomProductsMainDiv").removeClass("disabled");
+
     }
     return valid;
 }
@@ -81,7 +85,7 @@ function categoryAdd(ID){
                 $("#displayContent").css({"display":"none"});
                 $("#editingID").val(data.FLDCATEGORY_ID);
                 $("#categoryInput").val(data.FLDCATEGORYNAME);
-                return true
+                return true;
             }
         });
     }
@@ -162,19 +166,19 @@ function viewSubButton(ID){
 }
 
 function viewCategoryCommon(categoryName){
-    alert(categoryName)
     $.ajax({
         url : './Components/shoppingCart.cfc?method=viewCategory',
         type : 'post',
         success : function(response){
-            let categorySelect = $('#categoryDropdown');
-            let select = $("#addProductCategorySelect");
-            let data=JSON.parse(response);
+            var categorySelect = $('#categoryDropdown');
+            var select = $("#addProductCategorySelect");
+            var data=JSON.parse(response);
             for (let struct of data) {
                 if(struct.categoryName !=  categoryName){
-                    option = $('<option>', {value : struct.categoryId, text : struct.categoryName});
-                    categorySelect.append(option);
-                    select.append(option)
+                    optionOne = $('<option>', {value : struct.categoryId, text : struct.categoryName});
+                    optionTwo = $('<option>', {value : struct.categoryId, text : struct.categoryName});
+                    categorySelect.append(optionOne);
+                    select.append(optionTwo);
                 }
             }
         }
@@ -213,20 +217,36 @@ function editSubcategory(ID){
 
 function addSubCategory(ID){
     let viewId = ID.value;
-    $('#addSubcategoryHeading').text("Add Subcategory");
-    $("#addCategory").addClass("disabled");
-    $("#addSubcategoryDiv").css({"display":"flex"});
-    $("#viewSubcategory").css({"display":"none"});
-    $("#displayContent").css({"display":"none"});
-    $("#subCategorySubmit").val(viewId);
-    $("#addCategoryCloseValue").val(viewId);
+    $.ajax({
+        url:'./Components/shoppingCart.cfc?method=editCategory',
+        type: "post",
+        data:{
+            editId:viewId
+        },
+        success: function (response) {
+            let data = JSON.parse(response);
+            $('#addSubcategoryHeading').text("Add Subcategory");
+            $("#addCategory").addClass("disabled");
+            $("#addSubcategoryDiv").css({"display":"flex"});
+            $("#viewSubcategory").css({"display":"none"});
+            $("#displayContent").css({"display":"none"});
+            $("#subCategoryInput").val('');
+            $("#subCategorySubmit").val(viewId);
+            $("#addCategoryCloseValue").val(viewId);
+            let categorySelect = $('#categoryDropdown');
+            categorySelect.empty() 
+            let option = $('<option>', {value : data.FLDCATEGORY_ID, text : data.FLDCATEGORYNAME});
+            let categoryName = data.FLDCATEGORYNAME;
+            categorySelect.append(option)
+            let valid = viewCategoryCommon(data.FLDCATEGORYNAME);
+        }
+    })
 }
 
 function addSubcategorySubmit(ID){
     let subCategoryID = ID.value;
     let categoryId =  $("#categoryDropdown").val();
     let subcategoryName =  $("#subCategoryInput").val();
-    alert(categoryId)
     $.ajax({
         url : './Components/shoppingCart.cfc?method=insertSubcategory',
         type : 'post',
@@ -303,7 +323,6 @@ function addSubCategoryClose(){
 }
 
 function categoryDeleteButton(ID){
-    alert(ID.value)
     let selectedValue = ID.value;
     $("#alertDeleteBtn").val(selectedValue);
     $("#deleteConfirm").css({"display":"flex"})
@@ -389,8 +408,8 @@ function subcategoryViewButton(ID){
                                             </div>
                                             <div class="d-flex flex-column px-2">
                                                 <span class="productsNamespan px-2">${struct.productName}</span>
-                                                <span class="productsBrandspan fw-bold px-2">${struct.brandName}</span>
-                                                <span class="productsPricespan px-2">RS.${struct.price}</span>
+                                                <span class="productsBrandspan fw-bold px-2 mt-2">${struct.brandName}</span>
+                                                <span class="productsPricespan px-2 mt-2">RS.${struct.price}</span>
                                             </div>
                                             <div class="d-flex">
                                                 <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
@@ -423,7 +442,7 @@ function editImages(ID){
                                         <img src="Assets/uploadImages/${struct.imageFileName}" class="" width="80" height="80">
                                     </div>
                                     <div class="imageButtonDiv d-flex flex-column px-3">
-                                        <button type="button" id="" class="imageThumbBtn" value=${struct.imageId},${struct.imageFileName} onClick="setThumbnail(this)">Set Thumbnail</button>
+                                        <button type="button" id="" class="imageThumbBtn" value=${struct.imageId},${productId} onClick="setThumbnail(this)">Set Thumbnail</button>
                                         <button type="button" id="" class="imageDltBtn mt-2" value="tblProductImages,${struct.imageId}" onClick="categoryDeleteButton(this)">Delete</button>
                                     </div>
                                 </div>`
@@ -450,7 +469,6 @@ function setThumbnail(ID){
     let splitData=selectedValue.split(',');
     let ImageId=splitData[0];
     let productId=splitData[1]
-    alert(ImageId)
     $.ajax({
         url : './Components/shoppingCart.cfc?method=setThumbnail',
         type : 'post',
@@ -605,6 +623,7 @@ function addProduct(ID){
     let subCategoryName = splitData[2];
     let subCategoryId = splitData[3]
     let select = $("#addProductCategorySelect");
+    select.empty()
     let selectSub = $("#addProductSubcategorySelect");
     $("#addProductSubmit").css({"display":"flex"});
     $("#addProductImage").css({"display":"flex"});
@@ -621,7 +640,7 @@ function addProduct(ID){
     $("#addProductClose").val(subCategoryId);
     let valid = viewCategoryCommon(categoryName);
 
-    let subValid = viewSubcategory(categoryId, subCategoryName)
+    let subValid = viewSubcategoryCommon(categoryId, subCategoryName);
 
     let brandValid = viewBrandCommon()
     $('#productViewMainDiv').css({'display':'none'});

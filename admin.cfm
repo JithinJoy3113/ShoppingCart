@@ -3,7 +3,7 @@
         <form action = "" method = "post" id="loginForm" enctype = "multipart/form-data">
             <button type="button" class="addCategory mt-3 addButton" name="addBtn" id="addCategory" value=""  onclick="categoryAdd(this)">Add Category</button>   
             <div class="d-flex justify-content-center">
-                <div class="addCategoryDiv" id="addCategoryDiv">
+                <div class="addCategoryDiv mt-3" id="addCategoryDiv">
                     <div class="d-flex flex-column">
                         <div class="createCloseDiv d-flex justify-content-end">
                             <button type = "button" class = "createClose border-0" value = "" onclick="addCategoryClose(this)"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
@@ -24,7 +24,7 @@
 
                 <!--- view and add subcategory --->
 
-                <div class="addCategoryDiv" id="viewSubcategory">
+                <div class="addCategoryDiv mt-3" id="viewSubcategory">
                     <div class="d-flex flex-column">
                         <div class="createCloseDiv d-flex justify-content-end">
                             <button type="button" class="createClose border-0" value="" onclick="addCategoryClose(this)"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
@@ -150,7 +150,7 @@
 
                 </div>
             </div>
-            <div class="imagesUpdateDiv mt-4" id="imagesUpdateDiv">
+            <div class="imagesUpdateDiv mt-4 mx-auto" id="imagesUpdateDiv">
                 <div class="d-flex justify-content-end px-3 py-3">
                     <button type="button" class="createClose border-0" value="" onclick="imageEditClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                 </div>

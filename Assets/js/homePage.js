@@ -68,13 +68,11 @@ function filterValidate(){
 const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-    e.preventDefault();
-    const searchValue = searchInput.value.trim();
-    if (searchInput) {
-        const button = document.getElementById('myButton');
-        button.click();
-    } else {
-        alert('Please enter a search term!');
-    }
+        e.preventDefault();
+        const searchValue = searchInput.value.trim();
+        if (searchInput) {
+            const button = document.getElementById('myButton');
+            button.click();
+        } 
     }
 });

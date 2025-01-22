@@ -19,8 +19,9 @@
     color: black;
 }
 .navMenuDiv{
-    padding: 10px 20px;
+    padding: 10px 50px;
     border-bottom: 1px solid #6cdada;
+    background-color: white;
 }
 .categoryHeadDiv{
     font-size: 16px;
@@ -28,6 +29,7 @@
 }
 .randomProductsMainDiv{
     padding: 30px 50px;
+    width: 100%;
 }
 .subCategoryHeadDiv{
     font-size: 20px;
@@ -98,16 +100,10 @@ input:focus{
 .randomProducts:hover > .productDiscriptionsdiv > .productsNamespan {
     color: #0d9191;
 }
-.productsNamespan{
-    width: 180px;
-}
 .similarProductshead {
     font-weight: bold;
     padding: 20px;
     font-size: 22px;
-}
-.similarImage {
-    max-width: 150px;
 }
 .productbtn{
     color: black;

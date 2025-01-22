@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang = "en">
-    <head>
-        <meta charset = "UTF-8">
-        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
-        <title>Admin</title>
-        <link rel = "stylesheet" href = "Assets/css/bootstrap.min.css">
-        <link rel = "stylesheet" href = "Assets/css/style.css">
-        <link rel = "stylesheet" href = "Assets/css/homePage.css">
-        <link rel = "stylesheet" href = "Assets/css/product.css">
-    </head>
-    <body>
-        <cfoutput>
-            <div id = "adminBody" class = "adminBody d-flex flex-column justify-content-center align-items-center"> 
+    <cfoutput>
+        <head>
+            <meta charset = "UTF-8">
+            <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+            <link rel = "stylesheet" href = "Assets/css/bootstrap.min.css">
+            <link rel = "stylesheet" href = "Assets/css/style.css">
+            <link rel = "stylesheet" href = "Assets/css/homePage.css">
+            <link rel = "stylesheet" href = "Assets/css/product.css">
+            <cfif structKeyExists(session, "role")>
+                <title>#session.role#</title>
+            <cfelse>
+                <title>Cart</title>
+            </cfif>
+        </head>
+        <body>
+            <div class="topDiv">
                 <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4">
                     <div class = "d-flex align-items-center">
                         <form action="" method="post">
@@ -81,6 +85,8 @@
                         </div>
                     </div>
                 </cfif>
+            </div>
+            <div id = "adminBody" class = "adminBody d-flex flex-column align-items-center"> 
                 <div class="logoutConfirm mx-auto" id="logoutConfirm">
                     <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Logout Alert</span>
                     <div class="logoutMesage  d-flex flex-column justify-content-center">
@@ -89,5 +95,4 @@
                         <button class="alertCancelBtn mt-2" type="button" name="alertBtn" id="alertBtn" onClick="return logoutAlert('no')">Cancel</button>
                     </div>
                 </div>
-            </div>
         </cfoutput>

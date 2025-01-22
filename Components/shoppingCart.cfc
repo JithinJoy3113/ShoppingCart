@@ -743,11 +743,15 @@
                 I.fldImageFileName,
                 I.fldDefaultImage
             FROM tblProducts P
-            RIGHT JOIN
+            INNER JOIN
                 tblProductImages I ON P.fldProduct_ID = I.fldProductId
+            INNER JOIN
+                tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
             WHERE 
-                P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
+                <cfif arguments.search EQ "">
+                    P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
+                    AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
+                </cfif>
                 <cfif arguments.subCategoryId NEQ 0>
                     AND P.fldSubcategoryId = < cfqueryparam value ="#arguments.subCategoryId#" cfsqltype = "integer" > 
                 </cfif>
@@ -765,9 +769,13 @@
                     AND P.fldPrice <= < cfqueryparam value ="#arguments.max#" cfsqltype = "varchar" >
                 </cfif>
             <cfelseif arguments.search NEQ "">
-                AND P.fldProductName LIKE < cfqueryparam value ="%#arguments.search#%" cfsqltype = "varchar" >
-                OR P.fldDescription LIKE < cfqueryparam value ="%#arguments.search#%" cfsqltype = "varchar" >
-                AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
+                I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
+                AND (
+                P.fldProductName LIKE < cfqueryparam value = "%#arguments.search#%" cfsqltype = "varchar" >
+                OR P.fldDescription LIKE < cfqueryparam value = "%#arguments.search#%" cfsqltype = "varchar" >
+                OR S.fldSubcategoryName = < cfqueryparam value = #arguments.search# cfsqltype = "varchar" >
+                )
+                AND P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
             </cfif>
         </cfquery>
         <cfset local.dataArray = []>
