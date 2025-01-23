@@ -76,3 +76,103 @@ const searchInput = document.getElementById('searchInput');
         } 
     }
 });
+
+function viewMoreSubmit(string){
+    let str = string.value
+    let div = $('#viewHeight')
+    let btn = $('#viewMoreSubmit')
+    let input = $('#viewHidden').val();
+    if(str == "More" && input > 5){
+        div.removeClass('viewHeight');
+        btn.text('View Less');
+        btn.val('Less')
+        return true
+    }
+    else{
+        div.addClass('viewHeight');
+        btn.text('View More');
+        btn.val('More')
+        return true
+    }
+ }
+
+ function addCart(ID){
+    let productId = ID.value;
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=addToCart',
+        type : 'post',
+        data : {
+            productId : productId
+        },
+        success : function(response){
+            let data = JSON.parse(response);
+            if(!data){
+                location.href = `./login.cfm?productId=${productId}`
+            }
+            else{
+                location.href = './cart.cfm'
+            }
+        }
+    })
+ }
+
+ function updateQuantity(ID){
+    let btnData = ID.value.split(",")
+    let operation = btnData[0];
+    let cartId = btnData[1];
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=updateCart',
+        type : 'post',
+        data : {
+            cartId : cartId,
+            operation : operation
+        },
+        success : function(response){
+            let data = JSON.parse(response)
+            let totalAmount = 0
+            let totalTax = 0
+            for(let struct of data){
+                if(struct.cartId == cartId){
+                    $("#price"+cartId).text(struct.totalPrice)
+                    $("#tax"+cartId).text(struct.totalTax)
+                    $("#quantity"+cartId).text(struct.quantity)
+                }
+                totalAmount = totalAmount + struct.totalPrice
+                totalTax = totalTax + struct.totalTax
+            }
+            let cartAmount = totalAmount + totalTax
+            $("#cartOrderAmount").text("₹"+cartAmount)
+            $('#cartTotalAmount').text(totalAmount)
+            $("#cartTotalTax").text(totalTax)
+        }
+    })
+ }
+ function removeCartItem(ID){
+    let cartId = ID.value;
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=deleteCartItem',
+        type : 'post',
+        data : {
+            cartId : cartId
+        },
+        success : function(response){
+            let data = JSON.parse(response)
+            let totalAmount = 0
+            let totalTax = 0
+            for(let struct of data){
+                if(struct.cartId == cartId){
+                    $("#price"+cartId).text(struct.totalPrice)
+                    $("#tax"+cartId).text(struct.totalTax)
+                    $("#quantity"+cartId).text(struct.quantity)
+                }
+                totalAmount = totalAmount + struct.totalPrice
+                totalTax = totalTax + struct.totalTax
+            }
+            let cartAmount = totalAmount + totalTax
+            $("#cartOrderAmount").text("₹"+cartAmount)
+            $('#cartTotalAmount').text(totalAmount)
+            $("#cartTotalTax").text(totalTax)
+            $("#"+cartId).remove()
+        }
+    })
+ }

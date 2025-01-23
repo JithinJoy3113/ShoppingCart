@@ -29,7 +29,17 @@
                                         password = form.password,
                                         confirmPassword = form.confirmPassword
                                         )>
+        
         <cfif local.result>
+            <cfif structKeyExists(URL, "productId")>
+                <cfset local.login = application.obj.userLogin(
+                                                userName = form.userName,
+                                                password = form.password )>
+                <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
+                <cfif local.cart>
+                    <cflocation url="cart.cfm">
+                </cfif>
+            </cfif>
             <span class="text-success fw-bold">SignUp Completed</span>
         <cfelse>
             <span class="text-danger fw-bold">User Name already exists</span>

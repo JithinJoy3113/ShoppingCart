@@ -861,6 +861,112 @@
 
     </cffunction>
 
+    <cffunction  name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
+        <cfargument  name = "productId" type = "integer" required = "true">
+        <cfif structKeyExists(session, "role")>
+            <cfquery name = "local.fetchCart" datasource = "cartDatasource">
+                SELECT 1 
+                FROM
+                    tblCart
+                WHERE 
+                    fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+                    AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+            </cfquery>
+            <cfif queryRecordCount(local.fetchCart)>
+                <cfreturn false>
+            <cfelse>
+                <cfquery name = "local.insertCart">
+                    INSERT INTO
+                        tblCart(
+                            fldProductId,
+                            fldUserId,
+                            fldQuantity
+                        ) 
+                    VALUES(
+                        <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
+                        <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+                        <cfqueryparam value = 1 cfsqltype = "integer">
+                    )
+                </cfquery>
+                <cfreturn true>
+            </cfif>
+        <cfelse>
+            <cfreturn false>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name = "cartItems" returnType = "array">
+        <cfargument  name = "cartId" default = 0 type = "integer">
+        <cfquery name = "local.fetchCart" datasource = "cartDatasource">
+            SELECT
+                C.fldCartItem_ID,
+                C.fldProductId,
+                C.fldQuantity,
+                P.fldProductName,
+                P.fldPrice,
+                P.fldTax,
+                (C.fldQuantity * P.fldPrice) AS totalPrice,
+                (C.fldQuantity * P.fldTax) AS totalTax,
+                P.fldTax,
+                I.fldImageFileName
+            FROM
+                tblCart C
+            INNER JOIN 
+                tblProducts P ON P.fldProduct_ID = C.fldProductId
+            INNER JOIN
+                tblProductImages I ON P.fldProduct_ID = I.fldProductId
+            WHERE
+                C.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+                AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+        </cfquery>
+        <cfset local.dataArray = []>
+        <cfloop query="local.fetchCart">
+            <cfset local.data = {}>
+            <cfset local.data['cartId'] = local.fetchCart.fldCartItem_ID>
+            <cfset local.data['productId'] = local.fetchCart.fldProductId>
+            <cfset local.data['quantity'] = local.fetchCart.fldQuantity>
+            <cfset local.data['productName'] = local.fetchCart.fldProductName>
+            <cfset local.data['totalPrice'] = local.fetchCart.totalPrice>
+            <cfset local.data['totalTax'] = local.fetchCart.totalTax>
+            <cfset local.data['price'] = local.fetchCart.fldPrice>
+            <cfset local.data['tax'] = local.fetchCart.fldTax>
+            <cfset local.data['file'] = local.fetchCart.fldImageFileName>
+            <cfset arrayAppend(local.dataArray, local.data)>
+        </cfloop>
+        <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "updateCart" returnType="array" returnFormat = "json" access = "remote">
+        <cfargument  name = "cartId" required = "true" type = "integer">
+        <cfargument  name = "operation" required = "true" type = "string">
+        <cfquery name = "local.updateCart" datasource = "cartDatasource">
+            UPDATE 
+                tblCart
+            SET
+                <cfif arguments.operation EQ "Plus">
+                    fldQuantity = fldQuantity + 1
+                <cfelse>
+                    fldQuantity = fldQuantity - 1
+                </cfif>
+            WHERE
+                fldCartItem_ID = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
+        </cfquery>
+        <cfset local.dataArray = cartItems()>
+        <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "deleteCartItem" returnType="array" returnFormat = "json" access = "remote">
+        <cfargument  name = "cartId" required = "true" type = "integer">
+        <cfquery name = "local.deleteCartItem">
+            DELETE FROM
+                tblCart
+            WHERE 
+                fldCartItem_ID = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
+        </cfquery>
+        <cfset local.dataArray = cartItems()>
+        <cfreturn local.dataArray>
+    </cffunction>
+
 </cfcomponent>
 
 

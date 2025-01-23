@@ -44,6 +44,19 @@
     display: flex;
     flex-wrap: wrap;
 }
+.viewHeight{
+    max-height: 340px;
+    overflow: hidden;
+}
+.viewMoreSubmit{
+    border: none;
+    color: #087474;
+    border-radius: 20px;
+    padding: 5px 5px;
+    background-color: #dbd8d8;
+    box-shadow: 1px 1px 3px 3px  #8aeeee;
+
+}
 
 .searchDiv{
     width: 250px;

@@ -26,7 +26,14 @@
                 <cfelseif session.roleId EQ 1>
                     <cflocation  url="admin.cfm" addtoken="no">
                 <cfelseif session.roleId EQ 2>
-                    <cflocation  url="homePage.cfm" addtoken="no">
+                    <cfif structKeyExists(url, "productId")>
+                        <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
+                        <cfif local.cart>
+                            <cflocation  url="cart.cfm">
+                        </cfif>
+                    <cfelse>
+                        <cflocation  url="homePage.cfm" addtoken="no">
+                    </cfif>
                 </cfif>
             </cfif>
         </div>

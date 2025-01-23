@@ -60,10 +60,12 @@
             <div class="subCategoryHeadDiv">
                 #local.subCategoryName#
             </div>
-            <div class="randomProductsDiv pt-3">
+            <div class="randomProductsDiv pt-3 viewHeight" id="viewHeight">
+                <cfset local.count = 0>
                 <cfloop array="#local.randomProducts#" item="item">
                     <a href="product.cfm?productId=#item.productId#&subcategoryId=#item.subcategoryId#" class ="productbtn text-decoration-none">
-                        <div class="randomProducts d-flex flex-column ms-4">
+                        <div class="randomProducts d-flex flex-column ms-4 mt-3">
+                            <cfset local.count += 1>
                             <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                             <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
                                 <span class="productsNamespan mx-auto">#item.productName#</span>
@@ -78,5 +80,9 @@
                 </cfloop>
             </div>
         </cfif>
+        <input type = "hidden" id="viewHidden" value = "#local.count#">
+        <div class = "viewMoreDiv d-flex justify-content-center mt-4" id = "viewMoreDiv">
+            <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this)">View More</button>
+        </div>
     </div>
 </cfoutput>

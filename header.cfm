@@ -8,6 +8,7 @@
             <link rel = "stylesheet" href = "Assets/css/style.css">
             <link rel = "stylesheet" href = "Assets/css/homePage.css">
             <link rel = "stylesheet" href = "Assets/css/product.css">
+            <link rel = "stylesheet" href = "Assets/css/cart.css">
             <cfif structKeyExists(session, "role")>
                 <title>#session.role#</title>
             <cfelse>
@@ -49,7 +50,7 @@
                     <div class="navButtonDiv d-flex align-items-center">
                         <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1)  AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
                             <a href="" class="menuLink text-white text-decoration-none fw-bold me-4">Profile</a>
-                            <a href="" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
+                            <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
                             <div class="cartNumber">
                                 4
                             </div>
@@ -57,7 +58,11 @@
                         <cfif structKeyExists(session, "role")>
                             <button class = "logoutBtn fw-bold" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
                         <cfelseif find("login.cfm", CGI.SCRIPT_NAME)>
-                            <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            <cfif structKeyExists(URL, "productId")>
+                                <a href="userSignUp.cfm?productId=#URL.productId#" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            <cfelse>
+                                <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            </cfif>
                         <cfelseif find("userSignUp.cfm", CGI.SCRIPT_NAME) OR (NOT structKeyExists(session, "role"))>
                             <a href="login.cfm" class = "logoutBtn fw-bold text-decoration-none">Login</a>
                         </cfif>
