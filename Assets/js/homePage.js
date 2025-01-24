@@ -129,6 +129,7 @@ function viewMoreSubmit(string){
         },
         success : function(response){
             let data = JSON.parse(response)
+            let dataLen = data.length
             let totalAmount = 0
             let totalTax = 0
             for(let struct of data){
@@ -144,6 +145,7 @@ function viewMoreSubmit(string){
             $("#cartOrderAmount").text("₹"+cartAmount)
             $('#cartTotalAmount').text(totalAmount)
             $("#cartTotalTax").text(totalTax)
+            $("#cartNumber").text(dataLen)
         }
     })
  }
@@ -157,6 +159,7 @@ function viewMoreSubmit(string){
         },
         success : function(response){
             let data = JSON.parse(response)
+            let dataLen = data.length
             let totalAmount = 0
             let totalTax = 0
             for(let struct of data){
@@ -173,6 +176,44 @@ function viewMoreSubmit(string){
             $('#cartTotalAmount').text(totalAmount)
             $("#cartTotalTax").text(totalTax)
             $("#"+cartId).remove()
+            $("#cartNumber").text(dataLen)
         }
     })
  }
+ function editProfile(button){
+
+    if(button.value == 'Cancel'){
+        $(button).text('Edit')
+        $(button).val('')
+        $("#profileSave").addClass('d-none');
+        $('.profileInput').attr('disabled','disabled');
+    }
+    else{
+        $(button).text('Cancel')
+        $(button).val('Cancel')
+        $("#profileSave").removeClass('d-none');
+        $('.profileInput').removeAttr('disabled');
+    }
+}
+function saveProfile(ID){
+    let userId = ID.value;
+    let formData = new FormData($('#profileForm')[0]);
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=updateProfile',
+        type : 'post',
+        data : formData,
+        processData: false,
+        contentType: false,
+        success : function(response){
+            let data = JSON.parse(response)
+            $("#profileFirstName").val(data.firstName);
+            $('#profileLastName').val(data.lastName);
+            $('#profilePhone').val(data.phone);
+            $('#profileEmail').val(data.email);
+            $("#profileSave").addClass('d-none');
+            $('.profileInput').attr('disabled','disabled');
+            $('#profileEditBtn').val('').text('Edit')
+            $('#profileFullNameSpan').text(data.firstName+' '+data.lastName)
+        }
+    })
+}

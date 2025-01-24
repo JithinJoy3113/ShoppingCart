@@ -17,6 +17,9 @@ body {
     width: 64px;
     height: 64px;
 }
+.productImagesdivRight {
+    width: 500px;
+}
 .productButtondiv {
     margin-left: 64px;
     margin-top: 12px;
@@ -419,9 +422,11 @@ body {
 .similarProductsrow {
     overflow-x: scroll;
     white-space: nowrap;
+    width: 1300px;
 }
 .bottomContentsdiv {
     padding: 25px;
+    margin-top: 85px;
 }
 .similarProductsrow::-webkit-scrollbar {
     display: none;
@@ -475,5 +480,5 @@ body {
 }
 .mainImg{
     width : 280px;
-    height: 300px;
+    height: 350px;
 }

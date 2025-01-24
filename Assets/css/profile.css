@@ -1,0 +1,43 @@
+.personalBtn{
+    font-size: 13px;
+    padding: 7px 20px;
+}
+.personalBtn:hover,.profileSideNav:hover{
+    color: #2874f0;
+}
+.profileEditBtn{
+    color: #2874f0;
+    font-size: 13px;
+    border: none;
+}
+.addAddressBtn{
+    color: #2874f0;
+    font-size: 14px;
+    font-weight: 500;
+}
+.profileLeftDiv,.profileRightDiv{
+    padding: 25px 35px;
+}
+.profileNameDiv{
+    padding: 10px 100px 10px 40px;
+    box-shadow: 5px 10px 18px #c5bebe;
+}
+.hello{
+    font-size: 13px;
+}
+.myOrdersDiv{
+    box-shadow: 5px 10px 18px #c5bebe;
+    padding: 20px 45px;
+}
+.profileSideNav,.accountSetting,.personalInformationHead{
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+}
+.profileLabel{
+    font-size: 14px;
+    font-weight: 600;
+}
+.personalInformationDiv{
+    box-shadow: 5px 10px 18px #c5bebe;
+}

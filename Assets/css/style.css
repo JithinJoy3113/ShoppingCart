@@ -150,8 +150,9 @@
     box-shadow: 1px 1px 3px 3px rgb(231, 103, 103);
     display:none;
 }
-#userBodyMainDiv{
+.userBodyMainDiv{
     position: relative;
+    width: 100%;
 }
 .logourtAlertHead{
     background-color: rgb(226, 62, 62);

@@ -3,10 +3,10 @@
     <cfset local.subCategoryId = URL.subcategoryId>
     <cfset local.file = "">
     <div class="productBodydiv" id="randomProductsMainDiv">
-            <div class="productImgMaindiv d-flex flex-column flex-md-row">
+            <div class="productImgMaindiv d-flex">
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
-                        <div class="productImagesdivLeft d-none d-md-flex flex-md-column">
+                        <div class="productImagesdivLeft d-flex flex-column">
                             <cfset local.productDetails = application.obj.displayProduct(productId = local.productId )>
                             <cfset local.imageResult = application.obj.viewImages(productId = local.productId)>
                             <cfloop array="#local.imageResult#" item="item">
@@ -18,8 +18,8 @@
                                 </cfif>
                             </cfloop>
                         </div>
-                        <div class="productImagesdivRight ps-2 pt-3">
-                            <div class="productMainimg ms-md-5">
+                        <div class="productImagesdivRight ps-2 pt-3 d-flex justify-content-center">
+                            <div class="productMainimg d-flex justify-content-center">
                                 <img src="Assets/uploadImages/#local.file#" data-value = "Assets/uploadImages/#local.file#" class="mainImg" alt="" id="mainImg">
                             </div>
                         </div>
@@ -27,9 +27,20 @@
                     <form method = "post" action = "">
                         <div class="productButtondiv d-flex ">
                             <div class="cartButtondiv w-50 me-1">
-                                <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
-                                    <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
-                                </button>
+                                <cfif structKeyExists(session, "role")>
+                                    <cfset local.cart = application.obj.cartItems(productId = local.productDetails.productId)>
+                                    <cfif arrayLen(local.cart)>
+                                        <a href="cart.cfm" class="cartBtn text-decoration-none text-white d-flex justify-content-center">GO TO CART</a>
+                                    <cfelse>
+                                        <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
+                                            <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
+                                        </button>
+                                    </cfif>
+                                <cfelse>
+                                    <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
+                                        <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
+                                    </button>
+                                </cfif>
                             </div>
                             <div class="buyButtondiv w-50 ms-1">
                                 <button  type = "submit" class="buy border-0 text-white" value = "#local.productDetails.productId#" name="buyBtn">
@@ -76,9 +87,7 @@
                         </div>
                         <div class="shareDiv d-none d-md-flex ">
                             <div class="checkDiv">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="shareIcon">
-                                    <path d="M14.78 5.883L9.032 0v3.362C3.284 4.202.822 8.404 0 12.606 2.053 9.666 4.927 8.32 9.032 8.32v3.446l5.748-5.883z" class="g9gS7K" fill-rule="evenodd"></path>
-                                </svg>
+                               <img src="Assets/Images/share.png" alt="" width="18" height="18">
                                 <span class="share">Share</span>
                             </div>
                         </div>
@@ -193,7 +202,7 @@
                         <span class="colorSpan">Seller</span>
                         <div class="sellerDetailsdiv d-flex flex-column">
                             <div class="sellerName d-flex">
-                                <a href="" class="checkSpan text-decoration-none ms-3 me-2">BUZZINDIA</a>
+                                <a href="" class="checkSpan text-decoration-none ms-3 me-2">#local.productDetails.brand#</a>
                                 <!--- <img src="assets/images/sellerrating.png" alt=""> --->
                             </div>
                             <ul class="highlightUl">
@@ -514,7 +523,7 @@
                     </div>
                 </div>
             </div>
-            <div class="similarProductsdiv d-flex flex-column mb-5 mb-lg-0">
+            <div class="similarProductsdiv d-flex flex-column">
                 <span class="similarProductshead mt-4">Similar Products</span>
                 <div class="similarProductsrow d-flex">
                     <cfset local.similarProducts = application.obj.randomProducts(subCategoryId = local.subcategoryId)>

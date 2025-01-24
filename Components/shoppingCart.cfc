@@ -87,10 +87,13 @@
             </cfquery>
             <cfif queryRecordCount(local.selectUser)>
                 <cfif (local.selectUser.fldHashedPassword EQ Hash(arguments.password & local.selectUser.fldUserSaltString,"SHA-256"))>
-                    <cfset session.userName = local.selectUser.fldFirstName & local.selectUser.fldLastName>
+                    <cfset session.firstName = local.selectUser.fldFirstName>
+                    <cfset session.lastName = local.selectUser.fldLastName>
                     <cfset session.role = local.selectUser.fldRoleName> 
                     <cfset session.userId = local.selectUser.fldUser_ID>
                     <cfset session.roleId = local.selectUser.fldRole_ID>
+                    <cfset session.userMail = local.selectUser.fldEmail>
+                    <cfset session.phone = local.selectUser.fldPhoneNumber>
                     <cfset session.login = true>
                 <cfelse>
                     <cfset local.result['User'] = "Invalid UserName/Password">
@@ -897,12 +900,14 @@
 
     <cffunction  name = "cartItems" returnType = "array">
         <cfargument  name = "cartId" default = 0 type = "integer">
+        <cfargument  name = "productId" default = 0 required = "false" type = "integer">
         <cfquery name = "local.fetchCart" datasource = "cartDatasource">
             SELECT
                 C.fldCartItem_ID,
                 C.fldProductId,
                 C.fldQuantity,
                 P.fldProductName,
+                P.fldSubCategoryId,
                 P.fldPrice,
                 P.fldTax,
                 (C.fldQuantity * P.fldPrice) AS totalPrice,
@@ -918,6 +923,9 @@
             WHERE
                 C.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
                 AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+                <cfif arguments.productId NEQ 0>
+                    AND C.fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+                </cfif>
         </cfquery>
         <cfset local.dataArray = []>
         <cfloop query="local.fetchCart">
@@ -926,6 +934,7 @@
             <cfset local.data['productId'] = local.fetchCart.fldProductId>
             <cfset local.data['quantity'] = local.fetchCart.fldQuantity>
             <cfset local.data['productName'] = local.fetchCart.fldProductName>
+            <cfset local.data['subcategoryId'] = local.fetchCart.fldSubCategoryId>
             <cfset local.data['totalPrice'] = local.fetchCart.totalPrice>
             <cfset local.data['totalTax'] = local.fetchCart.totalTax>
             <cfset local.data['price'] = local.fetchCart.fldPrice>
@@ -965,6 +974,35 @@
         </cfquery>
         <cfset local.dataArray = cartItems()>
         <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "updateProfile" returnType = "any" returnFormat = "json" access = "remote">
+        <cfargument  name = "profileFirstName" required = "true" type = "string">
+        <cfargument  name = "profileLastName" required = "true" type = "string">
+        <cfargument  name = "profileEmail" required = "true" type = "string">
+        <cfargument  name = "profilePhone" required="true" type = "string">
+        <cfquery name = "local.updateUser" datasource = "cartDatasource" result = "local.updateResult">
+            UPDATE
+                tblUser
+            SET
+                fldFirstName = <cfqueryparam value = "#arguments.profileFirstName#" cfsqltype = "varchar">,
+                fldLastName = <cfqueryparam value = "#arguments.profileLastName#" cfsqltype = "varchar">,
+                fldPhoneNumber = <cfqueryparam value = "#arguments.profilePhone#" cfsqltype = "varchar">,
+                fldEmail = <cfqueryparam value = "#arguments.profileEmail#" cfsqltype = "varchar">,
+                fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+            WHERE
+                fldUser_ID = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+        </cfquery>
+        <cfset local.jsonData = {}>
+        <cfset local.jsonData['firstName'] = local.updateResult.SQLPARAMETERS[1]>
+        <cfset local.jsonData['lastName'] = local.updateResult.SQLPARAMETERS[2]>
+        <cfset local.jsonData['phone'] = local.updateResult.SQLPARAMETERS[3]>
+        <cfset local.jsonData['email'] = local.updateResult.SQLPARAMETERS[4]>
+        <cfset session.firstName = local.updateResult.SQLPARAMETERS[1]>
+        <cfset session.lastName = local.updateResult.SQLPARAMETERS[2]>
+        <cfset session.phone = local.updateResult.SQLPARAMETERS[3]>
+        <cfset session.userMail = local.updateResult.SQLPARAMETERS[4]>
+        <cfreturn local.jsonData>
     </cffunction>
 
 </cfcomponent>

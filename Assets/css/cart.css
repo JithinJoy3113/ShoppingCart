@@ -1,60 +1,5 @@
 *{
-	font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;	
-}
-
-.header{
-	height:56px;
-    background:#2874f0;
-    position:sticky;
-    top:0;
-    z-index:1;
-}
-.spaceDiv{
-    height:100%;
-    min-width:124px;
-}
-.cartImageDiv{
-    min-width:137px;
-}
-.imageDiv{
-	line-height:1.4;
-}
-.exploreLink{
-	font-size:11px;
-}
-.plusLink{
- 	color:#ffe500;      
-}
-.searchDiv{
-    min-width:304px;
-    max-width:561px;
-    width:100%;
-}
-.searchBarDiv{
-    width:100%;
-    height:36px;
-}
-.searchBar{
-	width:100%;
-    height:36px;
-    font-size:14px;
-}
-.searchButton{
-	height:36px;
-}
-.loginDiv{
-    margin-left:22%;
-	width:100%;
-    max-width:150px;
-}
-.myAccount{
-	font-weight:bold;
-}
-.cartDiv{
-	min-width:80px;
-}
-.bodyMaindiv {
-    background-color:#d8d8d89e;
+	font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
 }
 .bodyContents{
 	padding:20px 50px;
@@ -62,13 +7,25 @@
 }
 .topPincodediv{
 	padding: 13px 16px;
-    background:white;
+    background:rgb(238, 236, 236);
     width:100%;
     max-width:832px;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.2);
+    box-shadow: 5px 10px 18px #c5bebe;
 }
 .bodyLeftdiv{
 	max-width:832px;
+    overflow-y: scroll;
+    position: relative;
+}
+.scroll{
+    position: absolute;
+}
+.placeOrderdiv{
+	padding: 13px 22px;
+    position: sticky;
+    bottom: 0;
+    background:white;
+    height: 80px;
 }
 .priceHead{
 	color:#878787;
@@ -87,7 +44,7 @@
     background-color:#fff;
     border-radius:4px;
     padding:7px 16px;
-    color:#2874f0;
+    color: #0b7777;
     cursor:pointer;
     font-weight:bold;
     font-size:13px;
@@ -101,12 +58,6 @@
 }
 .priceMaindiv{
 	padding: 0 24px;
-}
-.footerFont{
-	color:white;
-    text-decoration:none;
-    font-size:12px;
-    font-weight:bold;
 }
 .price{
 	margin: 10px 0;
@@ -142,9 +93,6 @@
 	color:#878787;
     font-size:13px;
 }
-.stock{
-	font-size:20px;
-}
 .removeDiv{
     padding-left: 7px;
     padding-top:10px;
@@ -156,12 +104,6 @@
 	font-size: 15px;
     font-weight: bold;
 }
-.placeOrderdiv{
-	padding: 16px 22px;
-    position:sticky;
-    bottom:0px;
-    background:white;
-}
 .orderButton{
  	background-color: #0d9191;
     color:white;
@@ -171,19 +113,8 @@
     padding: 16px 30px;
     min-width: 250px;
     border-radius:2px;
-}
-.offerPrice{
-	font-size:18px;
-    font-weight:bold;
-}
-.offPercent,.offer{
-	color:#388e3c;
-    font-size:14px;
-	font-weight:bold;
-}
-.returnLink{
-	padding: 0 5px;
-    border-right: 1px solid #878787;
+    position : absolute;
+    top: 0;
 }
 .amount,.number{
     font-size: 15px;

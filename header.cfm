@@ -9,6 +9,7 @@
             <link rel = "stylesheet" href = "Assets/css/homePage.css">
             <link rel = "stylesheet" href = "Assets/css/product.css">
             <link rel = "stylesheet" href = "Assets/css/cart.css">
+            <link rel = "stylesheet" href = "Assets/css/profile.css">
             <cfif structKeyExists(session, "role")>
                 <title>#session.role#</title>
             <cfelse>
@@ -49,10 +50,14 @@
                     </cfif>
                     <div class="navButtonDiv d-flex align-items-center">
                         <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1)  AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
-                            <a href="" class="menuLink text-white text-decoration-none fw-bold me-4">Profile</a>
+                            <a href="profile.cfm" class="menuLink text-white text-decoration-none fw-bold me-4">Profile</a>
                             <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
-                            <div class="cartNumber">
-                                4
+                            <div class="cartNumber" id="cartNumber">
+                                <cfif structKeyExists(session, "role")>
+                                    <cfset local.cart = application.obj.cartItems()>
+                                    <cfset local.items = arrayLen((local.cart))>
+                                </cfif>
+                                #local.items#
                             </div>
                         </cfif>
                         <cfif structKeyExists(session, "role")>

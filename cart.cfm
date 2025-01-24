@@ -21,7 +21,7 @@
                                 <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
                                 <div class="detailsDiv">
                                     <div class="itemName d-flex flex-column">
-                                        <a href="" class="nameLink text-decoration-none">#item.productName#</a>
+                                        <a href="product.cfm?productId=#item.productId#&subcategoryId=#item.subcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
                                     </div>
                                     <!--- <div class="sizeDiv">
                                         <span class="sizeSpan">Size: 10,Black , 10</span>
