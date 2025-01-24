@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang = "en">
-    <head>
-        <meta charset = "UTF-8">
-        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
-        <title>Admin</title>
-        <link rel = "stylesheet" href = "Assets/css/bootstrap.min.css">
-        <link rel = "stylesheet" href = "Assets/css/style.css">
-        <link rel = "stylesheet" href = "Assets/css/homePage.css">
-        <link rel = "stylesheet" href = "Assets/css/product.css">
-    </head>
-    <body>
-        <cfoutput>
-            <div id = "adminBody" class = "adminBody d-flex flex-column justify-content-center align-items-center"> 
+    <cfoutput>
+        <head>
+            <meta charset = "UTF-8">
+            <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+            <link rel = "stylesheet" href = "Assets/css/bootstrap.min.css">
+            <link rel = "stylesheet" href = "Assets/css/style.css">
+            <link rel = "stylesheet" href = "Assets/css/homePage.css">
+            <link rel = "stylesheet" href = "Assets/css/product.css">
+            <link rel = "stylesheet" href = "Assets/css/cart.css">
+            <link rel = "stylesheet" href = "Assets/css/profile.css">
+            <cfif structKeyExists(session, "role")>
+                <title>#session.role#</title>
+            <cfelse>
+                <title>Cart</title>
+            </cfif>
+        </head>
+        <body>
+            <div class="topDiv">
                 <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4">
                     <div class = "d-flex align-items-center">
                         <form action="" method="post">
@@ -44,16 +50,24 @@
                     </cfif>
                     <div class="navButtonDiv d-flex align-items-center">
                         <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1)  AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
-                            <a href="" class="menuLink text-white text-decoration-none fw-bold me-4">Profile</a>
-                            <a href="" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
-                            <div class="cartNumber">
-                                4
+                            <a href="profile.cfm" class="menuLink text-white text-decoration-none fw-bold me-4">Profile</a>
+                            <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
+                            <div class="cartNumber" id="cartNumber">
+                                <cfif structKeyExists(session, "role")>
+                                    <cfset local.cart = application.obj.cartItems()>
+                                    <cfset local.items = arrayLen((local.cart))>
+                                </cfif>
+                                #local.items#
                             </div>
                         </cfif>
                         <cfif structKeyExists(session, "role")>
                             <button class = "logoutBtn fw-bold" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
                         <cfelseif find("login.cfm", CGI.SCRIPT_NAME)>
-                            <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            <cfif structKeyExists(URL, "productId")>
+                                <a href="userSignUp.cfm?productId=#URL.productId#" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            <cfelse>
+                                <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            </cfif>
                         <cfelseif find("userSignUp.cfm", CGI.SCRIPT_NAME) OR (NOT structKeyExists(session, "role"))>
                             <a href="login.cfm" class = "logoutBtn fw-bold text-decoration-none">Login</a>
                         </cfif>
@@ -81,6 +95,8 @@
                         </div>
                     </div>
                 </cfif>
+            </div>
+            <div id = "adminBody" class = "adminBody d-flex flex-column align-items-center"> 
                 <div class="logoutConfirm mx-auto" id="logoutConfirm">
                     <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Logout Alert</span>
                     <div class="logoutMesage  d-flex flex-column justify-content-center">
@@ -89,5 +105,4 @@
                         <button class="alertCancelBtn mt-2" type="button" name="alertBtn" id="alertBtn" onClick="return logoutAlert('no')">Cancel</button>
                     </div>
                 </div>
-            </div>
         </cfoutput>

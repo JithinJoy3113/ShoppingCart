@@ -19,15 +19,17 @@
     color: black;
 }
 .navMenuDiv{
-    padding: 10px 20px;
+    padding: 10px 50px;
     border-bottom: 1px solid #6cdada;
+    background-color: white;
 }
 .categoryHeadDiv{
     font-size: 16px;
     font-weight: 600;
 }
-.userBodyMainDiv,.randomProductsMainDiv{
-    padding: 30px 30px;
+.randomProductsMainDiv{
+    padding: 30px 50px;
+    width: 100%;
 }
 .subCategoryHeadDiv{
     font-size: 20px;
@@ -36,11 +38,24 @@
 }
 .randumHead{
     font-weight: bold;
-    font-size: 20px;
+    font-size: 30px;
 }
 .randomProductsDiv{
     display: flex;
     flex-wrap: wrap;
+}
+.viewHeight{
+    max-height: 340px;
+    overflow: hidden;
+}
+.viewMoreSubmit{
+    border: none;
+    color: #087474;
+    border-radius: 20px;
+    padding: 5px 5px;
+    background-color: #dbd8d8;
+    box-shadow: 1px 1px 3px 3px  #8aeeee;
+
 }
 
 .searchDiv{
@@ -98,16 +113,10 @@ input:focus{
 .randomProducts:hover > .productDiscriptionsdiv > .productsNamespan {
     color: #0d9191;
 }
-.productsNamespan{
-    width: 180px;
-}
 .similarProductshead {
     font-weight: bold;
     padding: 20px;
     font-size: 22px;
-}
-.similarImage {
-    max-width: 150px;
 }
 .productbtn{
     color: black;
