@@ -981,28 +981,114 @@
         <cfargument  name = "profileLastName" required = "true" type = "string">
         <cfargument  name = "profileEmail" required = "true" type = "string">
         <cfargument  name = "profilePhone" required="true" type = "string">
-        <cfquery name = "local.updateUser" datasource = "cartDatasource" result = "local.updateResult">
-            UPDATE
+        <cfquery name = "local.selectUser" datasource = "cartDatasource">
+            SELECT
+                fldEmail,
+                fldPhoneNumber
+            FROM 
                 tblUser
-            SET
-                fldFirstName = <cfqueryparam value = "#arguments.profileFirstName#" cfsqltype = "varchar">,
-                fldLastName = <cfqueryparam value = "#arguments.profileLastName#" cfsqltype = "varchar">,
-                fldPhoneNumber = <cfqueryparam value = "#arguments.profilePhone#" cfsqltype = "varchar">,
-                fldEmail = <cfqueryparam value = "#arguments.profileEmail#" cfsqltype = "varchar">,
-                fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
             WHERE
-                fldUser_ID = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+                fldEmail = <cfqueryparam value = '#arguments.profileEmail#' cfsqltype = 'varchar'>
+                OR fldPhoneNumber = <cfqueryparam value = '#arguments.profilePhone#' cfsqltype = 'varchar'> 
+                AND NOT fldUser_ID = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
         </cfquery>
-        <cfset local.jsonData = {}>
-        <cfset local.jsonData['firstName'] = local.updateResult.SQLPARAMETERS[1]>
-        <cfset local.jsonData['lastName'] = local.updateResult.SQLPARAMETERS[2]>
-        <cfset local.jsonData['phone'] = local.updateResult.SQLPARAMETERS[3]>
-        <cfset local.jsonData['email'] = local.updateResult.SQLPARAMETERS[4]>
-        <cfset session.firstName = local.updateResult.SQLPARAMETERS[1]>
-        <cfset session.lastName = local.updateResult.SQLPARAMETERS[2]>
-        <cfset session.phone = local.updateResult.SQLPARAMETERS[3]>
-        <cfset session.userMail = local.updateResult.SQLPARAMETERS[4]>
-        <cfreturn local.jsonData>
+        <cfif queryRecordCount(local.selectUser)>
+            <cfreturn false>
+        <cfelse>
+            <cfquery name = "local.updateUser" datasource = "cartDatasource" result = "local.updateResult">
+                UPDATE
+                    tblUser
+                SET
+                    fldFirstName = <cfqueryparam value = "#arguments.profileFirstName#" cfsqltype = "varchar">,
+                    fldLastName = <cfqueryparam value = "#arguments.profileLastName#" cfsqltype = "varchar">,
+                    fldPhoneNumber = <cfqueryparam value = "#arguments.profilePhone#" cfsqltype = "varchar">,
+                    fldEmail = <cfqueryparam value = "#arguments.profileEmail#" cfsqltype = "varchar">,
+                    fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+                WHERE
+                    fldUser_ID = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+            </cfquery>
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['firstName'] = local.updateResult.SQLPARAMETERS[1]>
+            <cfset local.jsonData['lastName'] = local.updateResult.SQLPARAMETERS[2]>
+            <cfset local.jsonData['phone'] = local.updateResult.SQLPARAMETERS[3]>
+            <cfset local.jsonData['email'] = local.updateResult.SQLPARAMETERS[4]>
+            <cfset session.firstName = local.updateResult.SQLPARAMETERS[1]>
+            <cfset session.lastName = local.updateResult.SQLPARAMETERS[2]>
+            <cfset session.phone = local.updateResult.SQLPARAMETERS[3]>
+            <cfset session.userMail = local.updateResult.SQLPARAMETERS[4]>
+            <cfreturn local.jsonData>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name = "addAddress" access = "remote" returnType = "any" returnFormat = "json">
+        <cfargument  name = "firstName" type = "string" required = "true">
+        <cfargument  name = "lastName" type = "string" required = "true">
+        <cfargument  name = "addressOne" type = "string" required = "true">
+        <cfargument  name = "addressTwo" type = "string" required = "true">
+        <cfargument  name = "state" type = "string" required = "true">
+        <cfargument  name = "city" type = "string" required = "true">
+        <cfargument  name = "pincode" type = "string" required = "true">
+        <cfargument  name = "phone" type = "string" required = "true">
+        <cfquery name = "local.city" datasource = "cartDatasource">
+            INSERT INTO
+                tblAddress(
+                    fldUserId,
+                    fldFirstName,
+                    fldLastName,
+                    fldAddressLine1,
+                    fldAddressLine2,
+                    fldState,
+                    fldCity,
+                    fldPincode,
+                    fldPhoneNumber
+                )
+            VALUES(
+                <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+                <cfqueryparam value = "#arguments.firstName#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.lastName#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.addressOne#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.addressTwo#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.state#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.city#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.pincode#" cfsqltype = "varchar">,
+                <cfqueryparam value = "#arguments.phone#" cfsqltype = "varchar">
+            )
+        </cfquery>
+        <cfreturn true>
+    </cffunction>
+
+    <cffunction  name = "fetchAddress" returnType = "array" >
+        <cfquery name = "local.fetchAddress" datasource = "cartDatasource">
+            SELECT
+                fldAddress_ID,
+                fldFirstName,
+                fldlastname,
+                fldAddressLine1,
+                fldAddressLine2,
+                fldCity,
+                fldState,
+                fldPincode,
+                fldPhoneNumber
+            FROM
+                tblAddress
+            WHERE 
+                fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+        </cfquery>
+        <cfset local.dataArray = []>
+        <cfloop query="local.fetchAddress">
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['addressID'] = local.fetchAddress.fldAddress_ID>
+            <cfset local.jsonData['firstName'] = local.fetchAddress.fldFirstName>
+            <cfset local.jsonData['lastName'] = local.fetchAddress.fldlastname>
+            <cfset local.jsonData['addressOne'] = local.fetchAddress.fldAddressLine1>
+            <cfset local.jsonData['addressTwo'] = local.fetchAddress.fldAddressLine2>
+            <cfset local.jsonData['city'] = local.fetchAddress.fldCity>
+            <cfset local.jsonData['state'] = local.fetchAddress.fldState>
+            <cfset local.jsonData['pincode'] = local.fetchAddress.fldPincode>
+            <cfset local.jsonData['phone'] = local.fetchAddress.fldPhoneNumber>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray>
     </cffunction>
 
 </cfcomponent>

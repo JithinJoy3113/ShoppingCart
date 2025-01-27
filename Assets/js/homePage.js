@@ -195,6 +195,7 @@ function viewMoreSubmit(string){
         $('.profileInput').removeAttr('disabled');
     }
 }
+
 function saveProfile(ID){
     let userId = ID.value;
     let formData = new FormData($('#profileForm')[0]);
@@ -206,14 +207,80 @@ function saveProfile(ID){
         contentType: false,
         success : function(response){
             let data = JSON.parse(response)
-            $("#profileFirstName").val(data.firstName);
-            $('#profileLastName').val(data.lastName);
-            $('#profilePhone').val(data.phone);
-            $('#profileEmail').val(data.email);
-            $("#profileSave").addClass('d-none');
-            $('.profileInput').attr('disabled','disabled');
-            $('#profileEditBtn').val('').text('Edit')
-            $('#profileFullNameSpan').text(data.firstName+' '+data.lastName)
+            if (data = "false"){
+                $('#profileError').text('Email/Phone Already exist').addClass("text-danger").removeClass('text-success')
+                $('#profileEmail').val($('#profileEmail').attr('data-value'));
+                $('#profilePhone').val($('#profilePhone').attr('data-value'));
+            }
+            else{
+                $("#profileFirstName").val(data.firstName);
+                $('#profileLastName').val(data.lastName);
+                $('#profilePhone').val(data.phone).attr('data-value', data.phone);
+                $('#profileEmail').val(data.email).attr('data-value', data.email);
+                $("#profileSave").addClass('d-none');
+                $('.profileInput').attr('disabled','disabled');
+                $('#profileEditBtn').val('').text('Edit')
+                $('#profileFullNameSpan').text(data.firstName+' '+data.lastName)
+                $('#profileError').text('').addClass('text-success').removeClass('text-danger')
+            }
         }
     })
 }
+function openManageAddress(){
+    $('#personalInformationDiv').removeClass('d-flex')
+    $('#personalInformationDiv').addClass('d-none')
+    $('#manageAddressDiv').removeClass('d-none')
+    $('#manageAddressDiv').addClass('d-flex')
+    $('#addressModal').css({"display":"none"})
+}
+function openPersonalInformation(){
+    $('#addressModal').css({"display":"none"})
+    $('#personalInformationDiv').removeClass('d-none')
+    $('#personalInformationDiv').addClass('d-flex')
+    $('#manageAddressDiv').removeClass('d-flex')
+    $('#manageAddressDiv').addClass('d-none')
+}
+function addAddressCloseBtn(){
+    $('#addressModal').css({"display":"none"})
+    $('#manageAddressDiv').removeClass('d-none')
+    $('#manageAddressDiv').addClass('d-flex')
+}
+function openAddressModal(){
+    $('#addressModal').css({"display":"flex"})
+    $('#manageAddressDiv').removeClass('d-flex')
+    $('#manageAddressDiv').addClass('d-none')
+}
+function addAddressBtn(){
+    let formData = new FormData($('#addressForm')[0]);
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=addAddress',
+        type : 'post',
+        data : formData,
+        processData: false,
+        contentType: false,
+        success : function(response){
+            let data = JSON.parse(response)
+            let id = formData.get('firstName')
+            if (data = "true"){
+                let div = $('#addressListDiv')
+                let childDiv = `<div class = "addressDiv d-flex flex-column" id="">
+                                <span class="addressNameSpan fw-bold">${formData.get('firstName')} ${formData.get('lastName')}
+                                    <span class="ms-2 addressPhoneSpan">${formData.get('phone')}</span>
+                                </span>
+                                <span class="addressSpan">
+                                   ${formData.get('addressOne')}, ${formData.get('addressTwo')}, ${formData.get('city')}, ${formData.get('state')}, ${formData.get('pincode')}
+                                </span>
+                            </div>`
+                div.append(childDiv)
+                $('#addressModal').css({"display":"none"})
+                $('#manageAddressDiv').removeClass('d-none')
+                $('#manageAddressDiv').addClass('d-flex')
+            }
+        }
+    })
+}
+
+$(document).ready(function() {
+    var dataValue = [$(".quantityBtn").data('value')]; 
+    console.log(dataValue);
+});
