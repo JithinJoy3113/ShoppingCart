@@ -10,6 +10,8 @@
             <link rel = "stylesheet" href = "Assets/css/product.css">
             <link rel = "stylesheet" href = "Assets/css/cart.css">
             <link rel = "stylesheet" href = "Assets/css/profile.css">
+            <link rel = "stylesheet" href = "Assets/css/order.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <cfif structKeyExists(session, "role")>
                 <title>#session.role#</title>
             <cfelse>
@@ -50,14 +52,18 @@
                     </cfif>
                     <div class="navButtonDiv d-flex align-items-center">
                         <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1)  AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
-                            <a href="profile.cfm" class="menuLink text-white text-decoration-none fw-bold me-4">Profile</a>
+                            <cfif structKeyExists(session, "role")>
+                                <a href="profile.cfm" class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">#session.firstName#</a>
+                            <cfelse>
+                                <a href="" class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">Account</a>
+                            </cfif>
                             <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
                             <div class="cartNumber" id="cartNumber">
                                 <cfif structKeyExists(session, "role")>
                                     <cfset local.cart = application.obj.cartItems()>
                                     <cfset local.items = arrayLen((local.cart))>
+                                    #local.items#
                                 </cfif>
-                                #local.items#
                             </div>
                         </cfif>
                         <cfif structKeyExists(session, "role")>
@@ -80,14 +86,18 @@
                             <cfloop array="#local.result#" item="struct">
                                 <div class="categoryNameDiv ">
                                     <div class="categoryHeadDiv" data-value="#struct.categoryId#">
-                                        <a href="productListing.cfm?categoryId=#struct.categoryId#&categoryName=#struct.categoryName#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
+                                        <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(struct.categoryId, application.secretKey, "AES", "Base64"))>
+                                        <cfset local.encryptedCategoryName = urlEncodedFormat(encrypt(struct.categoryName, application.secretKey, "AES", "Base64"))>
+                                        <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
                                     </div>
                                     <div class="subCategoryListDiv" id="#struct.categoryId#">
                                         <cfset local.subCategoryResult= application.obj.viewSubcategory(
                                                                                                 categoryId = #struct.categoryId#
                                                                                                 )>
                                         <cfloop array="#local.subCategoryResult#" item="struct">
-                                            <a href="subcategory.cfm?subCategoryId=#struct.subcategoryId#&subCategoryName=#struct.subcategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#struct.subcategoryId#">#struct.subcategoryName#</a>
+                                            <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(struct.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                            <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(struct.subcategoryName, application.secretKey, "AES", "Base64"))>
+                                            <a href="subcategory.cfm?subCategoryId=#local.encryptedSubcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#struct.subcategoryId#">#struct.subcategoryName#</a>
                                         </cfloop>
                                     </div>
                                 </div>
@@ -105,4 +115,4 @@
                         <button class="alertCancelBtn mt-2" type="button" name="alertBtn" id="alertBtn" onClick="return logoutAlert('no')">Cancel</button>
                     </div>
                 </div>
-        </cfoutput>
+    </cfoutput>
