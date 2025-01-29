@@ -15,6 +15,7 @@
                         <cfset local.tax = 0>
                         <cfset local.items = arrayLen(local.cartItems)>
                         <cfloop array="#local.cartItems#" item="item">
+                            <cfset local.cartId = item.cartId>
                             <cfset local.totalPrice += item.totalPrice>
                             <cfset local.tax += item.totalTax>
                             <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id = "#item.cartId#">
@@ -48,7 +49,7 @@
                             </div>
                         </cfloop>
                         <div class="placeOrderdiv d-flex justify-content-end">
-                            <button class="orderButton">PLACE ORDER</button>
+                            <button class="orderButton" type="button" value="#local.cartId#" onclick = "buyNowCart(this)">PLACE ORDER</button>
                         </div>
                     </div>
                 </div>

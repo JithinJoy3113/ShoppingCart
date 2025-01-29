@@ -44,7 +44,7 @@
                             </div>
                             <div class="buyButtondiv w-50 ms-1">
                                 <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
-                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white">
+                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
                                     <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
                                 </a>
                             </div>

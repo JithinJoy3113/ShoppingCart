@@ -1,5 +1,4 @@
 <cfoutput>
-    <cfset local.productId = decrypt(URL.productId, application.secretKey, "AES", "Base64")>
     <div class="d-flex">
         <div class="accordion accordion-flush" id="accordionFlushExample">
             <div class="accordion-item">
@@ -63,12 +62,22 @@
                 </h2>
                 <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="##accordionFlushExample">
                     <div class="accordion-body">
-                        <cfset local.cartItems = application.obj.viewProducts(productId = local.productId)>
+                        <cfif structKeyExists(URL, "cartId")>
+                            <cfset local.cartItems = application.obj.cartItems()>
+                        <cfelseif structKeyExists(URL, "productId")>
+                            <cfset local.productId = decrypt(URL.productId, application.secretKey, "AES", "Base64")>
+                            <cfset local.cartItems = application.obj.viewProducts(productId = local.productId)>
+                            <cfset local.quantity = 1>
+                        </cfif>
                         <cfset local.items = arrayLen(local.cartItems)>
                         <div class = "accordianOrderDiv">
                             <cfset local.totalPrice = 0>
                             <cfset local.tax = 0>
                             <cfloop array="#local.cartItems#" item="item">
+                                <cfset local.productId = item.productId>
+                                <cfif structKeyExists(item, "quantity")>
+                                    <cfset local.quantity = item.quantity>
+                                </cfif>
                                 <input type="hidden" id="orderPriceInput#item.productId#" value="#item.price#">
                                 <input type="hidden" id="orderTaxInput#item.productId#" value="#item.tax#">
                                 <cfset local.totalPrice += item.price>
@@ -92,7 +101,7 @@
                                         <div class="removeDiv d-flex justify-content-between">
                                             <div class="UpdateQuantityDiv d-flex">
                                                 <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.productId#" id="minus" onclick="updateQuantityOrder(this)">-</button>
-                                                <span id="quantity#item.productId#" data-value = "1">1</span>
+                                                <span id="quantity#item.productId#" data-value = "#local.quantity#">#local.quantity#</span>
                                                 <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.productId#" onclick="updateQuantityOrder(this)">+</button>
                                             </div>
                                             <!--- <button class="later me-5 border-0" type = "button" value =  onClick= "removeCartItem(this)">REMOVE</button> --->
@@ -142,11 +151,11 @@
                 <div class="priceMaindiv d-flex flex-column">
                     <div class="price d-flex justify-content-between pt-2">
                         <span class="amount">Price (#local.items# items)</span>
-                        <span class="number" id="orderTotalAmount">&##8377 #local.totalPrice#</span>
+                        <span class="number" id="orderTotalAmount" data-value="#local.totalPrice#">&##8377 #local.totalPrice#</span>
                     </div>
                     <div class="price d-flex justify-content-between pt-2">
                         <span class="amount">Tax</span>
-                        <span class="number" id="orderTotalTax">&##8377 #local.tax#</span>
+                        <span class="number" id="orderTotalTax" data-value="#local.tax#">&##8377 #local.tax#</span>
                     </div>
                     <div class="price d-flex justify-content-between">
                         <span class="amount">Discount</span>

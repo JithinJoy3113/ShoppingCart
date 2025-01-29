@@ -903,9 +903,9 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name = "cartItems" returnType = "array">
-        <cfargument  name = "cartId" default = 0 type = "integer">
-        <cfargument  name = "productId" default = 0 type = "integer">
+    <cffunction  name = "cartItems" returnType = "array" access = "remote" returnFormat="json">
+        <cfargument  name = "cartId" default = 0 type = "integer" required = "false">
+        <cfargument  name = "productId" default = 0 type = "integer"  required = "false">
         <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
             SELECT
                 C.fldCartItem_ID,
