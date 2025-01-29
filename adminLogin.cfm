@@ -23,8 +23,10 @@
                     <cfloop collection="#local.result#" item="key">
                         <span class="text-danger fw-bold">#local.result[key]#</span>
                     </cfloop>
-                <cfelse>
+                <cfelseif session.roleId EQ 1>
                     <cflocation  url="admin.cfm" addtoken="no">
+                <cfelseif session.roleId EQ 2>
+                    <cflocation  url="homePage.cfm" addtoken="no">
                 </cfif>
             </cfif>
         </div>

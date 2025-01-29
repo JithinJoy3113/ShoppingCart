@@ -9,6 +9,9 @@ function logoutValidate(){
     $("#addSubcategoryDiv").addClass("disabled");
     $("#viewSubcategory").addClass("disabled");
     $("#productViewMainDiv").addClass("disabled");
+    $("#userBodyMainDiv").addClass("disabled");
+    $("#headerNav").addClass("disabled");
+    $("#randomProductsMainDiv").addClass("disabled");
 }
 
 function logoutAlert(value){
@@ -25,6 +28,10 @@ function logoutAlert(value){
                     $("#addSubcategoryDiv").removeClass("disabled");
                     $("#viewSubcategory").removeClass("disabled");
                     $("#productViewMainDiv").removeClass("disabled");
+                    $("#userBodyMainDiv").removeClass("disabled");
+                    $("#headerNav").removeClass("disabled");
+                    $("#randomProductsMainDiv").removeClass("disabled");
+                    location.href = "./login.cfm"
                 }
                 else{
                     valid = false
@@ -41,6 +48,10 @@ function logoutAlert(value){
         $("#addSubcategoryDiv").removeClass("disabled");
         $("#viewSubcategory").removeClass("disabled");
         $("#productViewMainDiv").removeClass("disabled");
+        $("#userBodyMainDiv").removeClass("disabled");
+        $("#headerNav").removeClass("disabled");
+        $("#randomProductsMainDiv").removeClass("disabled");
+
     }
     return valid;
 }
@@ -74,7 +85,7 @@ function categoryAdd(ID){
                 $("#displayContent").css({"display":"none"});
                 $("#editingID").val(data.FLDCATEGORY_ID);
                 $("#categoryInput").val(data.FLDCATEGORYNAME);
-                return true
+                return true;
             }
         });
     }
@@ -105,19 +116,19 @@ function viewSubButton(ID){
             $("#addCategoryCloseValue").val(viewId);
             
             let div = $("#categoryFieldDiv"); 
-            for (let i = 0; i < data.DATA.length; i++) {
+            for (let struct of data) {
                 let childDiv = document.createElement("div");
                 childDiv.classList.add('subCategoryShowDiv')
-                childDiv.setAttribute('id', data.DATA[i][1]);
+                childDiv.setAttribute('id', struct.subcategoryId);
                 let innerNameDiv = document.createElement("div");
-                innerNameDiv.innerHTML = data.DATA[i][0]; 
+                innerNameDiv.innerHTML = struct.subcategoryName; 
                 let innerButtonDiv = document.createElement("div");
 
                 let editImg=document.createElement("img");
                 let editButton=document.createElement("button");
                 editButton.classList.add('subCategoryeditButton');
                 editButton.setAttribute('type', 'button');
-                editButton.setAttribute('value', data.DATA[i][1]);
+                editButton.setAttribute('value',struct.subcategoryId);
                 editButton.setAttribute('onClick','editSubcategory(this)')
                 editImg.setAttribute('src', "./Assets/Images/editBtn.png");
                 editButton.append(editImg);
@@ -127,7 +138,7 @@ function viewSubButton(ID){
                 let dltButton=document.createElement("button");
                 dltButton.classList.add('subCategoryeditButton');
                 dltButton.setAttribute('type', 'button');
-                dltButton.setAttribute('value', 'tblSubcategory'+','+ data.DATA[i][1])
+                dltButton.setAttribute('value', 'tblSubcategory'+','+ struct.subcategoryId)
                 dltButton.setAttribute('onClick','categoryDeleteButton(this)')
                 dltImg.setAttribute('src', "./Assets/Images/deleteBtn.png");
                 dltButton.append(dltImg);
@@ -137,8 +148,8 @@ function viewSubButton(ID){
                 let viewButton=document.createElement("button");
                 viewButton.classList.add('subCategoryeditButton');
                 viewButton.setAttribute('type', 'button');
-                viewButton.setAttribute('value', data.DATA[i][1])
-                viewButton.setAttribute('id', data.DATA[i][1])
+                viewButton.setAttribute('value', struct.subcategoryId)
+                viewButton.setAttribute('id', struct.subcategoryId)
                 viewButton.setAttribute('onClick','subcategoryViewButton(this)')
                 viewImg.setAttribute('src', "./Assets/Images/goArrow.png");
                 viewImg.setAttribute('width', '18');
@@ -154,6 +165,26 @@ function viewSubButton(ID){
     });
 }
 
+function viewCategoryCommon(categoryName){
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=viewCategory',
+        type : 'post',
+        success : function(response){
+            var categorySelect = $('#categoryDropdown');
+            var select = $("#addProductCategorySelect");
+            var data=JSON.parse(response);
+            for (let struct of data) {
+                if(struct.categoryName !=  categoryName){
+                    optionOne = $('<option>', {value : struct.categoryId, text : struct.categoryName});
+                    optionTwo = $('<option>', {value : struct.categoryId, text : struct.categoryName});
+                    categorySelect.append(optionOne);
+                    select.append(optionTwo);
+                }
+            }
+        }
+    })
+    return true;
+}
 
 function editSubcategory(ID){
     let editID = ID.value;
@@ -170,8 +201,14 @@ function editSubcategory(ID){
             $("#addSubcategoryDiv").css({"display":"flex"});
             $("#viewSubcategory").css({"display":"none"});
             $("#displayContent").css({"display":"none"});
-            $('#subCategoryInput').val(data.DATA[0][0]);
-            $('#subCategoryUpdate').val(data.DATA[0][1]);
+            $('#subCategoryInput').val(data[0].subcategoryName);
+            $('#subCategoryUpdate').val(data[0].subcategoryId);
+            let categorySelect = $('#categoryDropdown');
+            categorySelect.empty() 
+            let option = $('<option>', {value : data[0].categoryId, text : data[0].categoryName});
+            let categoryName = data[0].categoryName;
+            categorySelect.append(option)
+            let valid = viewCategoryCommon(categoryName);
             $('#subCategoryUpdate').css({"display":"flex"});
             $('#subCategorySubmit').css({"display":"none"})
         }
@@ -180,20 +217,36 @@ function editSubcategory(ID){
 
 function addSubCategory(ID){
     let viewId = ID.value;
-    $('#addSubcategoryHeading').text("Add Subcategory");
-    $("#addCategory").addClass("disabled");
-    $("#addSubcategoryDiv").css({"display":"flex"});
-    $("#viewSubcategory").css({"display":"none"});
-    $("#displayContent").css({"display":"none"});
-    $("#subCategorySubmit").val(viewId);
-    $("#addCategoryCloseValue").val(viewId);
+    $.ajax({
+        url:'./Components/shoppingCart.cfc?method=editCategory',
+        type: "post",
+        data:{
+            editId:viewId
+        },
+        success: function (response) {
+            let data = JSON.parse(response);
+            $('#addSubcategoryHeading').text("Add Subcategory");
+            $("#addCategory").addClass("disabled");
+            $("#addSubcategoryDiv").css({"display":"flex"});
+            $("#viewSubcategory").css({"display":"none"});
+            $("#displayContent").css({"display":"none"});
+            $("#subCategoryInput").val('');
+            $("#subCategorySubmit").val(viewId);
+            $("#addCategoryCloseValue").val(viewId);
+            let categorySelect = $('#categoryDropdown');
+            categorySelect.empty() 
+            let option = $('<option>', {value : data.FLDCATEGORY_ID, text : data.FLDCATEGORYNAME});
+            let categoryName = data.FLDCATEGORYNAME;
+            categorySelect.append(option)
+            let valid = viewCategoryCommon(data.FLDCATEGORYNAME);
+        }
+    })
 }
 
 function addSubcategorySubmit(ID){
     let subCategoryID = ID.value;
     let categoryId =  $("#categoryDropdown").val();
     let subcategoryName =  $("#subCategoryInput").val();
-    alert(categoryId)
     $.ajax({
         url : './Components/shoppingCart.cfc?method=insertSubcategory',
         type : 'post',
@@ -213,7 +266,7 @@ function addSubcategorySubmit(ID){
                 }
             }
             $("#subCategoryInput").val('');
-            }
+        }
     })
 }
 
@@ -270,7 +323,6 @@ function addSubCategoryClose(){
 }
 
 function categoryDeleteButton(ID){
-    alert(ID.value)
     let selectedValue = ID.value;
     $("#alertDeleteBtn").val(selectedValue);
     $("#deleteConfirm").css({"display":"flex"})
@@ -330,9 +382,9 @@ function subcategoryViewButton(ID){
         },
         success : function(response){
             let data = JSON.parse(response)
-            $("#subCategoryHead").text(data.DATA[0][0]);
-            $("#addProductButton").val(data.DATA[0][2]+','+data.DATA[0][3]+','+data.DATA[0][0]+','+data.DATA[0][1]);
-            var subCategoryId=data.DATA[0][1];
+            $("#subCategoryHead").text(data[0].subcategoryName);
+            $("#addProductButton").val(data[0].categoryName+','+data[0].categoryId+','+data[0].subcategoryName+','+data[0].subcategoryId);
+            var subCategoryId=data[0].subcategoryId;
             $('#productViewMainDiv').css({'display':'flex'})
             $("#addCategory").css({"display":"none"});
             $("#viewSubcategory").css({"display":"none"});
@@ -346,22 +398,22 @@ function subcategoryViewButton(ID){
                 },
                 success : function(response) {
                     let data=JSON.parse(response);
-                    for (let i = 0; i < data.DATA.length; i++) {
-                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${data.DATA[i][4]}>
+                    for (let struct of data) {
+                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${struct.productId}>
                                         <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
                                             <div class="d-flex">
-                                                <button class="border-0 imageEditButton" value=${data.DATA[i][4]} type="button" onClick="editImages(this)">
-                                                    <img src="Assets/uploadImages/${data.DATA[i][3]}" class="" alt="" width="50" height="50">
+                                                <button class="border-0 imageEditButton" value=${struct.productId} type="button" onClick="editImages(this)">
+                                                    <img src="Assets/uploadImages/${struct.file}" class="" alt="" width="50" height="50">
                                                 </button>
                                             </div>
                                             <div class="d-flex flex-column px-2">
-                                                <span class="productsNamespan px-2">${data.DATA[i][1]}</span>
-                                                <span class="productsBrandspan fw-bold px-2">${data.DATA[i][0]}</span>
-                                                <span class="productsPricespan px-2">RS.${data.DATA[i][2]}</span>
+                                                <span class="productsNamespan px-2">${struct.productName}</span>
+                                                <span class="productsBrandspan fw-bold px-2 mt-2">${struct.brandName}</span>
+                                                <span class="productsPricespan px-2 mt-2">RS.${struct.price}</span>
                                             </div>
                                             <div class="d-flex">
-                                                <button type="button" class="border-0" name="editBtn" value=${data.DATA[i][4]}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${data.DATA[i][4]}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                                <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${struct.productId}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
                                             </div>
                                         </div>
                                     </div>`;
@@ -384,14 +436,14 @@ function editImages(ID){
             let div= $("#imagesUpdateSubDiv");
             $("#imagesUpdateDiv").css({"display":"flex"});
             $('#productViewMainDiv').css({'display':'none'})
-            for (let i = 0; i < data.DATA.length; i++) {
-                let childDiv = `<div class="viewIamgesDiv d-flex flex-column" id="${data.DATA[i][0]}">
+            for (const struct of data) {
+                let childDiv = `<div class="viewIamgesDiv d-flex flex-column" id="${struct.imageId}">
                                     <div class="productImageDiv d-flex justify-content-center align-items-center px-3 py-3">
-                                        <img src="Assets/uploadImages/${data.DATA[i][1]}" class="" width="80" height="80">
+                                        <img src="Assets/uploadImages/${struct.imageFileName}" class="" width="80" height="80">
                                     </div>
                                     <div class="imageButtonDiv d-flex flex-column px-3">
-                                        <button type="button" id="" class="imageThumbBtn" value=${data.DATA[i][0]},${data.DATA[i][2]} onClick="setThumbnail(this)">Set Thumbnail</button>
-                                        <button type="button" id="" class="imageDltBtn mt-2" value="tblProductImages,${data.DATA[i][0]}" onClick="categoryDeleteButton(this)">Delete</button>
+                                        <button type="button" id="" class="imageThumbBtn" value=${struct.imageId},${productId} onClick="setThumbnail(this)">Set Thumbnail</button>
+                                        <button type="button" id="" class="imageDltBtn mt-2" value="tblProductImages,${struct.imageId}" onClick="categoryDeleteButton(this)">Delete</button>
                                     </div>
                                 </div>`
                 div.append(childDiv)
@@ -417,7 +469,6 @@ function setThumbnail(ID){
     let splitData=selectedValue.split(',');
     let ImageId=splitData[0];
     let productId=splitData[1]
-    alert(ImageId)
     $.ajax({
         url : './Components/shoppingCart.cfc?method=setThumbnail',
         type : 'post',
@@ -433,7 +484,6 @@ function setThumbnail(ID){
     })
 }
 
-
 function editProductsButton(ID){
     let productId = ID.value;
     $('#productViewMainDiv').css({'display':'none'});
@@ -445,81 +495,38 @@ function editProductsButton(ID){
     $('#addProductHeading').text("Edit Product");
     $('#updateProductSubmit').val(productId);
     $.ajax({
-        url:'./Components/shoppingCart.cfc?method=viewProducts',
+        url:'./Components/shoppingCart.cfc?method=displayProduct',
         type : 'post',
         data :{
-            columnName : 'fldProduct_ID',
-            productSubId : productId
+            productId : productId
         },
         success : function(response){
             let data = JSON.parse(response)
-            console.log(data)
-            $('#addProductNameInput').val(data.DATA[0][1]);
-            $('#addProductPrice').val(data.DATA[0][2]);
-            $('#addProductDescription').val(data.DATA[0][5]);
-            $('#addProductTax').val(data.DATA[0][6]);
+            $('#addProductNameInput').val(data.productName);
+            $('#addProductPrice').val(data.price);
+            $('#addProductDescription').val(data.description);
+            $('#addProductTax').val(data.tax);
             let categorySelect=$('#addProductCategorySelect');
-            let option = $('<option>', {value : data.DATA[0][9], text : data.DATA[0][8]});
+            let option = $('<option>', {value : data.categoryId, text : data.categoryName});
             categorySelect.append(option)
             let subCategorySelect=$('#addProductSubcategorySelect');
-            let subOption = $('<option>', {value : data.DATA[0][10], text : data.DATA[0][7]});
+            let subOption = $('<option>', {value : data.subCategoryId, text : data.subCategoryName});
             subCategorySelect.append(subOption)
             let brandSelect=$('#brandSelect');
             brandSelect.empty();
-            let brandOption = $('<option>', {value : data.DATA[0][11], text : data.DATA[0][0]});
+            let brandOption = $('<option>', {value : data.brandId, text : data.brand});
             brandSelect.append(brandOption)
-            $("#addProductClose").val(data.DATA[0][10]);
-            $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewCategory',
-                type : 'post',
-                success : function(response){
-                    let data=JSON.parse(response);
-                    let categorySelect=$('#addProductCategorySelect');
-                    for (let i = 0; i < data.DATA.length; i++) {
-                        if(data.DATA[i][1] !=  data.DATA[0][8]){
-                            var selectOption=document.createElement("option");
-                            selectOption.setAttribute('value', data.DATA[i][0])
-                            selectOption.text=data.DATA[i][1];
-                            categorySelect.append(selectOption);
-                        }
-                    }
-                }
-            }),
-            $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewSubcategory',
-                type : 'post',
-                data :{
-                    categoryId : data.DATA[0][9]
-                },
-                success : function(response){
-                    let subData=JSON.parse(response);
-                    let subCategorySelect=$('#addProductSubcategorySelect');
-                    for (let i = 0; i < subData.DATA.length; i++) {
-                        if(subData.DATA[i][0] != data.DATA[0][7]){
-                        var selectSubOption=document.createElement("option");
-                        selectSubOption.setAttribute('value',  subData.DATA[i][1])
-                        selectSubOption.text=subData.DATA[i][0];
-                        subCategorySelect.append(selectSubOption);
-                    }
-                }
-            }
-            })
-            $.ajax({
-                url : './Components/shoppingCart.cfc?method=viewBrand',
-                type : 'post',
-                success : function(response){
-                    let subData=JSON.parse(response);
-                    let brandSelect=$('#brandSelect');
-                    for (let i = 0; i < subData.DATA.length; i++) {
-                        if(subData.DATA[i][0] != data.DATA[0][0]){
-                        var selectSubOption=document.createElement("option");
-                        selectSubOption.setAttribute('value',  subData.DATA[i][1])
-                        selectSubOption.text=subData.DATA[i][0];
-                        brandSelect.append(selectSubOption);
-                        }
-                    }
-                }
-            })
+            var categoryName = data.categoryName
+            let subcategoryName = data.subCategoryName
+            var categoryId = data.categoryId
+            let brand = data.brand
+            $("#addProductClose").val(data.subCategoryId);
+
+            let valid = viewCategoryCommon(categoryName);
+
+            let subValid = viewSubcategoryCommon(categoryId, subcategoryName)
+
+            let brandValid = viewBrandCommon()
         }
     })
 }
@@ -587,74 +594,72 @@ function addProductsubmit(){
     })
 }
 
+function viewSubcategoryCommon(categoryId,subCategoryName){
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=viewSubcategory',
+        type : 'post',
+        data :{
+            categoryId : categoryId
+        },
+        success : function(response){
+            let subData=JSON.parse(response);
+            let selectSub = $("#addProductSubcategorySelect");
+            for (let struct of subData) {
+                if(struct.subcategoryName != subCategoryName){
+                    let option = $('<option>', {value : struct.subcategoryId, text : struct.subcategoryName});
+                    selectSub.append(option);
+                }
+            }
+        }
+    })
+    return true;
+}
+
 function addProduct(ID){
-    let categoryId=ID.value;
-    let splitData=categoryId.split(',');
+    let Id = ID.value;
+    let splitData = Id.split(',');
+    let categoryName = splitData[0];
+    let categoryId = splitData[1];
+    let subCategoryName = splitData[2];
+    let subCategoryId = splitData[3]
     let select = $("#addProductCategorySelect");
+    select.empty()
     let selectSub = $("#addProductSubcategorySelect");
     $("#addProductSubmit").css({"display":"flex"});
     $("#addProductImage").css({"display":"flex"});
     $("#updateProductSubmit").css({"display":"none"});
     var selectOption=document.createElement("option");
     $('#addProductHeading').text("Add Product");
-    selectOption.setAttribute('value',splitData[1]);
-    selectOption.text=splitData[0];
-    var selectSubOption=document.createElement("option");
-    selectSubOption.setAttribute('value', splitData[3]);
-    selectSubOption.text=splitData[2];
+    selectOption.setAttribute('value',categoryId);
+    selectOption.text = categoryName;
+    var selectSubOption = document.createElement("option");
+    selectSubOption.setAttribute('value', subCategoryId);
+    selectSubOption.text = subCategoryName;
     select.append(selectOption);
     selectSub.append(selectSubOption);
-    $("#addProductClose").val(splitData[3]);
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewCategory',
-        type : 'post',
-        success : function(response){
-            let data=JSON.parse(response);
-            for (let i = 0; i < data.DATA.length; i++) {
-                if(data.DATA[i][1] != splitData[0]){
-                    var selectOption=document.createElement("option");
-                    selectOption.setAttribute('value', data.DATA[i][0])
-                    selectOption.text=data.DATA[i][1];
-                    select.append(selectOption);
-                }
-            }
-        }
-    }),
-    $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewSubcategory',
-        type : 'post',
-        data :{
-            categoryId : splitData[1]
-        },
-        success : function(response){
-            let subData=JSON.parse(response);
-            for (let i = 0; i < subData.DATA.length; i++) {
-                if(subData.DATA[i][0] != splitData[2]){
-                var selectSubOption=document.createElement("option");
-                selectSubOption.setAttribute('value',  subData.DATA[i][1])
-                selectSubOption.text=subData.DATA[i][0];
-                selectSub.append(selectSubOption);
-                }
-            }
-        }
-    })
+    $("#addProductClose").val(subCategoryId);
+    let valid = viewCategoryCommon(categoryName);
+
+    let subValid = viewSubcategoryCommon(categoryId, subCategoryName);
+
+    let brandValid = viewBrandCommon()
+    $('#productViewMainDiv').css({'display':'none'});
+    $('#addProductModal').css({'display':'flex'});
+}
+
+function viewBrandCommon(){
     $.ajax({
         url : './Components/shoppingCart.cfc?method=viewBrand',
         type : 'post',
         success : function(response){
-            alert(response)
-            let subData=JSON.parse(response);
+            let brandData=JSON.parse(response);
             let brandSelect=$('#brandSelect');
-            for (let i = 0; i < subData.DATA.length; i++) {
-                var selectSubOption=document.createElement("option");
-                selectSubOption.setAttribute('value',  subData.DATA[i][1])
-                selectSubOption.text=subData.DATA[i][0];
-                brandSelect.append(selectSubOption);
+            for (let struct of brandData) {
+                let option = $('<option>', {value : struct.brandId, text : struct.brandName});
+                brandSelect.append(option);
             }
         }
     })
-    $('#productViewMainDiv').css({'display':'none'});
-    $('#addProductModal').css({'display':'flex'});
 }
 
 $(document).ready(function() {
@@ -669,9 +674,9 @@ $(document).ready(function() {
             success: function(response) {
                 const data = JSON.parse(response);
                 $("#addProductSubcategorySelect").empty();
-                for(let i=0; i<data.DATA.length; i++) {
-                    let subCategoryName = data.DATA[i][0];
-                    let  subCategoryId= data.DATA[i][1];
+                for(let struct of data) {
+                    let subCategoryName = struct.subcategoryName;
+                    let  subCategoryId= struct.subcategoryId;
                     let optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
                     $("#addProductSubcategorySelect").append(optionTag);
                 }
@@ -679,4 +684,3 @@ $(document).ready(function() {
         });	
 	});
 });
-

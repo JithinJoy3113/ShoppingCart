@@ -1,0 +1,123 @@
+.subCategoryListDiv{
+    display: none;
+    flex-direction: column;
+    z-index: 1;
+    padding: 10px 10px;
+    top: 20px;
+    position: absolute;
+    background-color: white;
+}
+.categoryNameDiv{
+    position: relative;
+}
+.subcategoryBtn{
+    border: none;
+    min-width: 100px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+}
+.navMenuDiv{
+    padding: 10px 50px;
+    border-bottom: 1px solid #6cdada;
+    background-color: white;
+}
+.categoryHeadDiv{
+    font-size: 16px;
+    font-weight: 600;
+}
+.randomProductsMainDiv{
+    padding: 30px 50px;
+    width: 100%;
+}
+.subCategoryHeadDiv{
+    font-size: 20px;
+    font-weight: 700;
+    padding: 10px 0px 10px 0px;
+}
+.randumHead{
+    font-weight: bold;
+    font-size: 30px;
+}
+.randomProductsDiv{
+    display: flex;
+    flex-wrap: wrap;
+}
+.viewHeight{
+    max-height: 340px;
+    overflow: hidden;
+}
+.viewMoreSubmit{
+    border: none;
+    color: #087474;
+    border-radius: 20px;
+    padding: 5px 5px;
+    background-color: #dbd8d8;
+    box-shadow: 1px 1px 3px 3px  #8aeeee;
+
+}
+
+.searchDiv{
+    width: 250px;
+    height: 35px;
+    border-radius: 20px;
+    background-color: white;
+}
+.searchBarDiv{
+    width: 245px;
+    height: 35px;
+}
+.searchBar{
+    width: 245px;
+    height: 35px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+input:focus{
+	outline:none;
+}
+.menuLink,.menuCartLink{
+    font-size: 18px;
+}
+.menuCartLink{
+    position: relative;
+}
+.cartNumber{
+    position: absolute;
+    right: 125px;
+    bottom: 85px;
+    font-size: 14px;
+    background-color: red;
+    padding: 0px 6px;
+    border-radius: 100px;
+}
+.productSearch{
+
+}
+.categoryLink{
+    color: black;
+}
+.categoryLink:hover{
+    color: #0d9191;
+}
+
+.randomProducts {
+    padding: 15px 25px;
+    width: 220px;
+    height: 300px;
+    border: 1px solid #c9c2c2;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.randomProducts:hover > .productDiscriptionsdiv > .productsNamespan {
+    color: #0d9191;
+}
+.similarProductshead {
+    font-weight: bold;
+    padding: 20px;
+    font-size: 22px;
+}
+.productbtn{
+    color: black;
+}

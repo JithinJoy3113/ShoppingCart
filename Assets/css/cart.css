@@ -1,0 +1,129 @@
+*{
+	font-family: Inter, -apple-system, Helvetica, Arial, sans-serif;
+}
+.bodyContents{
+	padding:20px 50px;
+    width:100%; 
+}
+.topPincodediv{
+	padding: 13px 16px;
+    background:rgb(238, 236, 236);
+    width:100%;
+    max-width:832px;
+    box-shadow: 5px 10px 18px #c5bebe;
+}
+.bodyLeftdiv{
+	max-width:832px;
+    overflow-y: scroll;
+    position: relative;
+}
+.scroll{
+    position: absolute;
+}
+.placeOrderdiv{
+	padding: 13px 22px;
+    position: sticky;
+    bottom: 0;
+    background:white;
+    height: 80px;
+}
+.priceHead{
+	color:#878787;
+    font-weight:bold;
+    font-size:15px;
+}
+.priceDetails{
+	padding: 13px 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.priceDetailsdiv,.cartItemsdiv{
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.2);
+}
+.pinButton{
+	border: 1px solid #e0e0e0;
+    background-color:#fff;
+    border-radius:4px;
+    padding:7px 16px;
+    color: #0b7777;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:13px;
+}
+.pinAddress{
+	font-size:13.5px;
+}
+.bodyRightdiv{
+	margin-left:10px;
+    max-width:396px;
+}
+.priceMaindiv{
+	padding: 0 24px;
+}
+.price{
+	margin: 10px 0;
+}
+.green,.save{
+	color:#388e3c;
+}
+.save{
+	font-size:15px;
+    font-weight:bold;
+}
+.totalAmount{
+	font-size:18px;
+    font-weight:bold;
+}
+.safe{
+    color:#878787;
+    font-size:14px;
+    font-weight:bold;
+}
+.itemMain{
+	padding: 24px 32px;
+}
+.detailsDiv{
+	padding: 0 32px 12px;
+ 	min-height: 112px;
+}
+.nameLink{
+	font-size:15px;
+    color:black
+}
+.sizeSpan{
+	color:#878787;
+    font-size:13px;
+}
+.removeDiv{
+    padding-left: 7px;
+    padding-top:10px;
+}
+.later:hover,.nameLink:hover{
+ 	color:#0d9191;
+}
+.later{
+	font-size: 15px;
+    font-weight: bold;
+}
+.orderButton{
+ 	background-color: #0d9191;
+    color:white;
+    font-weight:bold;
+    font-size:15px;
+    border:none;
+    padding: 16px 30px;
+    min-width: 250px;
+    border-radius:2px;
+    position : absolute;
+    top: 0;
+}
+.amount,.number{
+    font-size: 15px;
+}
+.quantityBtn{
+    font-weight: bold;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #b1afaf;;
+    border-radius: 3px;
+}
+
