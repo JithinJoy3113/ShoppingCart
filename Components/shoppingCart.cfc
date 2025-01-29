@@ -8,7 +8,7 @@
         <cfargument  name = "password" required = "true" type = "string">
         <cfargument  name = "confirmPassword" required = "true" type = "string">
 
-        <cfquery name = "local.selectUser" datasource = "cartDatasource">
+        <cfquery name = "local.selectUser" datasource = #application.dataSource#>
             SELECT
                 fldEmail,
                 fldPhoneNumber
@@ -23,7 +23,7 @@
         <cfelse>
             <cfset local.secretKey = generateSecretKey('AES')>
             <cfset local.hashedPassword = Hash(arguments.password & local.secretKey,"SHA-256")>
-            <cfquery name="insertUser" datasource = "cartDatasource">
+            <cfquery name="insertUser" datasource = #application.dataSource#>
                 INSERT INTO
                     tblUser(
                         fldFirstName,
@@ -63,7 +63,7 @@
         <cfif structCount(local.result)>
             <cfreturn local.result> 
         <cfelse>
-            <cfquery name = "local.selectUser" datasource = "cartDatasource">
+            <cfquery name = "local.selectUser" datasource = #application.dataSource#>
                 SELECT
                     u.fldUser_ID,
                     u.fldFirstName,
@@ -112,7 +112,7 @@
             <cfset local.result["Error"] = "Category Name Required">
             <cfreturn local.result> 
         </cfif>
-        <cfquery name = "local.selectCategory" datasource = "cartDatasource">
+        <cfquery name = "local.selectCategory" datasource = #application.dataSource#>
             SELECT 1 
             FROM tblCategory
             WHERE 
@@ -122,7 +122,7 @@
         <cfif queryRecordCount(local.selectCategory)>
             <cfset local.result["Error"] = "Category Name Already Exist">
         <cfelse>
-            <cfquery name = "local.insertCategory" datasource = "cartDatasource">
+            <cfquery name = "local.insertCategory" datasource = #application.dataSource#>
                 INSERT INTO tblCategory
                     (
                         fldCategoryName,
@@ -140,7 +140,7 @@
 
     <cffunction  name = "editCategory" returnType = "struct" returnFormat = "JSON" access="remote">
         <cfargument  name = "editId" required = "true" type = "integer">
-        <cfquery name = "local.selectCategory" datasource = "cartDatasource">
+        <cfquery name = "local.selectCategory" datasource = #application.dataSource#>
             SELECT 
                 fldCategory_ID,
                 fldCategoryName 
@@ -154,7 +154,7 @@
 
     <cffunction  name = "displayCategory" returnType = "query">
         <cfargument  name = "categoryId" default = "">
-        <cfquery name = "local.selectCategory" datasource = "cartDatasource">
+        <cfquery name = "local.selectCategory" datasource = #application.dataSource#>
             SELECT 
                 fldCategory_ID,
                 fldCategoryName 
@@ -173,7 +173,7 @@
 
     <cffunction  name = "viewCategory" access = "remote" returnformat = "json" returnType = "array">
         <cfargument  name="homeView" default="">
-        <cfquery name = "local.selectCategory" datasource = "cartDatasource">
+        <cfquery name = "local.selectCategory" datasource = #application.dataSource#>
             SELECT 
                 fldCategory_ID,
                 fldCategoryName 
@@ -202,7 +202,7 @@
             <cfset local.result["Error"] = "Category Name Required">
             <cfreturn local.result> 
         </cfif>
-        <cfquery name="local.selectCategory" datasource = "cartDatasource">
+        <cfquery name="local.selectCategory" datasource = #application.dataSource#>
             SELECT 1 
             FROM tblCategory
             WHERE 
@@ -212,7 +212,7 @@
         <cfif queryRecordCount(local.selectCategory)>
             <cfset local.result["Error"] = "Category Name Already Exist">
         <cfelse>
-            <cfquery name="local.categoryUpadte" datasource = "cartDatasource">
+            <cfquery name="local.categoryUpadte" datasource = #application.dataSource#>
                 UPDATE 
                     tblCategory
                 SET
@@ -239,7 +239,7 @@
         <cfif structCount(local.result)>
             <cfreturn local.result>
         <cfelse>
-            <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
+            <cfquery name = "local.fetchSubcategory" datasource = #application.dataSource#>
                 SELECT 
                     fldSubCategoryName,
                     fldSubcategory_ID,
@@ -253,7 +253,7 @@
             <cfif queryRecordCount(local.fetchSubcategory)>
                 <cfset local.result["addSubMessage"] = "Subcategory Name Already Exist">
             <cfelse>
-                <cfquery name="local.insertSubcategory" datasource = "cartDatasource">
+                <cfquery name="local.insertSubcategory" datasource = #application.dataSource#>
                     INSERT INTO tblSubcategory
                         (
                             fldSubcategoryName,
@@ -286,7 +286,7 @@
         <cfif structCount(local.result)>
             <cfreturn local.result>
         <cfelse>
-            <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
+            <cfquery name = "local.fetchSubcategory" datasource = #application.dataSource#>
                 SELECT 
                     fldSubCategoryName,
                     fldSubcategory_ID,
@@ -301,7 +301,7 @@
             <cfif queryRecordCount(local.fetchSubcategory)>
                 <cfset local.result["addSubMessage"] = "Subcategory Already Exist">
             <cfelse>
-                <cfquery name = "local.updateSubcategory" datasource = "cartDatasource">
+                <cfquery name = "local.updateSubcategory" datasource = #application.dataSource#>
                     UPDATE tblSubcategory
                     SET
                         fldSubcategoryName = < cfqueryparam value = '#arguments.subCategoryName#' cfsqltype = "varchar" >,
@@ -318,7 +318,7 @@
 
     <cffunction  name = "viewSubcategory" returnType = "array" access = "remote" returnFormat = "json">
         <cfargument  name = "categoryId" required = "true" type = "integer">
-        <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
+        <cfquery name = "local.fetchSubcategory" datasource = #application.dataSource#>
             SELECT
                 fldSubcategoryName,
                 fldSubcategory_ID
@@ -340,7 +340,7 @@
 
     <cffunction  name = "viewSubcategoryEdit" returnType = "array" access = "remote" returnFormat = "json">
         <cfargument  name = "subCategoryId" required = "true" type = "integer">
-        <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
+        <cfquery name = "local.fetchSubcategory" datasource = #application.dataSource#>
             SELECT
                 S.fldSubcategoryName,
                 S.fldSubcategory_ID,
@@ -377,7 +377,7 @@
         <cfelse>
             <cfset local.columnName = 'fldSubcategory_ID'>
         </cfif>
-        <cfquery name = "local.deleteData" datasource = "cartDatasource">
+        <cfquery name = "local.deleteData" datasource = #application.dataSource#>
             UPDATE  
                 #arguments.tablename#
             SET
@@ -441,7 +441,7 @@
         <cfif StructCount(local.result) GT 0>
             <cfreturn local.result>
         <cfelse>
-            <cfquery name = "local.fetchContacts" datasource = "cartDatasource">
+            <cfquery name = "local.fetchContacts" datasource = #application.dataSource#>
                 SELECT 1 
                 FROM tblProducts
                 WHERE
@@ -454,7 +454,7 @@
                 <cfset local.uploadPath = expandPath('../Assets/uploadImages')>
                 <cffile  action = "uploadAll" destination = "#local.uploadPath#" nameConflict = "MakeUnique" result = "local.imagePathArray"> 
 
-                <cfquery name = "local.insertProduct" result = "local.productInsert" datasource = "cartDatasource">
+                <cfquery name = "local.insertProduct" result = "local.productInsert" datasource = #application.dataSource#>
                     INSERT INTO
                         tblProducts(
                             fldSubcategoryId,
@@ -476,7 +476,7 @@
                     )
                 </cfquery>
                 <cfset local.generatedKey = local.productInsert.generatedKey>
-                <cfquery name="local.insertImages" datasource = "cartDatasource">
+                <cfquery name="local.insertImages" datasource = #application.dataSource#>
                     INSERT INTO
                         tblProductImages(
                             fldProductId,
@@ -509,7 +509,7 @@
 
     <cffunction  name = "SubcategoryDisplay" returnType = "any" access = "remote" returnFormat = "json">
         <cfset local.jsonData = {}>
-        <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
+        <cfquery name = "local.fetchSubcategory" datasource = #application.dataSource#>
             SELECT
                 C.fldCategory_ID,
                 C.fldCategoryName,
@@ -530,7 +530,7 @@
     </cffunction>
 
     <cffunction  name = "viewBrand" returnType = "array" access = "remote" returnFormat = "json">
-        <cfquery name = "local.selectBrand" datasource = "cartDatasource">
+        <cfquery name = "local.selectBrand" datasource = #application.dataSource#>
             SELECT
                 fldBrandName,
                 fldBrand_ID
@@ -591,7 +591,7 @@
         <cfif StructCount(local.result) GT 0>
             <cfreturn local.result>
         <cfelse>
-            <cfquery name = "local.fetchContacts" datasource = "cartDatasource">
+            <cfquery name = "local.fetchContacts" datasource = #application.dataSource#>
                 SELECT 1 
                 FROM tblProducts
                 WHERE
@@ -602,7 +602,7 @@
             <cfif queryRecordCount(local.fetchContacts)>
                 <cfset local.result["insertError"] = "Failed:Product Already Exist">
             <cfelse>
-                <cfquery name = "local.updatePoduct" datasource = "cartDatasource">
+                <cfquery name = "local.updatePoduct" datasource = #application.dataSource#>
                     UPDATE 
                         tblProducts
                     SET
@@ -624,7 +624,7 @@
 
     <cffunction  name = "viewImages" access = "remote"  returnType="array" returnFormat = "json">
         <cfargument  name = "productId" required = "true" type = "integer">
-        <cfquery name = "local.fetchImages" datasource = "cartDatasource">
+        <cfquery name = "local.fetchImages" datasource = #application.dataSource#>
             SELECT 
                 fldProductImage_ID,
                 fldImageFileName,
@@ -652,7 +652,7 @@
     <cffunction  name = "setThumbnail" access = "remote" returnType = "boolean">
         <cfargument  name = "ImageId" required = "true" type = "integer">
         <cfargument  name = "productId" required = "true" type = "integer">
-        <cfquery name = "local.updateImages" datasource = "cartDatasource">
+        <cfquery name = "local.updateImages" datasource = #application.dataSource#>
             UPDATE
                 tblProductImages
             SET
@@ -662,7 +662,7 @@
                 AND
                 fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
         </cfquery>
-         <cfquery name = "local.setDefaultImage" datasource = "cartDatasource">
+         <cfquery name = "local.setDefaultImage" datasource = #application.dataSource#>
             UPDATE
                 tblProductImages
             SET
@@ -674,9 +674,10 @@
     </cffunction>
 
     <cffunction  name="viewProducts" returnType = "array" returnFormat = "json" access = "remote">
-        <cfargument  name = "columnName" required = "true" type = "string">
-        <cfargument  name = "productSubId" required = "true" type = "integer">
-        <cfquery name = "local.viewProduct" datasource = "cartDatasource">
+        <cfargument  name = "columnName" required = "false" type = "string">
+        <cfargument  name = "productSubId" required = "false" type = "integer">
+        <cfargument  name = "productId" default=0 required = "false" type = "integer">
+        <cfquery name = "local.viewProduct" datasource = #application.dataSource#>
             SELECT
                 P.fldProductName,
                 P.fldPrice,
@@ -707,7 +708,11 @@
                 AND S.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
                 AND C.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
                 AND I.fldDefaultImage = < cfqueryparam value = 1 cfsqltype = "integer" >
-                AND P.#arguments.columnName# = < cfqueryparam value ="#arguments.productSubId#" cfsqltype = "integer" >
+                <cfif arguments.productId NEQ 0>
+                    AND P.fldProduct_ID = < cfqueryparam value ="#arguments.productId#" cfsqltype = "integer" >
+                <cfelse>
+                    AND P.#arguments.columnName# = < cfqueryparam value ="#arguments.productSubId#" cfsqltype = "integer" >
+                </cfif>
         </cfquery>
         <cfset local.dataArray = []>
         <cfloop query="local.viewProduct">
@@ -735,7 +740,7 @@
         <cfargument  name = "min" type = "string" default = 0 required = "false">
         <cfargument  name = "max" type = "string" default = 0 required = "false">
         <cfargument  name = "search" type = "string" default = "" required = "false">
-        <cfquery name = "local.fetchProducts" datasource = "cartDatasource">
+        <cfquery name = "local.fetchProducts" datasource = #application.dataSource#>
             SELECT
                 P.fldProduct_ID, 
                 P.fldProductName,
@@ -796,7 +801,7 @@
 
     <cffunction  name = "displayProduct" returnType = "struct" returnFormat = "json" access = "remote">
         <cfargument  name = "productId" type = "integer" required = "true">
-        <cfquery name = "local.fetchProduct" datasource = "cartDatasource">
+        <cfquery name = "local.fetchProduct" datasource = #application.dataSource#>
             SELECT 
                 P.fldProduct_ID,
                 P.fldProductName,
@@ -844,7 +849,7 @@
 
     <cffunction  name = "subcategoryListing" returnType = "array" access = "public">
         <cfargument  name = "categoryId" required = "true" type = "integer">
-        <cfquery name = "local.fetchSubcategory" datasource = "cartDatasource">
+        <cfquery name = "local.fetchSubcategory" datasource = #application.dataSource#>
             SELECT
                 fldSubCategoryName,
                 fldSubcategory_ID
@@ -867,7 +872,7 @@
     <cffunction  name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
         <cfargument  name = "productId" type = "integer" required = "true">
         <cfif structKeyExists(session, "role")>
-            <cfquery name = "local.fetchCart" datasource = "cartDatasource">
+            <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
                 SELECT 1 
                 FROM
                     tblCart
@@ -900,8 +905,8 @@
 
     <cffunction  name = "cartItems" returnType = "array">
         <cfargument  name = "cartId" default = 0 type = "integer">
-        <cfargument  name = "productId" default = 0 required = "false" type = "integer">
-        <cfquery name = "local.fetchCart" datasource = "cartDatasource">
+        <cfargument  name = "productId" default = 26 required = "false" type = "integer">
+        <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
             SELECT
                 C.fldCartItem_ID,
                 C.fldProductId,
@@ -948,7 +953,7 @@
     <cffunction  name = "updateCart" returnType="array" returnFormat = "json" access = "remote">
         <cfargument  name = "cartId" required = "true" type = "integer">
         <cfargument  name = "operation" required = "true" type = "string">
-        <cfquery name = "local.updateCart" datasource = "cartDatasource">
+        <cfquery name = "local.updateCart" datasource = #application.dataSource#>
             UPDATE 
                 tblCart
             SET
@@ -981,7 +986,7 @@
         <cfargument  name = "profileLastName" required = "true" type = "string">
         <cfargument  name = "profileEmail" required = "true" type = "string">
         <cfargument  name = "profilePhone" required="true" type = "string">
-        <cfquery name = "local.selectUser" datasource = "cartDatasource">
+        <cfquery name = "local.selectUser" datasource = #application.dataSource#>
             SELECT
                 fldEmail,
                 fldPhoneNumber
@@ -995,7 +1000,7 @@
         <cfif queryRecordCount(local.selectUser)>
             <cfreturn false>
         <cfelse>
-            <cfquery name = "local.updateUser" datasource = "cartDatasource" result = "local.updateResult">
+            <cfquery name = "local.updateUser" datasource = #application.dataSource# result = "local.updateResult">
                 UPDATE
                     tblUser
                 SET
@@ -1029,7 +1034,7 @@
         <cfargument  name = "city" type = "string" required = "true">
         <cfargument  name = "pincode" type = "string" required = "true">
         <cfargument  name = "phone" type = "string" required = "true">
-        <cfquery name = "local.city" datasource = "cartDatasource">
+        <cfquery name = "local.city" datasource = #application.dataSource#>
             INSERT INTO
                 tblAddress(
                     fldUserId,
@@ -1058,7 +1063,7 @@
     </cffunction>
 
     <cffunction  name = "fetchAddress" returnType = "array" >
-        <cfquery name = "local.fetchAddress" datasource = "cartDatasource">
+        <cfquery name = "local.fetchAddress" datasource = #application.dataSource#>
             SELECT
                 fldAddress_ID,
                 fldFirstName,

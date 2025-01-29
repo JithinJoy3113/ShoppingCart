@@ -1,6 +1,6 @@
 <cfoutput>
-    <cfset local.subcategoryId = URL.subCategoryId>
-    <cfset local.subCategoryName = URL.subCategoryName>
+    <cfset local.subCategoryName = decrypt(URL.subCategoryName, application.secretKey, "AES", "Base64")>
+    <cfset local.subCategoryId = decrypt(URL.subcategoryId, application.secretKey, "AES", "Base64")>
     <div class="randomProductsMainDiv " id="randomProductsMainDiv">
         <form action="" method="post" id="productForm">
             <div class="d-flex sortingDiv justify-content-end" >
@@ -63,7 +63,9 @@
             <div class="randomProductsDiv pt-3 viewHeight" id="viewHeight">
                 <cfset local.count = 0>
                 <cfloop array="#local.randomProducts#" item="item">
-                    <a href="product.cfm?productId=#item.productId#&subcategoryId=#item.subcategoryId#" class ="productbtn text-decoration-none">
+                    <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
+                    <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
+                    <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class ="productbtn text-decoration-none">
                         <div class="randomProducts d-flex flex-column ms-4 mt-3">
                             <cfset local.count += 1>
                             <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">

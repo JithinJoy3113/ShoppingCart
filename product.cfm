@@ -1,6 +1,6 @@
 <cfoutput>
-    <cfset local.productId = URL.productId>
-    <cfset local.subCategoryId = URL.subcategoryId>
+    <cfset local.productId = decrypt(URL.productId, application.secretKey, "AES", "Base64")>
+    <cfset local.subCategoryId = decrypt(URL.subcategoryId, application.secretKey, "AES", "Base64")>
     <cfset local.file = "">
     <div class="productBodydiv" id="randomProductsMainDiv">
             <div class="productImgMaindiv d-flex">
@@ -43,9 +43,10 @@
                                 </cfif>
                             </div>
                             <div class="buyButtondiv w-50 ms-1">
-                                <button  type = "submit" class="buy border-0 text-white" value = "#local.productDetails.productId#" name="buyBtn">
+                                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
+                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white">
                                     <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -113,7 +114,6 @@
                                 <span class="price">RS. #local.productDetails.price#</span>
                             </div>
                             <div class="fee mt-2 m-sm-none">+ ₹59 Secured Packaging Fee</div>
-                            <div class="freeDeliver d-flex d-sm-none">Free delivery by Oct 10</div>
                             <div class="fee d-flex">No cost EMI RS.2,345/month<a href="" class="d-flex d-sm-none deliverPlans text-decoration-none ms-1">View Plans</a></div>
                             <div class="sellerFinddiv d-flex d-sm-none justify-content-between align-items-center">
                                 <span class="findSeller">Find a seller that delivers to you</span>
@@ -121,37 +121,9 @@
                                     <a href="" class="pinLink text-decoration-none">Enter pincode</a>
                                 </div>
                             </div>
-                            <div class="deliveryDatediv d-flex d-sm-none align-items-center py-3">
-                                <!--- <img src="assets/images/truck.png" class="" alt="" height="25"> --->
-                                <div class="deliveryDate d-flex flex-column ms-2">
-                                    <div class="deliverySpandiv d-flex ">
-                                        <span class="greenFree text-success">Free Delivery</span>
-                                        <span class="deliveryCharge text-decoration-line-through ms-2">₹40</span>
-                                        <span class="dateSpan ms-2">Delivered by 10 Oct, Thursday</span>
-                                    </div>
-                                    <div class="ifOrdereddiv d-flex">
-                                        <span class="ifOrdered">If ordered within</span>
-                                        <span class="ifOrderedcolor ms-2">01h 13m 53s</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="replacementMainDiv d-flex d-sm-none w-100 mt-3 justify-content-between">
-                                <div class="replacementDiv d-flex flex-column align-items-center">
-                                   <!---  <img src="assets/images/servicecenter.png" class="mt-1" width="30" alt=""> --->
-                                    <span class="replacementSpan mx-auto mt-2 text-center">7 Days Service Center Replacement/Repair</span>
-                                </div>
-                                <div class="replacementDiv d-flex flex-column  align-items-center">
-                                    <!--- <img src="assets/images/cashdelivery.png" class="" width="30" alt=""> --->
-                                    <span class="replacementSpan mx-auto mt-2 text-center">Cash On Delivery available</span>
-                                </div>
-                                <div class="replacementDiv d-flex flex-column  align-items-center">
-                                    <!--- <img src="assets/images/fassured.png" class="" alt=""> --->
-                                    <span class="replacementSpan mx-auto mt-4">F-Assured</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    <div class="withoutExchangediv d-none d-sm-flex">
+                    <div class="withoutExchangediv d-flex">
                         <div class="exchangeTable d-flex flex-column">
                             <div class="tableRowone forColor d-flex">
                                 <input type="radio" class="radioInput">
@@ -187,8 +159,14 @@
                                     Enter Pincode
                                 </div>
                             </div>
+                            <cfset local.currentDate = now()>
+                            <cfset local.futureDate = dateAdd("d", 10, currentDate)>
+                            <cfset local.dayOfMonth = day(futureDate)>
+                            <cfset local.monthName = left(monthAsString(month(futureDate)),3)>
+                            <cfset local.Weekday = DayOfWeekAsString(dayOfMonth)>
+                            <cfset local.formattedDate = local.dayOfMonth & " " & local.monthName & ", " & local.Weekday>
                             <div class="expectedDeliveydiv d-flex flex-column">
-                                <span class="deliveryDate d-flex">Delivery by 9 Oct, Wednesday 
+                                <span class="deliveryDate d-flex">Delivery by #local.formattedDate#
                                                <span class="deliveryFree ms-1"> | Free</span>
                                 <span class="text-decoration-line-through ms-1">Rs.40</span>
                                <!---  <img src="assets/images/roundquestion.png" class="ms-1" alt=""> --->
