@@ -1,7 +1,7 @@
 
                 <cfif NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME)>
                     <cfif find("product.cfm", CGI.SCRIPT_NAME)>
-                        <div class="bottomContentsdiv d-none d-lg-flex flex-column">
+                        <div class="bottomContentsdiv d-flex flex-column">
                             <span class="bottomHead">Top Stories:Brand Directory</span>
                             <a href="" class="bottomLinks text-decoration-none">
                                 <span class="linkSpan">
@@ -12,6 +12,7 @@
                             </a>
                         </div>
                     </cfif>
+         
                 <div class="footerDiv d-flex flex-column bg-dark">
                     <div class="footerContents d-flex px-5 pt-5">
                         <div class="footerColOne d-flex w-75 justify-content-between ps-3 pe-5 me-4">
@@ -106,6 +107,8 @@
         </cfif>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+        <script src="Assets/js/bootstrap.bundle.min.js"></script>
+        <script src="Assets/js/order.js"></script>
         <script src="Assets/js/script.js"></script>
         <script src="Assets/js/homePage.js"></script>
     </body>

@@ -4,7 +4,7 @@
         <cfif arrayLen(local.cartItems)>
             <div class="bodyContents d-flex">
                 <div class="bodyLeftdiv w-100">
-                    <div class="scroll" d-flex flex-column>
+                    <div class="scroll d-flex flex-column w-100">
                         <div class="topPincodediv d-flex justify-content-between align-items-center">
                             <span class="pinAddress">From Saved Addresses</span>
                             <div class="pinDiv">
@@ -59,7 +59,7 @@
                         </div>
                         <div class="priceMaindiv d-flex flex-column">
                             <div class="price d-flex justify-content-between pt-2">
-                                <span class="amount">Price (#local.items# items)</span>
+                                <span class="amount" >Price (<span id="totalItems">#local.items#</span> items)</span>
                                 <span class="number" id="cartTotalAmount">₹#local.totalPrice#</span>
                             </div>
                             <div class="price d-flex justify-content-between pt-2">

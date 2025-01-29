@@ -872,7 +872,7 @@
     <cffunction  name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
         <cfargument  name = "productId" type = "integer" required = "true">
         <cfif structKeyExists(session, "role")>
-            <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
+            <cfquery name = "local.fetchCart" datasource = "#application.dataSource#">
                 SELECT 1 
                 FROM
                     tblCart
@@ -883,7 +883,7 @@
             <cfif queryRecordCount(local.fetchCart)>
                 <cfreturn false>
             <cfelse>
-                <cfquery name = "local.insertCart">
+                <cfquery name = "local.insertCart" datasource = "#application.dataSource#">
                     INSERT INTO
                         tblCart(
                             fldProductId,
@@ -905,7 +905,7 @@
 
     <cffunction  name = "cartItems" returnType = "array">
         <cfargument  name = "cartId" default = 0 type = "integer">
-        <cfargument  name = "productId" default = 26 required = "false" type = "integer">
+        <cfargument  name = "productId" default = 0 type = "integer">
         <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
             SELECT
                 C.fldCartItem_ID,
@@ -928,6 +928,9 @@
             WHERE
                 C.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
                 AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+                <cfif arguments.cartId NEQ 0>
+                    AND C.fldCart_ID = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
+                </cfif>
                 <cfif arguments.productId NEQ 0>
                     AND C.fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
                 </cfif>
@@ -971,7 +974,7 @@
 
     <cffunction  name = "deleteCartItem" returnType="array" returnFormat = "json" access = "remote">
         <cfargument  name = "cartId" required = "true" type = "integer">
-        <cfquery name = "local.deleteCartItem">
+        <cfquery name = "local.deleteCartItem" datasource = #application.dataSource#>
             DELETE FROM
                 tblCart
             WHERE 
@@ -1094,6 +1097,61 @@
             <cfset arrayAppend(local.dataArray, local.jsonData)>
         </cfloop>
         <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "buyProduct" access = "remote" returnType = "any" returnFormat = "json">
+        <cfargument  name = "productId" type = "integer" required = "true">
+        <cfargument  name = "totalPrice" type = "numeric" required = "true">
+        <cfargument  name = "totalTax" type = "numeric" required = "true">
+        <cfargument  name = "quantity" type = "numeric" required = "true">
+        <cfargument  name = "addressId" type = "integer" required = "true">
+        <cfargument  name = "cardNumber" type = "numeric" required = "true">
+        <cfargument  name = "cvv" type = "numeric" required = "true">
+        <cfset local.cardNumber = 1234567891>
+        <cfset local.cvv = 123>
+        <cfset local.jsonData = {}>
+        <cfif (arguments.cardNumber EQ local.cardNumber) AND (arguments.cvv EQ local.cvv)>
+            <cfset local.generatedUUID = createUUID()>
+            <cfquery name = "local.buyProduct"  datasource = #application.dataSource# result = "local.buyProductResult">
+                INSERT INTO
+                    tblOrders(
+                        fldOrder_ID,
+                        fldUserId,
+                        fldAddressId,
+                        fldTotalPrice,
+                        tblTotalTax
+                    )
+                VALUES(
+                    <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#arguments.totalPrice#" cfsqltype = "decimal">,
+                    <cfqueryparam value = "#arguments.totalTax#" cfsqltype = "varchar">
+                )
+            </cfquery>
+            <cfset local.productDetails = displayProduct(productId = arguments.productId)>
+            <cfquery name = "local.orderItems" datasource = #application.dataSource#>
+                INSERT INTO 
+                    tblOrderItems( 
+                        fldOrderId,
+                        tblProductId,
+                        fldQuantity,
+                        fldUnitPrice,
+                        fldUnitTax
+                    )
+                VALUES(
+                    <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#arguments.quantity#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#local.productDetails.price#" cfsqltype = "decimal">,
+                    <cfqueryparam value = "#local.productDetails.tax#" cfsqltype = "decimal">
+                )
+            </cfquery>
+            <cfreturn true>
+        <cfelse>
+            <cfset local.jsonData['Error'] = 'Card Invalid'>
+        </cfif>
+        <cfreturn local.jsonData>
     </cffunction>
 
 </cfcomponent>

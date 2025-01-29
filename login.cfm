@@ -23,6 +23,8 @@
                     <cfloop collection="#local.result#" item="key">
                         <span class="text-danger fw-bold">#local.result[key]#</span>
                     </cfloop>
+                <cfelseif structKeyExists(URL, "cartLogin")>
+                    <cflocation  url="cart.cfm" addtoken="no">
                 <cfelseif session.roleId EQ 1>
                     <cflocation  url="admin.cfm" addtoken="no">
                 <cfelseif session.roleId EQ 2>

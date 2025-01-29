@@ -399,24 +399,24 @@ function subcategoryViewButton(ID){
                 success : function(response) {
                     let data=JSON.parse(response);
                     for (let struct of data) {
-                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${struct.productId}>
-                                        <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
-                                            <div class="d-flex">
-                                                <button class="border-0 imageEditButton" value=${struct.productId} type="button" onClick="editImages(this)">
-                                                    <img src="Assets/uploadImages/${struct.file}" class="" alt="" width="50" height="50">
-                                                </button>
+                        var childDiv = `<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${struct.productId}>
+                                            <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
+                                                <div class="d-flex">
+                                                    <button class="border-0 imageEditButton" value=${struct.productId} type="button" onClick="editImages(this)">
+                                                        <img src="Assets/uploadImages/${struct.file}" class="" alt="" width="50" height="50">
+                                                    </button>
+                                                </div>
+                                                <div class="d-flex flex-column px-2">
+                                                    <span class="productsNamespan px-2">${struct.productName}</span>
+                                                    <span class="productsBrandspan fw-bold px-2 mt-2">${struct.brandName}</span>
+                                                    <span class="productsPricespan px-2 mt-2">RS.${struct.price}</span>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                                    <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${struct.productId}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                                </div>
                                             </div>
-                                            <div class="d-flex flex-column px-2">
-                                                <span class="productsNamespan px-2">${struct.productName}</span>
-                                                <span class="productsBrandspan fw-bold px-2 mt-2">${struct.brandName}</span>
-                                                <span class="productsPricespan px-2 mt-2">RS.${struct.price}</span>
-                                            </div>
-                                            <div class="d-flex">
-                                                <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${struct.productId}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
-                                            </div>
-                                        </div>
-                                    </div>`;
+                                        </div>`;
                         div.append(childDiv)
                     }
                   }

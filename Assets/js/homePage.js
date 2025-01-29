@@ -175,6 +175,7 @@ function viewMoreSubmit(string){
             $("#cartOrderAmount").text("₹"+cartAmount)
             $('#cartTotalAmount').text(totalAmount)
             $("#cartTotalTax").text(totalTax)
+            $('#totalItems').text(data.length)
             $("#"+cartId).remove()
             $("#cartNumber").text(dataLen)
         }
@@ -264,13 +265,13 @@ function addAddressBtn(){
             if (data = "true"){
                 let div = $('#addressListDiv')
                 let childDiv = `<div class = "addressDiv d-flex flex-column" id="">
-                                <span class="addressNameSpan fw-bold">${formData.get('firstName')} ${formData.get('lastName')}
-                                    <span class="ms-2 addressPhoneSpan">${formData.get('phone')}</span>
-                                </span>
-                                <span class="addressSpan">
-                                   ${formData.get('addressOne')}, ${formData.get('addressTwo')}, ${formData.get('city')}, ${formData.get('state')}, ${formData.get('pincode')}
-                                </span>
-                            </div>`
+                                    <span class="addressNameSpan fw-bold">${formData.get('firstName')} ${formData.get('lastName')}
+                                        <span class="ms-2 addressPhoneSpan">${formData.get('phone')}</span>
+                                    </span>
+                                    <span class="addressSpan">
+                                    ${formData.get('addressOne')}, ${formData.get('addressTwo')}, ${formData.get('city')}, ${formData.get('state')}, ${formData.get('pincode')}
+                                    </span>
+                                </div>`
                 div.append(childDiv)
                 $('#addressModal').css({"display":"none"})
                 $('#manageAddressDiv').removeClass('d-none')
@@ -282,5 +283,4 @@ function addAddressBtn(){
 
 $(document).ready(function() {
     var dataValue = [$(".quantityBtn").data('value')]; 
-    console.log(dataValue);
 });

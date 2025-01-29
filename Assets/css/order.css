@@ -1,0 +1,29 @@
+.titleDiv{
+    border: none;
+    padding: 10px 20px;
+    color: black;
+    font-size: 17px;
+    font-weight: 700;
+    width: 100%;
+    display: flex;
+    justify-content: left;
+}
+.accordion{
+    width: 600px;
+    padding: 40px 20px;
+}
+.topBtn{
+    background-color: #0d9191;
+    color: white;
+}
+.accordianBtn{
+    padding: 10px 30px;
+    border: none;
+    background-color: #fb641b;
+    border-radius: 5px;
+    color: white;
+}
+.userInfo{
+    font-size: 15px;
+    padding: 3px 0px;
+}
