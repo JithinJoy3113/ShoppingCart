@@ -136,10 +136,18 @@ function viewMoreSubmit(string){
                 if(struct.cartId == cartId){
                     $("#price"+cartId).text(struct.totalPrice)
                     $("#tax"+cartId).text(struct.totalTax)
-                    $("#quantity"+cartId).text(struct.quantity)
+                    $("#quantity"+cartId).text(struct.quantity).attr('data-value',struct.quantity)
                 }
                 totalAmount = totalAmount + struct.totalPrice
                 totalTax = totalTax + struct.totalTax
+            }
+            let quantitySpan = $('#quantity'+cartId)
+            let count = parseFloat(quantitySpan.attr('data-value'))
+            if(count == 1){
+                $('#minus'+cartId).prop("disabled", true);
+            }
+            else{
+                $('#minus'+cartId).prop("disabled", false);
             }
             let cartAmount = totalAmount + totalTax
             $("#cartOrderAmount").text("₹"+cartAmount)

@@ -11,6 +11,8 @@
 .accordion{
     width: 600px;
     padding: 40px 20px;
+    overflow-x: scroll;
+    height: 600px;
 }
 .topBtn{
     background-color: #0d9191;
@@ -26,4 +28,31 @@
 .userInfo{
     font-size: 15px;
     padding: 3px 0px;
+}
+.accordianBody{
+    min-height: 700px;
+    position: relative;
+}
+.orderRightdiv{
+	margin-left:10px;
+    max-width:396px;
+    position: sticky;
+}
+.successButton{
+    border: 1px solid rgb(25 135 84);
+    border-radius: 10px;
+    padding: 5px 10px;
+    color: rgb(25 135 84);
+    font-size: 14px;
+    font-weight: bold;
+    width: 50%;
+}
+.orderSuccessDiv{
+    display: none;
+    flex-direction: column;
+    padding: 50px 50px;
+    position: absolute;
+    top: 10px;
+    background-color: white;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.2);
 }

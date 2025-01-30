@@ -12,12 +12,12 @@
                             </div>
                         </div>
                         <cfset local.totalPrice = 0>
-                        <cfset local.tax = 0>
+                        <cfset local.totalTax = 0>
                         <cfset local.items = arrayLen(local.cartItems)>
                         <cfloop array="#local.cartItems#" item="item">
                             <cfset local.cartId = item.cartId>
                             <cfset local.totalPrice += item.totalPrice>
-                            <cfset local.tax += item.totalTax>
+                            <cfset local.totalTax += item.totalTax>
                             <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id = "#item.cartId#">
                                 <div class="itemMain d-flex flex-column">
                                     <div class="itemDiv d-flex">
@@ -39,7 +39,11 @@
                                     </div>
                                     <div class="removeDiv d-flex justify-content-between">
                                         <div class="UpdateQuantityDiv d-flex">
-                                            <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.cartId#" id="minus#item.cartId#" onclick="updateQuantity(this)">-</button>
+                                            <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.cartId#" id="minus#item.cartId#" onclick="updateQuantity(this)"
+                                                <cfif item.quantity EQ 1>
+                                                    disabled
+                                                </cfif>
+                                            >-</button>
                                             <span id="quantity#item.cartId#" data-value = "#item.quantity#">#item.quantity#</span>
                                             <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.cartId#" onclick="updateQuantity(this)">+</button>
                                         </div>
@@ -65,16 +69,16 @@
                             </div>
                             <div class="price d-flex justify-content-between pt-2">
                                 <span class="amount">Tax</span>
-                                <span class="number" id="cartTotalTax">₹#local.tax#</span>
+                                <span class="number" id="cartTotalTax">₹#local.totalTax#</span>
                             </div>
-                            <div class="price d-flex justify-content-between">
+                            <!--- <div class="price d-flex justify-content-between">
                                 <span class="amount">Discount</span>
                                 <span class="number green">− ₹11,961</span>
                             </div>
                             <div class="price d-flex justify-content-between">
                                 <span class="amount">Coupons for you</span>
                                 <span class="number green">-187</span>
-                            </div>
+                            </div> --->
                             <div class="price d-flex justify-content-between align-items-center">
                                 <span class="amount">Delivery Charges</span>
                                 <span class="deliverySpan d-flex align-items-center">
@@ -84,10 +88,10 @@
                             </div>
                             <div class="price d-flex justify-content-between py-3">
                                 <span class="totalAmount">Total Amount</span>
-                                <cfset local.totalAmount = local.totalPrice+local.tax>
+                                <cfset local.totalAmount = local.totalPrice+local.totalTax>
                                 <span class="totalAmount" id="cartOrderAmount">₹#local.totalAmount#</span>
                             </div>
-                            <span class="save pb-3">You will save ₹12,148 on this order</span>                      
+                            <!--- <span class="save pb-3">You will save ₹12,148 on this order</span>--->
                         </div>
                     </div>
                     <div class="safeDiv d-flex mt-4 ps-3">

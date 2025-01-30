@@ -1099,14 +1099,13 @@
         <cfreturn local.dataArray>
     </cffunction>
 
-    <cffunction  name = "buyProduct" access = "remote" returnType = "any" returnFormat = "json">
-        <cfargument  name = "productId" type = "integer" required = "true">
-        <cfargument  name = "totalPrice" type = "numeric" required = "true">
-        <cfargument  name = "totalTax" type = "numeric" required = "true">
-        <cfargument  name = "quantity" type = "numeric" required = "true">
+    <cffunction  name = "buyProduct" access = "remote" returnType = "struct" returnFormat = "json">
+        <cfargument  name = "totalOrderPrice" type = "numeric" required = "true">
+        <cfargument  name = "totalOrderTax" type = "numeric" required = "true">
         <cfargument  name = "addressId" type = "integer" required = "true">
-        <cfargument  name = "cardNumber" type = "numeric" required = "true">
-        <cfargument  name = "cvv" type = "numeric" required = "true">
+        <cfargument  name = "cardNumber" type = "numeric" required = "true" default = 1>
+        <cfargument  name = "cvv" type = "numeric" required = "true" default = 1>
+        <cfargument  name = "detailsStruct" type = "struct" required = "true">
         <cfset local.cardNumber = 1234567891>
         <cfset local.cvv = 123>
         <cfset local.jsonData = {}>
@@ -1125,31 +1124,34 @@
                     <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
                     <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
                     <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">,
-                    <cfqueryparam value = "#arguments.totalPrice#" cfsqltype = "decimal">,
-                    <cfqueryparam value = "#arguments.totalTax#" cfsqltype = "varchar">
+                    <cfqueryparam value = "#arguments.totalOrderPrice#" cfsqltype = "decimal">,
+                    <cfqueryparam value = "#arguments.totalOrderTax#" cfsqltype = "decimal">
                 )
             </cfquery>
-            <cfset local.productDetails = displayProduct(productId = arguments.productId)>
-            <cfquery name = "local.orderItems" datasource = #application.dataSource#>
-                INSERT INTO 
-                    tblOrderItems( 
-                        fldOrderId,
-                        tblProductId,
-                        fldQuantity,
-                        fldUnitPrice,
-                        fldUnitTax
-                    )
-                VALUES(
-                    <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
-                    <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
-                    <cfqueryparam value = "#arguments.quantity#" cfsqltype = "integer">,
-                    <cfqueryparam value = "#local.productDetails.price#" cfsqltype = "decimal">,
-                    <cfqueryparam value = "#local.productDetails.tax#" cfsqltype = "decimal">
-                )
-            </cfquery>
-            <cfreturn true>
+            <cfloop collection="#arguments.detailsStruct#" item="item">
+                <cfif isStruct(arguments.detailsStruct[item])>
+                    <cfquery name = "local.orderItems" datasource = #application.dataSource#>
+                        INSERT INTO 
+                            tblOrderItems( 
+                                fldOrderId,
+                                tblProductId,
+                                fldQuantity,
+                                fldUnitPrice,
+                                fldUnitTax
+                            )
+                        VALUES(
+                            <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
+                            <cfqueryparam value = #arguments.detailsStruct[item].productId# cfsqltype = "integer">,
+                            <cfqueryparam value = #arguments.detailsStruct[item].totalQuantity# cfsqltype = "integer">,
+                            <cfqueryparam value = "#arguments.detailsStruct[item].unitPrice#" cfsqltype = "decimal">,
+                            <cfqueryparam value = "#arguments.detailsStruct[item].unitTax#" cfsqltype = "decimal">
+                        )
+                    </cfquery>
+                </cfif>
+            </cfloop>
+            <cfset local.jsonData['Result'] = true>
         <cfelse>
-            <cfset local.jsonData['Error'] = 'Card Invalid'>
+            <cfset local.jsonData['Result'] = false>
         </cfif>
         <cfreturn local.jsonData>
     </cffunction>

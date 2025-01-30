@@ -1,5 +1,4 @@
 <cfoutput>
-<cfdump  var="#application.dataSource#">
     <div class="userBodyMainDiv" id="randomProductsMainDiv">
         <div class="userBodyImageDiv">
             <!-- <img src="Assets/Images/cartImage.jpg" alt="" class="w-100 h-50"> -->
