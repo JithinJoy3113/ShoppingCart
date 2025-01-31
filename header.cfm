@@ -11,6 +11,7 @@
             <link rel = "stylesheet" href = "Assets/css/cart.css">
             <link rel = "stylesheet" href = "Assets/css/profile.css">
             <link rel = "stylesheet" href = "Assets/css/order.css">
+            <link rel = "stylesheet" href = "Assets/css/orderHistory.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <cfif structKeyExists(session, "role")>
                 <title>#session.role#</title>

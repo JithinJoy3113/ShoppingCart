@@ -28,6 +28,7 @@ function buyNow(Id){
                 orderAmount += struct.price
                 orderTax += struct.tax
                 buyDetails[struct.productId] = {}
+                buyDetails[struct.productId]['productName'] = struct.productName
                 buyDetails[struct.productId]['totalPrice'] = struct.price
                 buyDetails[struct.productId]['totalTax'] = struct.tax
                 buyDetails[struct.productId]['unitTax'] = struct.tax
@@ -68,6 +69,7 @@ function buyNowCart(Id){
                 orderAmount += struct.totalPrice
                 orderTax += struct.totalTax
                 buyDetails[struct.productId] = {}
+                buyDetails[struct.productId]['productName'] = struct.productName
                 buyDetails[struct.productId]['totalPrice'] = struct.totalPrice
                 buyDetails[struct.productId]['totalTax'] = struct.totalTax
                 buyDetails[struct.productId]['unitTax'] = struct.tax
@@ -168,26 +170,59 @@ function buyProductBtn(ID){
     let address = $('input[name="addressRadio"]:checked').val();
     let cardNumber = $('#cardNumberInput').val() 
     let cardCvv = $('#cardCVVInput').val() 
-        $.ajax({
-            url : './Components/shoppingCart.cfc?method=buyProduct',
-            type : 'post',
-            data : {
-                detailsStruct : localStorage.getItem("buyDetails"),
-                addressId : address,
-                totalOrderPrice : buyDetails.orderAmount,
-                totalOrderTax : buyDetails.orderTax,
-                cardNumber : cardNumber,
-                cvv : cardCvv
-            },
-            success : function(response){
-                let data = JSON.parse(response)
-                if(data.Result == true){
-                    $('#orderSuccessDiv').css({"display":"flex"})
-                    $('#accordianBody').addClass("disabled")
-                }
-                else{
-                    $('#cardError').text('Invalid Card')
-                }
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=buyProduct',
+        type : 'post',
+        data : {
+            detailsStruct : localStorage.getItem("buyDetails"),
+            addressId : address,
+            totalOrderPrice : buyDetails.orderAmount,
+            totalOrderTax : buyDetails.orderTax,
+            cardNumber : cardNumber,
+            cvv : cardCvv
+        },
+        success : function(response){
+            let data = JSON.parse(response)
+            if(data.Result == true){
+                $('#orderSuccessDiv').css({"display":"flex"})
+                $('#accordianBody').addClass("disabled")
             }
-        }) 
+            else{
+                $('#cardError').text('Invalid Card')
+            }
+        }
+    }) 
+}
+
+function pdfDownload(ID){
+    $.ajax({
+        url:'./Components/shoppingCart.cfc?method=getPdf',
+        type: "post",
+        data:{
+            orderId:ID
+        },
+        success:function(response){
+            let path=JSON.parse(response)
+            let tag=document.createElement('a');
+            tag.href=`Assets/Pdfs/${path}`;
+            tag.download=path;
+            tag.click();
+            tag.remove();
+        }
+    })
+}
+
+function deleteProfileAddress(ID){
+    let addressId = ID.value;
+    $.ajax({
+        url:'./Components/shoppingCart.cfc?method=addressDelete',
+        type: "post",
+        data:{
+            addressId : addressId
+        },
+        success:function(response){
+            let data=JSON.parse(response)
+            $('#address'+addressId).remove()
+        }
+    })
 }

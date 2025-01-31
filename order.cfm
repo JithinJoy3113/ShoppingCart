@@ -201,6 +201,9 @@
     <div class="orderSuccessDiv align-items-center" id="orderSuccessDiv">
         <img src="Assets/Images/ordersuccess.png" alt="" width="100" height="100">
         <span class="successMessage fw-bold text-success mt-3">Order Placed Successfully</span>
-        <button type="button" class="successButton mt-3">Close</button>
+        <div class="d-flex justify-content-center align-items-center">
+            <button type="button" class="successButton mt-3">Close</button>
+            <a href="orderHistory.cfm" class="text-decoration-none historyBtn">Orders</a>
+        </div>
     </div>
 </cfoutput>

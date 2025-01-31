@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class = "myOrdersDiv d-flex flex-column">
-                <span class = "ordersSpan py-3"><a href="" class="text-decoration-none profileSideNav">MY ORDERS</a></span>
+                <span class = "ordersSpan py-3"><a href="orderHistory.cfm" class="text-decoration-none profileSideNav">MY ORDERS</a></span>
                 <div class = "accountSttingsDiv">
                     <span class="accountSetting">ACCOUNT SETTINGS</span>
                     <div class="accountLinksDiv d-flex flex-column">
@@ -43,7 +43,6 @@
                 </div>
             </form>
             <div class = "personalInformationDiv d-none flex-column pt-3 pb-4 pe-3" id = "manageAddressDiv">
-                <span class = "personalInformationHead pb-3">Manage Address<button type="button" value="" class = "ms-2 profileEditBtn fw-bold" onclick = "">Edit</button></span>
                 <span class = "addressAddSpan pb-3">
                     <button type="button" value="" class = "addAddressBtn border-0 d-flex align-items-center" onclick = "openAddressModal()">
                         <img src="Assets/Images/plus.png" alt="" width="18" height="18" class = "me-2"> ADD NEW ADDRESS
@@ -52,7 +51,7 @@
                 <div class = "addressListDiv" id="addressListDiv">
                     <cfset local.address = application.obj.fetchAddress()>
                         <cfloop array="#local.address#" item="item">
-                            <!-- <div class="addressMainDiv d-flex justify-content-between"> -->
+                           <div class="addressMainDiv d-flex justify-content-between" id="address#item.addressID#">
                                 <div class = "addressDiv d-flex flex-column">
                                     <span class="addressNameSpan fw-bold">#item.firstName# #item.lastName#
                                         <span class="ms-2 addressPhoneSpan">#item.phone#</span>
@@ -61,14 +60,14 @@
                                         #item.addressOne#, #item.addressTwo#, #item.city#, #item.state#, #item.pincode#
                                     </span>
                                 </div>
-                               <!--  <div class = "addressEditBtnDiv d-flex align-items-center" data-value = "#item.addressID#">
+                               <div class = "addressEditBtnDiv d-flex align-items-center" data-value = "#item.addressID#">
                                     <img src="Assets/Images/dots.png" alt="" class = "addressEditImg" data-value = "#item.addressID#" width="20" height="20">
                                 </div>
-                                <div class="addressEditDiv d-flex flex-column py-3">
-                                    <button type="button">Edit</button>
-                                    <button type="button bt-2">Delete</button>
-                                </div> -->
-                            <!-- </div> -->
+                                <div class="addressEditDiv py-3" id="#item.addressID#" data-value = "#item.addressID#">
+                                    <!-- <button type="button">Edit</button> -->
+                                    <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteProfileAddress(this)">Delete</button>
+                                </div>
+                            </div>
                         </cfloop>
                 </div>
                 <button type = "button" name = "profileSave" class = "addCategory mt-4 mx-auto d-none" id="profileAddressSave" onclick="">Save</button>
@@ -101,3 +100,4 @@
         </div>
     </div>
 </cfoutput>
+

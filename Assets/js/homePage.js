@@ -45,6 +45,14 @@ $(document).ready(function () {
         $('#mainImg').attr('src', img);
         $('#mainImg').attr('data-value', img);
     })
+    let divId;
+    $('.addressEditBtnDiv').on('click', function () {
+        divId = $(this).attr('data-value');
+        $('#'+divId).css('display', "flex");
+    })
+    $('.addressEditDiv').on('mouseout', function () {
+        $('#'+divId).css('display', "none");
+    })
 })
 
 function filterButton(){
