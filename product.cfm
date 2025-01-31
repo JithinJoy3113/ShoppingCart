@@ -7,7 +7,7 @@
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
                         <div class="productImagesdivLeft d-flex flex-column">
-                            <cfset local.productDetails = application.obj.displayProduct(productId = local.productId )>
+                            <cfset local.productDetails = application.obj.displayProduct(productId = local.productId)>
                             <cfset local.imageResult = application.obj.viewImages(productId = local.productId)>
                             <cfloop array="#local.imageResult#" item="item">
                                 <div class="productImg d-flex align-items-center justify-content-center">
@@ -44,7 +44,7 @@
                             </div>
                             <div class="buyButtondiv w-50 ms-1">
                                 <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
-                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white">
+                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
                                     <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
                                 </a>
                             </div>
@@ -160,11 +160,11 @@
                                 </div>
                             </div>
                             <cfset local.currentDate = now()>
-                            <cfset local.futureDate = dateAdd("d", 10, currentDate)>
-                            <cfset local.dayOfMonth = day(futureDate)>
-                            <cfset local.monthName = left(monthAsString(month(futureDate)),3)>
-                            <cfset local.Weekday = DayOfWeekAsString(dayOfMonth)>
-                            <cfset local.formattedDate = local.dayOfMonth & " " & local.monthName & ", " & local.Weekday>
+                            <cfset local.futureDate = dateAdd("d", 10, local.currentDate)>
+                           <cfset local.dayOfMonth = day(local.futureDate)>
+                             <cfset local.monthName = left(monthAsString(month(local.futureDate)),3)>
+                            <cfset local.Weekday = DayOfWeekAsString(DayOfWeek(local.futureDate))>
+                            <cfset local.formattedDate = local.dayOfMonth & " " & local.monthName & ", " & local.Weekday> 
                             <div class="expectedDeliveydiv d-flex flex-column">
                                 <span class="deliveryDate d-flex">Delivery by #local.formattedDate#
                                                <span class="deliveryFree ms-1"> | Free</span>

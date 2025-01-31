@@ -45,6 +45,14 @@ $(document).ready(function () {
         $('#mainImg').attr('src', img);
         $('#mainImg').attr('data-value', img);
     })
+    let divId;
+    $('.addressEditBtnDiv').on('click', function () {
+        divId = $(this).attr('data-value');
+        $('#'+divId).css('display', "flex");
+    })
+    $('.addressEditDiv').on('mouseout', function () {
+        $('#'+divId).css('display', "none");
+    })
 })
 
 function filterButton(){
@@ -136,10 +144,18 @@ function viewMoreSubmit(string){
                 if(struct.cartId == cartId){
                     $("#price"+cartId).text(struct.totalPrice)
                     $("#tax"+cartId).text(struct.totalTax)
-                    $("#quantity"+cartId).text(struct.quantity)
+                    $("#quantity"+cartId).text(struct.quantity).attr('data-value',struct.quantity)
                 }
                 totalAmount = totalAmount + struct.totalPrice
                 totalTax = totalTax + struct.totalTax
+            }
+            let quantitySpan = $('#quantity'+cartId)
+            let count = parseFloat(quantitySpan.attr('data-value'))
+            if(count == 1){
+                $('#minus'+cartId).prop("disabled", true);
+            }
+            else{
+                $('#minus'+cartId).prop("disabled", false);
             }
             let cartAmount = totalAmount + totalTax
             $("#cartOrderAmount").text("₹"+cartAmount)
@@ -175,6 +191,7 @@ function viewMoreSubmit(string){
             $("#cartOrderAmount").text("₹"+cartAmount)
             $('#cartTotalAmount').text(totalAmount)
             $("#cartTotalTax").text(totalTax)
+            $('#totalItems').text(data.length)
             $("#"+cartId).remove()
             $("#cartNumber").text(dataLen)
         }
@@ -264,13 +281,13 @@ function addAddressBtn(){
             if (data = "true"){
                 let div = $('#addressListDiv')
                 let childDiv = `<div class = "addressDiv d-flex flex-column" id="">
-                                <span class="addressNameSpan fw-bold">${formData.get('firstName')} ${formData.get('lastName')}
-                                    <span class="ms-2 addressPhoneSpan">${formData.get('phone')}</span>
-                                </span>
-                                <span class="addressSpan">
-                                   ${formData.get('addressOne')}, ${formData.get('addressTwo')}, ${formData.get('city')}, ${formData.get('state')}, ${formData.get('pincode')}
-                                </span>
-                            </div>`
+                                    <span class="addressNameSpan fw-bold">${formData.get('firstName')} ${formData.get('lastName')}
+                                        <span class="ms-2 addressPhoneSpan">${formData.get('phone')}</span>
+                                    </span>
+                                    <span class="addressSpan">
+                                    ${formData.get('addressOne')}, ${formData.get('addressTwo')}, ${formData.get('city')}, ${formData.get('state')}, ${formData.get('pincode')}
+                                    </span>
+                                </div>`
                 div.append(childDiv)
                 $('#addressModal').css({"display":"none"})
                 $('#manageAddressDiv').removeClass('d-none')
@@ -282,5 +299,4 @@ function addAddressBtn(){
 
 $(document).ready(function() {
     var dataValue = [$(".quantityBtn").data('value')]; 
-    console.log(dataValue);
 });

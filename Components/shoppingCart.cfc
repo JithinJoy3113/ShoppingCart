@@ -872,7 +872,7 @@
     <cffunction  name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
         <cfargument  name = "productId" type = "integer" required = "true">
         <cfif structKeyExists(session, "role")>
-            <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
+            <cfquery name = "local.fetchCart" datasource = "#application.dataSource#">
                 SELECT 1 
                 FROM
                     tblCart
@@ -883,7 +883,7 @@
             <cfif queryRecordCount(local.fetchCart)>
                 <cfreturn false>
             <cfelse>
-                <cfquery name = "local.insertCart">
+                <cfquery name = "local.insertCart" datasource = "#application.dataSource#">
                     INSERT INTO
                         tblCart(
                             fldProductId,
@@ -903,9 +903,9 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name = "cartItems" returnType = "array">
-        <cfargument  name = "cartId" default = 0 type = "integer">
-        <cfargument  name = "productId" default = 26 required = "false" type = "integer">
+    <cffunction  name = "cartItems" returnType = "array" access = "remote" returnFormat="json">
+        <cfargument  name = "cartId" default = 0 type = "integer" required = "false">
+        <cfargument  name = "productId" default = 0 type = "integer"  required = "false">
         <cfquery name = "local.fetchCart" datasource = #application.dataSource#>
             SELECT
                 C.fldCartItem_ID,
@@ -928,6 +928,9 @@
             WHERE
                 C.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
                 AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+                <cfif arguments.cartId NEQ 0>
+                    AND C.fldCart_ID = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
+                </cfif>
                 <cfif arguments.productId NEQ 0>
                     AND C.fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
                 </cfif>
@@ -971,7 +974,7 @@
 
     <cffunction  name = "deleteCartItem" returnType="array" returnFormat = "json" access = "remote">
         <cfargument  name = "cartId" required = "true" type = "integer">
-        <cfquery name = "local.deleteCartItem">
+        <cfquery name = "local.deleteCartItem" datasource = #application.dataSource#>
             DELETE FROM
                 tblCart
             WHERE 
@@ -1078,6 +1081,7 @@
                 tblAddress
             WHERE 
                 fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+                AND fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         </cfquery>
         <cfset local.dataArray = []>
         <cfloop query="local.fetchAddress">
@@ -1094,6 +1098,245 @@
             <cfset arrayAppend(local.dataArray, local.jsonData)>
         </cfloop>
         <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "buyProduct" access = "remote" returnType = "struct" returnFormat = "json">
+        <cfargument  name = "totalOrderPrice" type = "numeric" required = "true">
+        <cfargument  name = "totalOrderTax" type = "numeric" required = "true">
+        <cfargument  name = "addressId" type = "integer" required = "true">
+        <cfargument  name = "cardNumber" type = "numeric" required = "true" default = 1>
+        <cfargument  name = "cvv" type = "numeric" required = "true" default = 1>
+        <cfargument  name = "detailsStruct" type = "struct" required = "true">
+        <cfset local.cardNumber = 1234567891>
+        <cfset local.cvv = 123>
+        <cfset local.jsonData = {}>
+        <cfset local.payAmount = arguments.totalOrderPrice + arguments.totalOrderTax>
+        <cfif (arguments.cardNumber EQ local.cardNumber) AND (arguments.cvv EQ local.cvv)>
+            <cfset local.generatedUUID = createUUID()>
+            <cfquery name = "local.buyProduct"  datasource = #application.dataSource# result = "local.buyProductResult">
+                INSERT INTO
+                    tblOrders(
+                        fldOrder_ID,
+                        fldUserId,
+                        fldAddressId,
+                        fldTotalPrice,
+                        fldTotalTax
+                    )
+                VALUES(
+                    <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#arguments.totalOrderPrice#" cfsqltype = "decimal">,
+                    <cfqueryparam value = "#arguments.totalOrderTax#" cfsqltype = "decimal">
+                )
+            </cfquery>
+            <cfloop collection="#arguments.detailsStruct#" item="item">
+                <cfif isStruct(arguments.detailsStruct[item])>
+                    <cfquery name = "local.orderItems" datasource = #application.dataSource#>
+                        INSERT INTO 
+                            tblOrderItems( 
+                                fldOrderId,
+                                fldProductId,
+                                fldQuantity,
+                                fldUnitPrice,
+                                fldUnitTax
+                            )
+                        VALUES(
+                            <cfqueryparam value = "#local.generatedUUID#" cfsqltype = "varchar">,
+                            <cfqueryparam value = #arguments.detailsStruct[item].productId# cfsqltype = "integer">,
+                            <cfqueryparam value = #arguments.detailsStruct[item].totalQuantity# cfsqltype = "integer">,
+                            <cfqueryparam value = "#arguments.detailsStruct[item].unitPrice#" cfsqltype = "decimal">,
+                            <cfqueryparam value = "#arguments.detailsStruct[item].unitTax#" cfsqltype = "decimal">
+                        )
+                    </cfquery>
+                </cfif>
+            </cfloop>
+            <cfset local.jsonData['Result'] = true>
+            <cfmail  from="jithinj3113@gmail.com" subject="Order Placed" to="jithinj403113@gmail.com" type = "html">
+                Order placed successfully!
+                <table  border="1" cellpadding="5" cellspacing="0">
+                    <tr>
+                        <th>Order Id</th>
+                        <td>#local.generatedUUID#</td>
+                    </tr>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Tax</th>
+                    </tr>
+                    <cfloop collection="#arguments.detailsStruct#" item="item">
+                        <cfif isStruct(arguments.detailsStruct[item])>
+                            <tr>
+                                <td>#arguments.detailsStruct[item].productName#</td>
+                                <td> #arguments.detailsStruct[item].totalQuantity#</td>
+                                <td>#arguments.detailsStruct[item].totalPrice#</td>
+                                <td> #arguments.detailsStruct[item].totalTax#</td>
+                            </tr>
+                        </cfif>
+                    </cfloop>
+                    <tr>
+                        <th>Total Amount</th>
+                        <td> #local.payAmount#</td>
+                    </tr>
+                </table>
+            </cfmail>
+        <cfelse>
+            <cfset local.jsonData['Result'] = false>
+        </cfif>
+        <cfreturn local.jsonData>
+    </cffunction>
+
+    <cffunction  name = "getOrders" access = "public" returnType = "array">
+        <cfquery name = "local.orders" datasource = #application.dataSource#>
+            SELECT
+                O.fldOrder_ID,
+                O.fldTotalPrice,
+                O.fldTotalTax,
+                DATE_FORMAT(O.fldOrderDate, '%Y-%m-%d %H:%i:%s') AS datetime,
+                A.fldAddress_Id,
+                A.fldFirstName,
+                A.fldlastname,
+                A.fldAddressLine1,
+                A.fldAddressLine2,
+                A.fldCity,
+                A.fldState,
+                A.fldPincode,
+                A.fldPhoneNumber
+            FROM
+                tblOrders O
+            INNER JOIN
+                tblAddress A ON O.fldAddressId = A.fldAddress_ID
+            WHERE 
+                O.fldUserId =  <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+        </cfquery>
+        <cfset local.dataArray = []>
+        <cfloop query = "local.orders">
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['orderId'] = local.orders.fldOrder_ID>
+            <cfset local.jsonData['totalPrice'] = local.orders.fldTotalPrice>
+            <cfset local.jsonData['totalTax'] = local.orders.fldTotalTax>
+            <cfset local.jsonData['orderDate'] = local.orders.datetime>
+            <cfset local.jsonData['addressId'] = local.orders.fldAddress_Id>
+            <cfset local.jsonData['firstName'] = local.orders.fldFirstName>
+            <cfset local.jsonData['lastName'] = local.orders.fldlastname>
+            <cfset local.jsonData['address1'] = local.orders.fldAddressLine1>
+            <cfset local.jsonData['address2'] = local.orders.fldAddressLine2>
+            <cfset local.jsonData['city'] = local.orders.fldCity>
+            <cfset local.jsonData['state'] = local.orders.fldState>
+            <cfset local.jsonData['pincode'] = local.orders.fldPincode>
+            <cfset local.jsonData['phone'] = local.orders.fldPhoneNumber>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "getOrderItems" access = "public" returnType = "array">
+        <cfargument  name = "orderId" required = "true" type = "string">
+        <cfquery name = "local.getItems" datasource = #application.dataSource#>
+            SELECT
+                OI.fldQuantity,
+                OI.fldUnitPrice,
+                OI.fldUnitTax,
+                P.fldProductName,
+                I.fldImageFileName,
+                B.fldBrandName
+            FROM
+                tblorderItems OI
+            INNER JOIN
+                tblProducts P ON P.fldProduct_ID = OI.fldProductId
+            INNER JOIN
+                tblProductImages I ON I.fldProductId = P.fldProduct_ID
+            INNER JOIN
+                tblBrand B ON B.fldBrand_ID = P.fldBrandId
+            WHERE 
+                OI.fldOrderId = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+                AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+        </cfquery>
+        <cfset local.dataArray = []>
+        <cfloop query = "local.getItems">
+            <cfset local.jsonData = {}>
+            <cfset local.jsonData['quantity'] = local.getItems.fldQuantity>
+            <cfset local.jsonData['unitPrice'] = local.getItems.fldUnitPrice>
+            <cfset local.jsonData['unitTax'] = local.getItems.fldUnitTax>
+            <cfset local.jsonData['productName'] = local.getItems.fldProductName>
+            <cfset local.jsonData['fileName'] = local.getItems.fldImageFileName>
+            <cfset local.jsonData['brandName'] = local.getItems.fldBrandName>
+            <cfset arrayAppend(local.dataArray, local.jsonData)>
+        </cfloop>
+        <cfreturn local.dataArray>
+    </cffunction>
+
+    <cffunction  name = "getPdf" returnType = "string" access = "remote" returnFormat="json"> 
+        <cfargument  name="orderId" default = 1 required = "true">
+        <cfset local.pdf = getOrderItems(orderId = arguments.orderId)>
+        <cfset local.nameDate = "#arguments.orderId#.pdf">
+        <cfset local.count = 1>
+        <cfset local.totalAmount = 0>
+        <cfoutput>
+            <cfdocument format = "pdf"
+                filename = "../Assets/Pdfs/#local.nameDate#" 
+                overwrite = "true"
+                bookmark = "no" 
+                orientation = "landscape"
+                localUrl = "yes"> 
+                <style>
+                    table, th, td {
+                        padding:10px 20px;
+                        border-collapse: collapse;
+                        text-align: left;
+                    }
+                    .headSpan{
+                        font-size:18px;
+                        font-weight: bold;
+                        margin-left:400px;
+                    }
+                    
+                </style>
+                <span class="headSpan">Invoice</span>
+                <table>
+                    <tr>
+                        <th>Si.No</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Tax</th>
+                        <th>Total</th>
+                    </tr>
+                    <cfloop array = "#local.pdf#" item = "item" >
+                        <cfset local.totalAmount += item.quantity*(item.unitTax + item.unitPrice)>
+                        <tr>
+                            <td>#local.count#</td>
+                            <td>#item.productName#</td>
+                            <td>#item.quantity#</td>
+                            <td>#item.unitPrice#</td>
+                            <td>#item.unitTax#</td>
+                            <td>#item.quantity*(item.unitTax + item.unitPrice)#</td>
+                        </tr>
+                        <cfset local.count += 1>
+                    </cfloop>
+                    <tr>
+                        <th>Total:</th>
+                        <td>#local.totalAmount#</td>
+                    </tr>
+                </table>
+            </cfdocument>
+        </cfoutput>
+        <cfreturn local.nameDate>
+    </cffunction>
+
+    <cffunction  name = "addressDelete" access = "remote" returnType = "boolean" returnFormat = "json">
+        <cfargument  name = "addressId" required = "true" default = 1>
+        <cfquery name = "local.deleteAddress" datasource = #application.dataSource#>
+            UPDATE
+                tblAddress
+            SET
+                fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+                fldDeactivatedDate =  <cfqueryparam value = "#now()#" cfsqltype = "timestamp">
+            WHERE
+                fldAddress_ID = <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">
+        </cfquery>
+        <cfreturn true>
     </cffunction>
 
 </cfcomponent>

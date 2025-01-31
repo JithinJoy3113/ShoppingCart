@@ -64,7 +64,7 @@
 .border {
     border: 5px solid green;
 }
-.addressNameSpan,.addressSpan{
+.addressNameSpan,.addressSpan,.orderItemPrice{
     font-size: 14px;
 }
 .addressEditImg{
@@ -75,6 +75,9 @@
 }
 .addressEditDiv{
     position: absolute;
-    right: 35px;
-    top: 33px;
+    right: 17px;
+    top: 28px;
+}
+.addressEditDiv{
+    display: none;
 }
