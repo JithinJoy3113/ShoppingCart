@@ -2,8 +2,27 @@
     <div class="orderHistoryBody">
         <div class="orderHistoryDiv">
             <div class="orderDiv">
-                <cfset local.orders = application.obj.getOrders()>
+                <cfif structKeyExists(form, "orderSearch")>
+                    <cfset local.orders = application.obj.getOrders(search = orderSearch)>
+                    <cfif NOT arrayLen((local.orders))>
+                        <div class="noOrdersDiv">
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                <img src="Assets/Images/cartEmpty.jpg" alt="" class = "mx-auto cartEmptyImg">
+                                <span class="noOrderMessage">Oops! No matching orders for the search</span>
+                                <a href="orderHistory.cfm?" class = "d-flex justify-content-center cartLoginBtn mx-auto mt-2">Back</a>
+                            </div>
+                        </div>
+                        <cfabort>
+                    </cfif>
+                <cfelse>
+                    <cfset local.orders = application.obj.getOrders()>
+                </cfif>
                 <cfif arrayLen((local.orders))>
+                    <form action="" method="post">
+                        <div class = "d-flex justify-content-center">
+                            <input type="search" class="historySearch" placeholder="Search for order history..." name="orderSearch">
+                        </div>
+                    </form>
                     <cfloop array="#local.orders#" item="item">
                         <div class="orderItemDiv d-flex flex-column mt-5">
                             <div class="orderHead d-flex align-items-center justify-content-between">
@@ -52,6 +71,17 @@
                             </div>
                         </div>
                     </cfloop>
+                <cfelse>
+                    <div class="noOrdersDiv">
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <img src="Assets/Images/cartEmpty.jpg" alt="" class = "mx-auto cartEmptyImg">
+                            <span class="noOrderMessage">Oops! No orders placed. Let's change that.</span>
+                            <span class = "mt-2 loginMessage d-flex justify-content-center">
+                                Explore oru products and find somenthing you like. 
+                            </span>
+                            <a href="homePage.cfm?" class = "d-flex justify-content-center cartLoginBtn mx-auto mt-2">Home</a>
+                        </div>
+                    </div>
                 </cfif>
             </div>
         </div>

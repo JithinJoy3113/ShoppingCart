@@ -103,14 +103,14 @@
         <cfelse>
             <div class = "cartEmptyDiv">
                 <div class = "cartLogin d-flex flex-column justify-content-center">
-                    <img src="Assets/Images/cartEmpty.jpg" alt="" class = "cartEmptyImg">
+                    <img src="Assets/Images/cartEmpty.jpg" alt="" class = "mx-auto cartEmptyImg">
                     <span class = "mt-2 missingDiv  d-flex justify-content-center">
                         Cart Empty?
                     </span>
                     <span class = "mt-2 loginMessage d-flex justify-content-center">
                         Explore oru products and find somenthing you like. 
                     </span>
-                    <a href="homePage.cfm?" class = "d-flex justify-content-center cartLoginBtn mx-auto mt-2">Products</a>
+                    <a href="homePage.cfm?" class = "d-flex justify-content-center cartLoginBtn mx-auto mt-2">Home</a>
                 </div>
             </div>            
         </cfif>

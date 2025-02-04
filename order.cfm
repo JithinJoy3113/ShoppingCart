@@ -30,10 +30,15 @@
                 </h2>
                 <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="##accordionFlushExample">
                     <div class="accordion-body">
-                        <div class = "accordianAddressDiv">
+                        <span class = "addressAddSpan pb-3">
+                            <button type="button" value="" class = "addAddressBtn border-0 d-flex align-items-center" onclick = "openAddressModal()">
+                                <img src="Assets/Images/plus.png" alt="" width="18" height="18" class = "me-2"> ADD NEW ADDRESS
+                            </button>
+                        </span>
+                        <div class = "accordianAddressDiv d-flex flex-column" id="accordianAddressDiv">
                             <cfset local.address = application.obj.fetchAddress()>
                             <cfloop array="#local.address#" item="item" index="index">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center" id="accordianAddressSelect">
                                     <input type="radio" name="addressRadio" value="#item.addressID#" 
                                         <cfif index == 1>
                                             checked
@@ -140,8 +145,9 @@
                         <div class = "accordianCardDiv d-flex flex-column">
                             <span class="fw-bold my-2">Card Details</span>
                             <div class="cardNumberDiv d-flex">
-                                <input type="text" name="cardNumberInput" id="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter Card Number">
-                                <input type="text" name="cardCVVInput" id="cardCVVInput" class="ms-2 w-25 form-control cardCVVInput" placeholder="CVV">
+                                <input type="text" id="cardNumberInput" name="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter your card number" maxlength="14" required pattern="\d{4}(\s?\d{4}){3}">
+                                <!-- <input type="text" name="cardNumberInput" id="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter Card Number"> -->
+                                <input type="text" name="cardCVVInput" id="cardCVVInput" class="ms-2 w-25 form-control cardCVVInput" maxlength="3" placeholder="CVV">
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -198,11 +204,45 @@
             </div>
         </div>
     </div>
+    <div class = "addressModal accordianAddressModal pb-3 fw-bold" id="addressModal">
+        <form action="" method="post" id="addressForm">
+            <span class="addressHead px-2 py-3">Add New Address</span>
+            <div class="addressNameDiv d-flex py-3">
+                <input type="text" placeholder="FirstName" class="form-control" name="firstName">
+                <input type="text" placeholder="LastName" class="form-control ms-2" name="lastName">
+            </div>
+            <span class="text-danger removeSpan" id="profileFirstNameError"></span>
+            <div class="addressLineDiv d-flex py-3">
+                <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="form-control"></textarea>
+                <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="form-control ms-2"></textarea>
+            </div>
+            <span class="text-danger removeSpan" id="profileAddressOneError"></span>
+            <div class="stateDiv d-flex py-3">
+                <input type="text" class="form-control" placeholder="City" name="city">
+                <input type="text" class="form-control  ms-2" placeholder="State" name="state">
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-danger removeSpan" id="profileCityError"></span>
+                <span class="text-danger removeSpan" id="profileStateError"></span>
+            </div>
+            <div class="pinDiv d-flex py-3">
+                <input type="text" class="form-control" placeholder="Pincode" name="pincode">
+                <input type="text" class="form-control ms-2" placeholder="Phone" name="phone">
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-danger removeSpan" id="profilePincodeError"></span>
+                <span class="text-danger removeSpan" id="profilePhoneError"></span>
+            </div>
+            <div class="d-flex justify-content-center py-3">
+                <button type="button" value="" class="addAddressClose" onclick="addAddressCloseBtn()">Cancel</button>
+                <button type="button" value="" class="addCategory" onclick="addAddressBtn()">Submit</button>
+            </div>
+        </form>
+    </div>
     <div class="orderSuccessDiv align-items-center" id="orderSuccessDiv">
         <img src="Assets/Images/ordersuccess.png" alt="" width="100" height="100">
         <span class="successMessage fw-bold text-success mt-3">Order Placed Successfully</span>
         <div class="d-flex justify-content-center align-items-center">
-            <button type="button" class="successButton mt-3">Close</button>
             <a href="orderHistory.cfm" class="text-decoration-none historyBtn">Orders</a>
         </div>
     </div>

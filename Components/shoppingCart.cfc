@@ -1028,7 +1028,7 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name = "addAddress" access = "remote" returnType = "any" returnFormat = "json">
+    <cffunction  name = "addAddress" access = "remote" returnType = "struct" returnFormat = "json">
         <cfargument  name = "firstName" type = "string" required = "true">
         <cfargument  name = "lastName" type = "string" required = "true">
         <cfargument  name = "addressOne" type = "string" required = "true">
@@ -1037,32 +1037,66 @@
         <cfargument  name = "city" type = "string" required = "true">
         <cfargument  name = "pincode" type = "string" required = "true">
         <cfargument  name = "phone" type = "string" required = "true">
-        <cfquery name = "local.city" datasource = #application.dataSource#>
-            INSERT INTO
-                tblAddress(
-                    fldUserId,
-                    fldFirstName,
-                    fldLastName,
-                    fldAddressLine1,
-                    fldAddressLine2,
-                    fldState,
-                    fldCity,
-                    fldPincode,
-                    fldPhoneNumber
+        <cfset local.result = {}>
+        <cfif NOT len(arguments.firstName)>
+            <cfset local.result['profileFirstNameError'] = 'FirstName is Required'>
+        </cfif>
+        <cfif NOT len(arguments.addressOne)>
+            <cfset local.result['profileAddressOneError'] = 'Address is Required'>
+        </cfif>
+        <cfif NOT len(arguments.state)>
+            <cfset local.result['profileStateError'] = 'State is Required'>
+        <cfelseif  NOT  not REFind("^[A-Za-z\s\-\']+$", arguments.state)>
+            <cfset local.result['profileCityError'] = 'State can only contain letters'>
+        </cfif>
+        <cfif NOT len(arguments.city)>
+            <cfset local.result['profileCityError'] = 'City is Required'>
+        <cfelseif  NOT  not REFind("^[A-Za-z\s\-\']+$", arguments.city)>
+            <cfset local.result['profileCityError'] = 'City can only contain letters'>
+        </cfif>
+        <cfif NOT len(arguments.pincode)>
+            <cfset local.result['profilePincodeError'] = 'Pincode is Required'>
+        <cfelseif NOT(REFind("^\d{6}$", "#arguments.pincode#"))>
+            <cfset local.result['profilePincodeError'] = 'Pincode Must be 6 Digit'>
+        </cfif>
+        <cfif NOT len(arguments.phone)>
+            <cfset local.result['profilePhoneError'] = 'Mobile is Required'>
+        <cfelseif NOT(REFind("^\d{10}$", "#arguments.phone#"))>
+            <cfset local.result['profilePincodeError'] = 'Mobile Must be 10 Digit'>
+        </cfif>
+        <cfif structCount(local.result)>
+            <cfset local.result['Result'] = 'Error'>
+            <cfreturn local.result>
+        <cfelse>
+            <cfquery name = "local.city" datasource = #application.dataSource# result = "local.addressResult">
+                INSERT INTO
+                    tblAddress(
+                        fldUserId,
+                        fldFirstName,
+                        fldLastName,
+                        fldAddressLine1,
+                        fldAddressLine2,
+                        fldState,
+                        fldCity,
+                        fldPincode,
+                        fldPhoneNumber
+                    )
+                VALUES(
+                    <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+                    <cfqueryparam value = "#arguments.firstName#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.lastName#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.addressOne#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.addressTwo#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.state#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.city#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.pincode#" cfsqltype = "varchar">,
+                    <cfqueryparam value = "#arguments.phone#" cfsqltype = "varchar">
                 )
-            VALUES(
-                <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
-                <cfqueryparam value = "#arguments.firstName#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.lastName#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.addressOne#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.addressTwo#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.state#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.city#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.pincode#" cfsqltype = "varchar">,
-                <cfqueryparam value = "#arguments.phone#" cfsqltype = "varchar">
-            )
-        </cfquery>
-        <cfreturn true>
+            </cfquery>
+            <cfset local.result['Result'] = 'Success'>
+            <cfset local.result['addressId'] = local.addressResult.generatedKey>
+            <cfreturn local.result>
+        </cfif>
     </cffunction>
 
     <cffunction  name = "fetchAddress" returnType = "array" >
@@ -1107,7 +1141,7 @@
         <cfargument  name = "cardNumber" type = "numeric" required = "true" default = 1>
         <cfargument  name = "cvv" type = "numeric" required = "true" default = 1>
         <cfargument  name = "detailsStruct" type = "struct" required = "true">
-        <cfset local.cardNumber = 1234567891>
+        <cfset local.cardNumber = 123456789123>
         <cfset local.cvv = 123>
         <cfset local.jsonData = {}>
         <cfset local.payAmount = arguments.totalOrderPrice + arguments.totalOrderTax>
@@ -1188,6 +1222,7 @@
     </cffunction>
 
     <cffunction  name = "getOrders" access = "public" returnType = "array">
+        <cfargument  name = "search" required = "false" type = "string">
         <cfquery name = "local.orders" datasource = #application.dataSource#>
             SELECT
                 O.fldOrder_ID,
@@ -1209,6 +1244,9 @@
                 tblAddress A ON O.fldAddressId = A.fldAddress_ID
             WHERE 
                 O.fldUserId =  <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+                <cfif structKeyExists(arguments, 'search')>
+                    AND O.fldOrder_ID =<cfqueryparam value = "#arguments.search#" cfsqltype = "varchar">
+                </cfif>
         </cfquery>
         <cfset local.dataArray = []>
         <cfloop query = "local.orders">
@@ -1270,6 +1308,8 @@
     <cffunction  name = "getPdf" returnType = "string" access = "remote" returnFormat="json"> 
         <cfargument  name="orderId" default = 1 required = "true">
         <cfset local.pdf = getOrderItems(orderId = arguments.orderId)>
+        <cfset local.address = getOrders(search = arguments.orderId)>
+        <cfset local.address = local.address[1]>
         <cfset local.nameDate = "#arguments.orderId#.pdf">
         <cfset local.count = 1>
         <cfset local.totalAmount = 0>
@@ -1291,9 +1331,23 @@
                         font-weight: bold;
                         margin-left:400px;
                     }
-                    
                 </style>
-                <span class="headSpan">Invoice</span>
+                <cfoutput>
+                    <div class = "pdfDiv">
+                        <div class="pdfAddressDiv">
+                            Shipping Address : <br><br>
+                            <span>
+                                #local.address.firstName# #local.address.lastName# <br>
+                                #local.address.address1#, #local.address.address2#<br>
+                                #local.address.city#, #local.address.state#<br>
+                                #local.address.pincode#<br>
+                                #local.address.phone#  
+                            </span>
+                        <div><br>
+                        Order ID : #arguments.orderId#<br>
+                        Order Date :  #local.address.orderDate#
+                    <div>
+                </cfoutput>
                 <table>
                     <tr>
                         <th>Si.No</th>

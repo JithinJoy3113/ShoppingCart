@@ -79,17 +79,27 @@
                         <input type="text" placeholder="FirstName" class="form-control" name="firstName">
                         <input type="text" placeholder="LastName" class="form-control ms-2" name="lastName">
                     </div>
+                    <span class="text-danger removeSpan" id="profileFirstNameError"></span>
                     <div class="addressLineDiv d-flex py-3">
                         <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="form-control"></textarea>
                         <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="form-control ms-2"></textarea>
                     </div>
+                    <span class="text-danger removeSpan" id="profileAddressOneError"></span>
                     <div class="stateDiv d-flex py-3">
                         <input type="text" class="form-control" placeholder="City" name="city">
                         <input type="text" class="form-control  ms-2" placeholder="State" name="state">
                     </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-danger removeSpan" id="profileCityError"></span>
+                        <span class="text-danger removeSpan" id="profileStateError"></span>
+                    </div>
                     <div class="pinDiv d-flex py-3">
                         <input type="text" class="form-control" placeholder="Pincode" name="pincode">
                         <input type="text" class="form-control ms-2" placeholder="Phone" name="phone">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-danger removeSpan" id="profilePincodeError"></span>
+                        <span class="text-danger removeSpan" id="profilePhoneError"></span>
                     </div>
                     <div class="d-flex justify-content-center py-3">
                         <button type="button" value="" class="addAddressClose" onclick="addAddressCloseBtn()">Cancel</button>

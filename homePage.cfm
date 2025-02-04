@@ -1,12 +1,17 @@
 <cfoutput>
     <div class="userBodyMainDiv" id="randomProductsMainDiv">
-        <div class="userBodyImageDiv">
-            <!-- <img src="Assets/Images/cartImage.jpg" alt="" class="w-100 h-50"> -->
-        </div>
+        <cfif NOT structKeyExists(form, "myButton")>
+            <div class="userBodyImageDiv">
+                <img src="Assets/Images/cartImage.jpg" alt="" class="w-100 h-50">
+            </div>
+        </cfif>
         <div class="randomProductsMainDiv d-flex flex-column">
             <cfif structKeyExists(form, "myButton")>
                 <cfset local.randomProducts = application.obj.randomProducts(search = form.searchInput)>
                 <div class="randumHead ps-3">
+                    <cfif NOT arrayLen(local.randomProducts)>
+                        No
+                    </cfif>
                     Search Result for "#form.searchInput#"
                 </div>
             <cfelse>
