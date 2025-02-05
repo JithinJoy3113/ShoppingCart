@@ -59,14 +59,13 @@
                                     <span class="orderItemTotal fw-bold text-success">Total Amount : #item.totalPrice + item.totalTax#</span>
                                 </div>
                                 <div class="shippingAddressDiv d-flex flex-column">
-                                    <span class="fw-bold">Address</span>
+                                    <span class="fw-bold">Address:</span>
                                     <span class="orderAddressSapn deliveryAddress">#item.firstName# #item.lastName#, #item.address1# #item.address2#,
                                      #item.city# #item.state# #item.pincode#</span>
                                 </div>
                                 <div class="orderContactDiv d-flex flex-column">
-                                    <span class="fw-bold">Contact</span>
+                                    <span class="fw-bold">Contact:</span>
                                     <span class="orderAddressSapn">#item.phone#</span>
-                                    <span class="orderAddressSapn">#session.userMail#</span>
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,5 @@
 <cfoutput>
-    <div class = "profileBodyDiv d-flex">
+    <div class = "profileBodyDiv d-flex" id="profileBodyDiv">
         <div class = "profileLeftDiv d-flex flex-column">
             <div class = "profileNameDiv d-flex">
                 <div class = "profileImg">
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="addressEditDiv py-3" id="#item.addressID#" data-value = "#item.addressID#">
                                     <!-- <button type="button">Edit</button> -->
-                                    <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteProfileAddress(this)">Delete</button>
+                                    <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteProfileAddressButton(this)">Delete</button>
                                 </div>
                             </div>
                         </cfloop>
@@ -107,6 +107,14 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+    <div class="deleteConfirm mx-auto mb-4" id="deleteConfirm">
+        <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Delete Address</span>
+        <div class="logoutMesage  d-flex flex-column justify-content-center">
+            <span class="confirmMessage fw-bold">Are you sure want to Delete?</span>
+            <button class="alertBtn mt-3" type="button" name="alertDeleteBtn" id="alertAddressDeleteBtn" value="" onClick="return deleteProfileAddress(this)">Delete</button>
+            <button class="alertCancelBtn mt-2" type="button" name="alertDeleteBtn" id="" value="cancel" onClick="return deleteAlert(this)">Cancel</button>
         </div>
     </div>
 </cfoutput>

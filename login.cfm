@@ -31,7 +31,12 @@
                     <cfif structKeyExists(url, "productId")>
                         <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
                         <cfif local.cart>
-                            <cflocation  url="cart.cfm">
+                            <cfif structKeyExists(URL, "page")>
+                                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
+                                <cflocation  url="order.cfm?productId=#local.encryptedProductId#&page=buy" addtoken="no">
+                            <cfelse> 
+                                <cflocation  url="cart.cfm">
+                            </cfif>
                         </cfif>
                     <cfelse>
                         <cflocation  url="homePage.cfm" addtoken="no">

@@ -693,13 +693,13 @@
                 B.fldBrandName
             FROM
                 tblBrand B
-            RIGHT JOIN
+            INNER JOIN
                 tblProducts P ON B.fldBrand_ID = P.fldBrandId
-            RIGHT JOIN
+            INNER JOIN
                 tblProductImages I ON P.fldProduct_ID = I.fldProductId
-            RIGHT JOIN
+            INNER JOIN
                 tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
-            RIGHT JOIN
+            INNER JOIN
                 tblCategory C ON C.fldCategory_ID = S.fldCategoryId
             WHERE
                 P.fldActive = < cfqueryparam value = 1 cfsqltype = "integer" >
@@ -881,9 +881,9 @@
                     AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
             </cfquery>
             <cfif queryRecordCount(local.fetchCart)>
-                <cfreturn false>
+                <cfreturn 'cart exist'>
             <cfelse>
-                <cfquery name = "local.insertCart" datasource = "#application.dataSource#">
+                <cfquery name = "local.insertCart" datasource = "#application.dataSource#" result = "local.cartResult">
                     INSERT INTO
                         tblCart(
                             fldProductId,
@@ -896,7 +896,7 @@
                         <cfqueryparam value = 1 cfsqltype = "integer">
                     )
                 </cfquery>
-                <cfreturn true>
+                <cfreturn local.cartResult.generatedKey>
             </cfif>
         <cfelse>
             <cfreturn false>
@@ -973,12 +973,18 @@
     </cffunction>
 
     <cffunction  name = "deleteCartItem" returnType="array" returnFormat = "json" access = "remote">
-        <cfargument  name = "cartId" required = "true" type = "integer">
+        <cfargument  name = "cartId" required = "false" type = "integer">
+        <cfargument  name = "productId" required = "false" type = "integer">
         <cfquery name = "local.deleteCartItem" datasource = #application.dataSource#>
             DELETE FROM
                 tblCart
             WHERE 
-                fldCartItem_ID = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
+                <cfif structKeyExists(arguments, "cartId")>
+                    fldCartItem_ID = <cfqueryparam value = "#arguments.cartId#" cfsqltype = "integer">
+                </cfif>
+                <cfif structKeyExists(arguments, "productId")>
+                     fldProductId= <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+                </cfif>
         </cfquery>
         <cfset local.dataArray = cartItems()>
         <cfreturn local.dataArray>
@@ -996,9 +1002,9 @@
             FROM 
                 tblUser
             WHERE
-                fldEmail = <cfqueryparam value = '#arguments.profileEmail#' cfsqltype = 'varchar'>
-                OR fldPhoneNumber = <cfqueryparam value = '#arguments.profilePhone#' cfsqltype = 'varchar'> 
-                AND NOT fldUser_ID = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+                (fldEmail = <cfqueryparam value = '#arguments.profileEmail#' cfsqltype = 'varchar'>
+                OR fldPhoneNumber = <cfqueryparam value = '#arguments.profilePhone#' cfsqltype = 'varchar'>) 
+                AND NOT fldUser_ID = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
         </cfquery>
         <cfif queryRecordCount(local.selectUser)>
             <cfreturn false>
@@ -1046,12 +1052,12 @@
         </cfif>
         <cfif NOT len(arguments.state)>
             <cfset local.result['profileStateError'] = 'State is Required'>
-        <cfelseif  NOT  not REFind("^[A-Za-z\s\-\']+$", arguments.state)>
+        <cfelseif  NOT REFind("^[A-Za-z\s\-\']+$", arguments.state)>
             <cfset local.result['profileCityError'] = 'State can only contain letters'>
         </cfif>
         <cfif NOT len(arguments.city)>
             <cfset local.result['profileCityError'] = 'City is Required'>
-        <cfelseif  NOT  not REFind("^[A-Za-z\s\-\']+$", arguments.city)>
+        <cfelseif  NOT REFind("^[A-Za-z\s\-\']+$", arguments.city)>
             <cfset local.result['profileCityError'] = 'City can only contain letters'>
         </cfif>
         <cfif NOT len(arguments.pincode)>
@@ -1183,6 +1189,7 @@
                             <cfqueryparam value = "#arguments.detailsStruct[item].unitTax#" cfsqltype = "decimal">
                         )
                     </cfquery>
+                    <cfset deleteCartItem(productId = arguments.detailsStruct[item].productId)>
                 </cfif>
             </cfloop>
             <cfset local.jsonData['Result'] = true>
@@ -1228,7 +1235,7 @@
                 O.fldOrder_ID,
                 O.fldTotalPrice,
                 O.fldTotalTax,
-                DATE_FORMAT(O.fldOrderDate, '%Y-%m-%d %H:%i:%s') AS datetime,
+                DATE_FORMAT(O.fldOrderDate, '%d-%m-%Y %H:%i:%s') AS datetime,
                 A.fldAddress_Id,
                 A.fldFirstName,
                 A.fldlastname,
@@ -1247,6 +1254,8 @@
                 <cfif structKeyExists(arguments, 'search')>
                     AND O.fldOrder_ID =<cfqueryparam value = "#arguments.search#" cfsqltype = "varchar">
                 </cfif>
+            ORDER BY 
+                O.fldOrderDate DESC
         </cfquery>
         <cfset local.dataArray = []>
         <cfloop query = "local.orders">

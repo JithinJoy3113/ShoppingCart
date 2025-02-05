@@ -32,22 +32,22 @@
                                     <cfif arrayLen(local.cart)>
                                         <a href="cart.cfm" class="cartBtn text-decoration-none text-white d-flex justify-content-center">GO TO CART</a>
                                     <cfelse>
-                                        <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
+                                        <button type = "button" class="cartBtn border-0 text-white W-50" value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
                                             <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
                                         </button>
                                     </cfif>
                                 <cfelse>
-                                    <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
+                                    <button type = "button" class="cartBtn border-0 text-white W-50" value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
                                         <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
                                     </button>
                                 </cfif>
                             </div>
-                            <div class="buyButtondiv w-50 ms-1">
-                                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
-                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
-                                    <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
-                                </a>
-                            </div>
+                            <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
+                            <a  href="order.cfm?productId=#local.encryptedProductId#&page=buy" class="W-50 buy buyButtondiv text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
+                         
+                                        <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
+                                
+                            </a>
                         </div>
                     </form>
                     <div class="productButtondiv d-flex d-sm-none w-100 px-2">

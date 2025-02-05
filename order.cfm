@@ -85,8 +85,8 @@
                                 <cfset local.productId = item.productId>
                                 <cfif structKeyExists(item, "quantity")>
                                     <cfset local.quantity = item.quantity>
-                                    <cfset local.totalPrice += item.totalPrice>
-                                    <cfset local.totalTax += item.totalTax>
+                                    <cfset local.totalPrice += item.price>
+                                    <cfset local.totalTax += item.tax>
                                 <cfelse>
                                     <cfset local.quantity = 1>
                                     <cfset local.totalPrice += item.price>
@@ -120,7 +120,7 @@
                                                 <span id="quantity#item.productId#" data-value = "#local.quantity#" class = "quantitySpan">#local.quantity#</span>
                                                 <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.productId#" onclick="updateQuantityOrder(this)">+</button>
                                             </div>
-                                            <button class="later me-5 border-0" type = "button" value = #item.productId#  onClick= "removeOrderItem(this)">REMOVE</button>
+                                            <button class="later me-5 border-0" type = "button" value = #item.productId#  onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                         </div>
                                     </div>
                                 </div>
@@ -145,15 +145,15 @@
                         <div class = "accordianCardDiv d-flex flex-column">
                             <span class="fw-bold my-2">Card Details</span>
                             <div class="cardNumberDiv d-flex">
-                                <input type="text" id="cardNumberInput" name="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter your card number" maxlength="14" required pattern="\d{4}(\s?\d{4}){3}">
+                                <input type="text" id="cardNumberInput" name="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter your card number" maxlength="14" required pattern="\d{4}(\s?\d{4}){3}" oninput="checkCard()">
                                 <!-- <input type="text" name="cardNumberInput" id="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter Card Number"> -->
-                                <input type="text" name="cardCVVInput" id="cardCVVInput" class="ms-2 w-25 form-control cardCVVInput" maxlength="3" placeholder="CVV">
+                                <input type="text" name="cardCVVInput" id="cardCVVInput" class="ms-2 w-25 form-control cardCVVInput" maxlength="3" placeholder="CVV" oninput="checkCard()">
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
                             <cfset local.payAmount = local.totalPrice+local.totalTax>
                             <span class="text-danger fw-bold removeSpan me-4" id="cardError"></span>
-                            <button class="mt-2 accordianBtn" type="button" data-bs-toggle="collapse" value="#local.productId#" onclick="buyProductBtn(this)" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <button class="mt-2 accordianBtn disabled" type="button" data-bs-toggle="collapse" value="#local.productId#" onclick="buyProductBtn(this)" aria-expanded="false" aria-controls="flush-collapseOne" id="paymentButon">
                                 PAY &##8377<span class="btnPrice" id="btnPrice">#local.payAmount#</span>
                             </button>
                         </div>
@@ -238,6 +238,14 @@
                 <button type="button" value="" class="addCategory" onclick="addAddressBtn()">Submit</button>
             </div>
         </form>
+    </div>
+    <div class="deleteConfirm mx-auto mb-4" id="deleteConfirm">
+        <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Delete Item</span>
+        <div class="logoutMesage  d-flex flex-column justify-content-center">
+            <span class="confirmMessage fw-bold">Are you sure want to Delete?</span>
+            <button class="alertBtn mt-3" type="button" name="alertDeleteBtn" id="alertCartDeleteBtn" value="" onClick="return removeOrderItem(this)">Delete</button>
+            <button class="alertCancelBtn mt-2" type="button" name="alertDeleteBtn" id="" value="cancel" onClick="return deleteAlert(this)">Cancel</button>
+        </div>
     </div>
     <div class="orderSuccessDiv align-items-center" id="orderSuccessDiv">
         <img src="Assets/Images/ordersuccess.png" alt="" width="100" height="100">
