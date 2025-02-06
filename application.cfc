@@ -5,7 +5,7 @@
     <cffunction  name="onApplicationStart" returnType="void">
         <cfset application.dataSource = "cartDatasource">
         <cfset application.obj = createObject("component", "Components.shoppingCart")>
-<!---         <cfset application.secretKey = generateSecretKey("AES")>  --->
+        <!--- <cfset application.secretKey = generateSecretKey("AES")>  --->
     </cffunction>
 
      <cffunction  name="onRequestStart" returnType="void">

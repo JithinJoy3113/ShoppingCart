@@ -2,7 +2,7 @@
     <cfif structKeyExists(session, "role")>
         <cfset local.cartItems = application.obj.cartItems()>
         <cfif arrayLen(local.cartItems)>
-            <div class="bodyContents d-flex">
+            <div class="bodyContents d-flex" id = "bodyContents">
                 <div class="bodyLeftdiv w-100">
                     <div class="scroll d-flex flex-column w-100">
                         <div class="topPincodediv d-flex justify-content-between align-items-center">
@@ -47,13 +47,13 @@
                                             <span id="quantity#item.cartId#" data-value = "#item.quantity#">#item.quantity#</span>
                                             <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.cartId#" onclick="updateQuantity(this)">+</button>
                                         </div>
-                                        <button class="later me-5 border-0" type = "button" value = #item.cartId# onClick= "removeCartItem(this)">REMOVE</button>
+                                        <button class="later me-5 border-0" type = "button" value = #item.cartId# onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                     </div>
                                 </div>
                             </div>
                         </cfloop>
                         <div class="placeOrderdiv d-flex justify-content-end">
-                            <button class="orderButton" type="button" value="#local.cartId#" onclick = "buyNowCart(this)">PLACE ORDER</button>
+                            <button class="orderButton" type="button" value="#local.cartId#" onclick = "buyNow(this)">PLACE ORDER</button>
                         </div>
                     </div>
                 </div>
@@ -65,11 +65,11 @@
                         <div class="priceMaindiv d-flex flex-column">
                             <div class="price d-flex justify-content-between pt-2">
                                 <span class="amount" >Price (<span id="totalItems">#local.items#</span> items)</span>
-                                <span class="number" id="cartTotalAmount">₹#local.totalPrice#</span>
+                                <span class="number">₹<span class="number" id="cartTotalAmount">#local.totalPrice#</span></span>
                             </div>
                             <div class="price d-flex justify-content-between pt-2">
                                 <span class="amount">Tax</span>
-                                <span class="number" id="cartTotalTax">₹#local.totalTax#</span>
+                                <span class="number">₹<span class="number" id="cartTotalTax">#local.totalTax#</span></span>
                             </div>
                             <!--- <div class="price d-flex justify-content-between">
                                 <span class="amount">Discount</span>
@@ -108,7 +108,7 @@
                         Cart Empty?
                     </span>
                     <span class = "mt-2 loginMessage d-flex justify-content-center">
-                        Explore oru products and find somenthing you like. 
+                        Explore oru products and find something you like. 
                     </span>
                     <a href="homePage.cfm?" class = "d-flex justify-content-center cartLoginBtn mx-auto mt-2">Home</a>
                 </div>
@@ -128,4 +128,12 @@
             </div>
         </div>
     </cfif>
+    <div class="deleteConfirm mx-auto mb-4" id="deleteConfirm">
+        <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Remove Item</span>
+        <div class="logoutMesage  d-flex flex-column justify-content-center">
+            <span class="confirmMessage fw-bold">Are you sure want to Remove?</span>
+            <button class="alertBtn mt-3" type="button" name="alertDeleteBtn" id="alertCartDeleteBtn" value="" onClick="return removeCartItem(this)">Delete</button>
+            <button class="alertCancelBtn mt-2" type="button" name="alertDeleteBtn" id="" value="cancel" onClick="return deleteAlert(this)">Cancel</button>
+        </div>
+    </div>
 </cfoutput>

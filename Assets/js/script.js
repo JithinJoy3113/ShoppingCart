@@ -14,6 +14,73 @@ function logoutValidate(){
     $("#randomProductsMainDiv").addClass("disabled");
 }
 
+function removeSpan(Id){
+    var inputElement = $('#'+Id)
+    var nextElement = inputElement.next();
+    if (inputElement.value !== "") {
+        nextElement.text("");
+    }
+}
+
+function signUpValidate(){
+    let formData = new FormData($('#signUpForm')[0]);
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=userSignUp',
+        type : 'post',
+        data :formData,
+        processData: false,
+        contentType: false,
+        success : function(response){
+            let data = JSON.parse(response);
+            if (data.signUpResult == 'Error'){
+                for(key in data){
+                    if(key == 'signUpResult'){
+                        continue
+                    }
+                    $("#"+key).text(data[key])
+                }
+                // event.preventDefault()
+            }
+            else if(data.signUpResult == 'Failed'){
+                // event.preventDefault()
+                $('#signUpResult').text('User Already Exist').css({"color":"red"})
+            }
+            else if(data.signUpResult =="Success"){
+                
+                $('#signUpForm')[0].submit();
+            }
+        }
+    })
+
+}
+
+function loginValidation(){
+        var formData = new FormData($('#loginForm')[0]);
+        $.ajax({
+            url : './Components/shoppingCart.cfc?method=userLogin',
+            type : 'post',
+            data :formData,
+            processData: false,
+            contentType: false,
+            success : function(response){
+                let data = JSON.parse(response);
+                console.log(data)
+                if(data.loginResult != 'Success'){
+                    for(key in data){
+                        $("#"+key).text(data[key])
+                    }
+                }
+                else{
+                    $('#loginForm').submit()
+                }
+            }
+        
+        })
+    }
+
+
+
+
 function logoutAlert(value){
     let valid = true;
     if(value == 'yes'){
@@ -344,6 +411,10 @@ function deleteAlert(ID){
         $("#viewSubcategory").removeClass("disabled");
         $("#productViewMainDiv").removeClass("disabled");
         $("#imagesUpdateDiv").removeClass("disabled");
+        $('#topDiv').removeClass('disabled')
+        $('#profileBodyDiv').removeClass('disabled')
+        $('#bodyContents').removeClass('disabled')
+        $('#accordianBody').removeClass('disabled')
     }
     else{
         let splitValue = selectedValue.split(",");
@@ -684,3 +755,4 @@ $(document).ready(function() {
         });	
 	});
 });
+

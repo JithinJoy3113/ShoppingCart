@@ -19,8 +19,8 @@
                 <title>Cart</title>
             </cfif>
         </head>
-        <body>
-            <div class="topDiv">
+        <body id="fullBody">
+            <div class="topDiv" id="topDiv">
                 <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4">
                     <div class = "d-flex align-items-center">
                         <form action="" method="post">

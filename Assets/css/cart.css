@@ -128,7 +128,8 @@
     border-radius: 3px;
 }
 .cartEmptyImg{
-    height: 165px;
+    height: 120px;
+    width: 150px;
 }
 .cartLoginBtn{
     background-color: #0d9191;

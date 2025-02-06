@@ -1,6 +1,6 @@
 .orderHistoryDiv{
     padding: 10px 30px;
-    min-width: 750px;
+    min-width: 780px;
 }
 .itemDetailsDiv{
     padding: 20px 40px;
@@ -48,4 +48,13 @@
 }
 .headProduct{
     font-size: 30px;
+}
+.historySearch{
+    width: 70%;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid rgb(165, 165, 165);
+}
+.historySearch:focus{
+    border: 1px solid #39a1a1;
 }

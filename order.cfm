@@ -85,8 +85,8 @@
                                 <cfset local.productId = item.productId>
                                 <cfif structKeyExists(item, "quantity")>
                                     <cfset local.quantity = item.quantity>
-                                    <cfset local.totalPrice += item.price>
-                                    <cfset local.totalTax += item.tax>
+                                    <cfset local.totalPrice += item.price*item.quantity>
+                                    <cfset local.totalTax += item.tax*item.quantity>
                                 <cfelse>
                                     <cfset local.quantity = 1>
                                     <cfset local.totalPrice += item.price>
@@ -105,8 +105,8 @@
                                                     <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
                                                 </div>
                                                 <div class="priceDetailsDiv d-flex flex-column mt-2">
-                                                    <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#" data-value=#item.price#> #item.price#</span></span>
-                                                    <span class="number">Tax : <span class="number" id="tax#item.productId#" data-value=#item.tax#>#item.tax#</span></span>
+                                                    <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#" data-value=#item.price * local.quantity#> #item.price * local.quantity#</span></span>
+                                                    <span class="number">Tax : <span class="number" id="tax#item.productId#" data-value=#item.tax* local.quantity#>#item.tax* local.quantity#</span></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -169,11 +169,11 @@
                 <div class="priceMaindiv d-flex flex-column">
                     <div class="price d-flex justify-content-between pt-2">
                         <span class="amount">Price (#local.items# items)</span>
-                        <span class="number" id="orderTotalAmount" data-value="#local.totalPrice#">&##8377 #local.totalPrice#</span>
+                        <span class="number">&##8377<span class="number" id="orderTotalAmount" data-value="#local.totalPrice#">#local.totalPrice#</span></span>
                     </div>
                     <div class="price d-flex justify-content-between pt-2">
                         <span class="amount">Tax</span>
-                        <span class="number" id="orderTotalTax" data-value="#local.totalTax#">&##8377 #local.totalTax#</span>
+                        <span class="number">&##8377<span class="number" id="orderTotalTax" data-value="#local.totalTax#">&##8377 #local.totalTax#</span></span>
                     </div>
                    <!---  <div class="price d-flex justify-content-between">
                         <span class="amount">Discount</span>
@@ -193,7 +193,7 @@
                     <div class="price d-flex justify-content-between py-3">
                         <span class="totalAmount">Total Amount</span>
                         <cfset local.totalAmount = local.totalPrice+local.totalTax>
-                        <span class="totalAmount" id="orderAmount" data-value="#local.totalAmount#">&##8377 #local.totalAmount#</span>
+                        <span class="totalAmount">&##8377<span class="totalAmount" id="orderAmount" data-value="#local.totalAmount#">#local.totalAmount#</span></span>
                     </div>
                     <!--- <span class="save pb-3">You will save &##8377 12,148 on this order</span>    --->                   
                 </div>

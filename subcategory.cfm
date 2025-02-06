@@ -44,15 +44,15 @@
 
         <cfif structKeyExists(form, "sortProduct")>
             <cfset local.randomProducts = application.obj.randomProducts(
-                                                        subCategoryId = local.subcategoryId,
-                                                        sortBy = form.sortProduct
-                                                        )>
+                subCategoryId = local.subcategoryId,
+                sortBy = form.sortProduct
+            )>
         <cfelseif structKeyExists(form, "filterSubmit")>
             <cfset local.randomProducts = application.obj.randomProducts(
-                                                        subCategoryId = local.subcategoryId,
-                                                        min = form.filterMin,
-                                                        max = form.filterMax
-                                                        )>
+                subCategoryId = local.subcategoryId,
+                min = form.filterMin,
+                max = form.filterMax
+            )>
         <cfelse>
             <cfset local.randomProducts = application.obj.randomProducts(subCategoryId = local.subcategoryId)>
         </cfif>
