@@ -37,28 +37,35 @@
                         </span>
                         <div class = "accordianAddressDiv d-flex flex-column" id="accordianAddressDiv">
                             <cfset local.address = application.obj.fetchAddress()>
-                            <cfloop array="#local.address#" item="item" index="index">
-                                <div class="d-flex align-items-center" id="accordianAddressSelect">
-                                    <input type="radio" name="addressRadio" value="#item.addressID#" 
-                                        <cfif index == 1>
-                                            checked
-                                        </cfif>
-                                    >
-                                    <div class = "addressDiv d-flex flex-column">
-                                        <span class="addressNameSpan fw-bold">#item.firstName# #item.lastName#
-                                            <span class="ms-2 addressPhoneSpan">#item.phone#</span>
-                                        </span>
-                                        <span class="addressSpan">
-                                            #item.addressOne#, #item.addressTwo#, #item.city#, #item.state#, #item.pincode#
-                                        </span>
+                            <cfset local.arrayLength = arrayLen(local.address)>
+                            <cfif local.arrayLength GT 0>
+                                <cfloop array="#local.address#" item="item" index="index">
+                                    <div class="d-flex align-items-center" id="accordianAddressSelect">
+                                        <input type="radio" name="addressRadio" value="#item.addressID#" 
+                                            <cfif index == 1>
+                                                checked
+                                            </cfif>
+                                        >
+                                        <div class = "addressDiv d-flex flex-column">
+                                            <span class="addressNameSpan fw-bold">#item.firstName# #item.lastName#
+                                                <span class="ms-2 addressPhoneSpan">#item.phone#</span>
+                                            </span>
+                                            <span class="addressSpan">
+                                                #item.addressOne#, #item.addressTwo#, #item.city#, #item.state#, #item.pincode#
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </cfloop>
+                                </cfloop>
+                            <cfelse>
+                                <span class = "fw-bold" id="addAddressErrorSpan">Add Address</span>
+                            </cfif>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button class="accordianBtn" type="button" data-bs-toggle="collapse" value="two" data-bs-target="##flush-collapseThree" aria-expanded="false" onclick="accordianHead(this)" aria-controls="flush-collapseTwo">
-                                Save
-                            </button>
+                            <button class="accordianBtn
+                                <cfif local.arrayLength EQ 0>
+                                    disabled
+                                </cfif>" type="button" data-bs-toggle="collapse" value="two" id="orderAddressBtn" data-bs-target="##flush-collapseThree" aria-expanded="false" onclick="accordianHead(this)" aria-controls="flush-collapseTwo"
+                            >Save</button>
                         </div>
                     </div>
                 </div>

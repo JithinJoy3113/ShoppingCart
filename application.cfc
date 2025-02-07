@@ -1,6 +1,25 @@
 <cfcomponent>
     <cfset this.name = "shoppingCart">
     <cfset this.sessionManagement = true>
+
+    <cffunction name="onError">
+        <cfargument name="Exception" required=true>
+        <cfargument type="String" name="EventName" required=true>
+        <cflog file="#This.Name#" type="error"
+        text="Event Name: #Arguments.Eventname#" >
+        <cflog file="#This.Name#" type="error"
+        text="Message: #Arguments.Exception.message#">
+        <cfif NOT (Arguments.EventName IS "onSessionEnd") OR
+        (Arguments.EventName IS "onApplicationEnd")>
+            <cfoutput>
+                <h2>An unexpected error occurred.</h2>
+                <p>Please provide the following information to technical support:</p>
+                <p>Error Event: #Arguments.EventName#</p>
+                <p>Error details:<br>
+                <cfdump var=#Arguments.Exception#></p>
+            </cfoutput>
+        </cfif>
+    </cffunction>
     
     <cffunction  name="onApplicationStart" returnType="void">
         <cfset application.dataSource = "cartDatasource">
@@ -8,30 +27,30 @@
         <!--- <cfset application.secretKey = generateSecretKey("AES")>  --->
     </cffunction>
 
-     <cffunction  name="onRequestStart" returnType="void">
-        <cfset onApplicationStart()>
-
-        <!--- <cfargument  name="requestPage" required="true"> 
-
-        <cfset local.pages = {1:["/jithin/ShoppingCart/ShoppingCart/admin.cfm","/jithin/ShoppingCart/ShoppingCart/user.cfm"],
-                              2:["/jithin/ShoppingCart/ShoppingCart/home.cfm"]}>
-        <cfset local.excludePages = ["/jithin/ShoppingCart/ShoppingCart/userLogin.cfm","/jithin/ShoppingCart/ShoppingCart/userSignUp.cfm"]> 
-
-        <cfif ArrayContains(local.excludePages,arguments.requestPage)>
-            <cfinclude  template="#arguments.requestPage#">         
-        <cfelseif structKeyExists(session, "login") AND session.login EQ true AND ArrayContains(local.pages[session.role],arguments.requestPage)>
-            <cfinclude  template="#arguments.requestPage#">
-        <cfelse>
-            <cfset structClear(session)>
-            <cfinclude  template="userLogin.cfm">
-        </cfif> --->
+     <cffunction  name="onRequestStart" returnType="boolean">
+        <cfargument  name="requestPage" required="true">
+            <cfset onApplicationStart()>
+            <cfset local.excludePages = ["/login.cfm","/userSignUp.cfm"]> 
+            <cfif ArrayContains(local.excludePages,arguments.requestPage)>
+                <cfif arguments.requestPage EQ '/userSignUp.cfm'>
+                    <cfset structClear(session)>
+                </cfif>
+                <cfreturn true>
+            <cfelseif structKeyExists(session, "role") AND session.roleId EQ 1 AND arguments.requestPage EQ '/admin.cfm'>
+                <cfreturn true>
+            <cfelseif (NOT structKeyExists(session, "role") OR (structKeyExists(session, "role") AND session.roleId EQ 2)) AND arguments.requestPage NEQ '/admin.cfm'>
+                <cfreturn true>
+            <cfelseif (structKeyExists(session, "role") AND session.roleId EQ 1) AND NOT ArrayContains(local.excludePages,arguments.requestPage)>
+                <cflocation  url="/login.cfm">
+            </cfif>
     </cffunction>
 
-    <cffunction  name = "onRequest">
+    <cffunction  name = "onRequest"  returnType = "void">
         <cfargument  name = "requestPage" required = "true"> 
         <cfinclude  template = "header.cfm">
         <cfinclude  template = "#arguments.requestPage#">
         <cfinclude  template = "footer.cfm">
     </cffunction>
+
     
  </cfcomponent>

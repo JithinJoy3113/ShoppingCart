@@ -68,12 +68,15 @@
                                 <a href="homePage.cfm" class="pathLink text-decoration-none">Home</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
+                            <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(local.productDetails.categoryId, application.secretKey, "AES", "Base64"))>
+                            <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(local.productDetails.subCategoryName, application.secretKey, "AES", "Base64"))>
+                            <cfset local.encryptedCategoryName = urlEncodedFormat(encrypt(local.productDetails.categoryName, application.secretKey, "AES", "Base64"))>
                             <div class="pathMobile">
-                                <a href="productListing.cfm?categoryId=#local.productDetails.categoryId#&categoryName=#local.productDetails.categoryName#" class="pathLink mobile text-decoration-none">#local.productDetails.categoryName#</a>
+                                <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="pathLink mobile text-decoration-none">#local.productDetails.categoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile">
-                                <a href="subcategory.cfm?subCategoryId=#local.productDetails.subCategoryId#&subCategoryName=#local.productDetails.subCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
+                                <a href="subcategory.cfm?subCategoryId=#URL.subcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile productName d-flex align-items-center">

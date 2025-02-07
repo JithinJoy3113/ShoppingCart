@@ -81,8 +81,10 @@
                     </a>
                 </cfloop>
             </div>
+            <input type = "hidden" id="viewHidden" value = "#local.count#">
+        <cfelse>
+            <span class="fw-bold">No Products Found</span>
         </cfif>
-        <input type = "hidden" id="viewHidden" value = "#local.count#">
         <div class = "viewMoreDiv d-flex justify-content-center mt-4" id = "viewMoreDiv">
             <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this)">View More</button>
         </div>

@@ -116,7 +116,7 @@
         </cfif>
     <cfelse>
         <div class = "cartLoginDiv px-4 py-4" >
-            <div class = "cartLogin d-flex flex-column justify-content-center">
+            <div class = "cartLogin d-flex flex-column justify-content-center align-items-center">
                 <img src="Assets/Images/cartEmpty.jpg" alt="" class = "cartEmptyImg">
                 <span class = "mt-2 missingDiv  d-flex justify-content-center">
                     Missing Cart Items?

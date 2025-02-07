@@ -49,13 +49,13 @@
                             <span class="addCategoryHeading" id="addSubcategoryHeading"></span>
                             <div class="addSubcategoryInputDiv mt-4">
                                 <!--- <cfset local.obj = new Components.shoppingCart()> --->
-                                <cfset local.result = application.obj.displayCategory()>
+                                <cfset local.result = application.obj.viewCategory()>
                                 <span class="removeSpan" id="addSubMessage"></span>
                                 <div class="categoryDropdown" id="categoryDropdownDiv">
                                     <label for="categoryDropLabel" class="fw-bold">Category Name</label><br>
                                     <select name="categoryDropdown" id="categoryDropdown">
-                                        <cfloop query="local.result">
-                                            <option value="#local.result.fldCategory_ID#">#local.result.fldCategoryName#</option>
+                                        <cfloop array = "#local.result#" item = "item">
+                                            <option value=#item.categoryId#>#item.categoryName#</option>
                                         </cfloop>
                                     </select>
                                 </div>
@@ -64,8 +64,8 @@
                                 <label for="subCategoryInputLabel" class="mt-3 fw-bold">Subcategory Name</label>
                                 <input type="text" class="form-control" name="subCategoryInput" id="subCategoryInput" placeholder="Subcategory Name">
                                 <span id="addSubCategoryError" class=""></span>
-                                <button type="button" class="subCategorySubmit" name="subCategorySubmit" value="" id="subCategorySubmit" onclick="return addSubcategorySubmit(this)">Submit</button>
-                                <button type="button" class="subCategoryUpdate" name="subCategoryUpdate" value="" id="subCategoryUpdate" onclick="return updateSubcategorySubmit(this)">Update</button>
+                                <button type="button" class="subCategorySubmit mx-auto mt-2" name="subCategorySubmit" value="" id="subCategorySubmit" onclick="return addSubcategorySubmit(this)">Submit</button>
+                                <button type="button" class="subCategoryUpdate mx-auto mt-2" name="subCategoryUpdate" value="" id="subCategoryUpdate" onclick="return updateSubcategorySubmit(this)">Update</button>
                             </div>
                         </div>
                     </div>
@@ -103,18 +103,18 @@
                         <div class="pageListDiv d-flex justify-content-center">
                             <div class="displayDiv d-flex flex-column justify-content-center">
                                 <!---   <cfset local.obj = new components.shoppingCart()> --->
-                                <cfset local.result = application.obj.displayCategory()>
-                                <cfloop query="#local.result#" startRow = "1" endRow = "#QueryRecordCount(local.result)#">
-                                    <div class="pageDisplayDiv d-flex justify-content-between align-items-center" id="#local.result.fldCategory_ID#">
+                                <cfset local.result = application.obj.viewCategory()>
+                                <cfloop array="#local.result#" item = "item">
+                                    <div class="pageDisplayDiv d-flex justify-content-between align-items-center" id="#item.categoryId#">
                                         <a href="" class="text-decoration-none text-dark">
                                             <div class="pageNameDiv d-flex text-dark fw-bold overflow-hidden text-truncate">
-                                                #local.result.fldCategoryName#
+                                                #item.categoryName#
                                             </div>
                                         </a>
                                         <div class="pageButtonDiv d-flex">
-                                            <button type="button" class="pageButton adminEditColor" name="editBtn" value=#local.result.fldCategory_ID#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                            <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value='tblCategory,#local.result.fldCategory_ID#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
-                                            <button type="button" class="pageButton adminEditColor" name="viewBtn"  value=#local.result.fldCategory_ID# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
+                                            <button type="button" class="pageButton adminEditColor" name="editBtn" value=#item.categoryId#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                            <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                            <button type="button" class="pageButton adminEditColor" name="viewBtn"  value=#item.categoryId# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
                                         </div>
                                     </div>
                                 </cfloop>

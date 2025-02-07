@@ -71,7 +71,7 @@
                             <button class = "logoutBtn fw-bold" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
                         <cfelseif find("login.cfm", CGI.SCRIPT_NAME)>
                             <cfif structKeyExists(URL, "productId")>
-                                <a href="userSignUp.cfm?productId=#URL.productId#" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                                <a href="userSignUp.cfm?productId=#URL.productId#&page=buy" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
                             <cfelse>
                                 <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
                             </cfif>
