@@ -1,5 +1,5 @@
 <cfoutput>
-    <div class = "profileBodyDiv d-flex">
+    <div class = "profileBodyDiv d-flex" id="profileBodyDiv">
         <div class = "profileLeftDiv d-flex flex-column">
             <div class = "profileNameDiv d-flex">
                 <div class = "profileImg">
@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class = "myOrdersDiv d-flex flex-column">
-                <span class = "ordersSpan py-3"><a href="" class="text-decoration-none profileSideNav">MY ORDERS</a></span>
+                <span class = "ordersSpan py-3"><a href="orderHistory.cfm" class="text-decoration-none profileSideNav">MY ORDERS</a></span>
                 <div class = "accountSttingsDiv">
                     <span class="accountSetting">ACCOUNT SETTINGS</span>
                     <div class="accountLinksDiv d-flex flex-column">
@@ -43,7 +43,6 @@
                 </div>
             </form>
             <div class = "personalInformationDiv d-none flex-column pt-3 pb-4 pe-3" id = "manageAddressDiv">
-                <span class = "personalInformationHead pb-3">Manage Address<button type="button" value="" class = "ms-2 profileEditBtn fw-bold" onclick = "">Edit</button></span>
                 <span class = "addressAddSpan pb-3">
                     <button type="button" value="" class = "addAddressBtn border-0 d-flex align-items-center" onclick = "openAddressModal()">
                         <img src="Assets/Images/plus.png" alt="" width="18" height="18" class = "me-2"> ADD NEW ADDRESS
@@ -52,7 +51,7 @@
                 <div class = "addressListDiv" id="addressListDiv">
                     <cfset local.address = application.obj.fetchAddress()>
                         <cfloop array="#local.address#" item="item">
-                            <!-- <div class="addressMainDiv d-flex justify-content-between"> -->
+                           <div class="addressMainDiv d-flex justify-content-between" id="address#item.addressID#">
                                 <div class = "addressDiv d-flex flex-column">
                                     <span class="addressNameSpan fw-bold">#item.firstName# #item.lastName#
                                         <span class="ms-2 addressPhoneSpan">#item.phone#</span>
@@ -61,14 +60,14 @@
                                         #item.addressOne#, #item.addressTwo#, #item.city#, #item.state#, #item.pincode#
                                     </span>
                                 </div>
-                               <!--  <div class = "addressEditBtnDiv d-flex align-items-center" data-value = "#item.addressID#">
+                               <div class = "addressEditBtnDiv d-flex align-items-center" data-value = "#item.addressID#">
                                     <img src="Assets/Images/dots.png" alt="" class = "addressEditImg" data-value = "#item.addressID#" width="20" height="20">
                                 </div>
-                                <div class="addressEditDiv d-flex flex-column py-3">
-                                    <button type="button">Edit</button>
-                                    <button type="button bt-2">Delete</button>
-                                </div> -->
-                            <!-- </div> -->
+                                <div class="addressEditDiv py-3" id="#item.addressID#" data-value = "#item.addressID#">
+                                    <!-- <button type="button">Edit</button> -->
+                                    <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteProfileAddressButton(this)">Delete</button>
+                                </div>
+                            </div>
                         </cfloop>
                 </div>
                 <button type = "button" name = "profileSave" class = "addCategory mt-4 mx-auto d-none" id="profileAddressSave" onclick="">Save</button>
@@ -77,20 +76,44 @@
                 <form action="" method="post" id="addressForm">
                     <span class="addressHead px-2 py-3">Add New Address</span>
                     <div class="addressNameDiv d-flex py-3">
-                        <input type="text" placeholder="FirstName" class="form-control" name="firstName">
-                        <input type="text" placeholder="LastName" class="form-control ms-2" name="lastName">
+                        <div class="d-flex flex-column">
+                            <input type="text" placeholder="FirstName" class="form-control" name="firstName" id="profileFName" oninput="removeSpan('profileFName')">
+                            <span class="text-danger" id="profileFirstNameError"></span>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <input type="text" placeholder="LastName" class="form-control ms-2" name="lastName" id="profileLname" oninput="removeSpan('profileLname')">
+                            <span class="text-danger" id=""></span>
+                        </div>
                     </div>
                     <div class="addressLineDiv d-flex py-3">
-                        <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="form-control"></textarea>
-                        <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="form-control ms-2"></textarea>
+                        <div class="d-flex flex-column">
+                            <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="form-control" oninput="removeSpan('lineOne')"></textarea>
+                            <span class="text-danger" id="profileAddressOneError"></span>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="form-control ms-2" oninput="removeSpan('lineTwo')"></textarea>
+                            <span class="text-danger" id="profileAddressOneError"></span>
+                        </div>
                     </div>
                     <div class="stateDiv d-flex py-3">
-                        <input type="text" class="form-control" placeholder="City" name="city">
-                        <input type="text" class="form-control  ms-2" placeholder="State" name="state">
+                        <div class="d-flex flex-column">
+                            <input type="text" class="form-control" placeholder="City" name="city" id="profilePin" oninput="removeSpan('profilePin')">
+                            <span class="text-danger" id="profileCityError"></span>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <input type="text" class="form-control  ms-2" placeholder="State" name="state" id="profileState" oninput="removeSpan('profileState')">
+                            <span class="text-danger" id="profileStateError"></span>
+                        </div>
                     </div>
                     <div class="pinDiv d-flex py-3">
-                        <input type="text" class="form-control" placeholder="Pincode" name="pincode">
-                        <input type="text" class="form-control ms-2" placeholder="Phone" name="phone">
+                        <div class="d-flex flex-column">
+                            <input type="text" class="form-control" placeholder="Pincode" name="pincode" id="profilePincode" oninput="removeSpan('profilePincode')">
+                            <span class="text-danger" id="profilePincodeError"></span>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <input type="text" class="form-control ms-2" placeholder="Phone" name="phone" id="profileMoile" oninput="removeSpan('profileMoile')">
+                            <span class="text-danger" id="profilePhoneError"></span>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-center py-3">
                         <button type="button" value="" class="addAddressClose" onclick="addAddressCloseBtn()">Cancel</button>
@@ -100,4 +123,13 @@
             </div>
         </div>
     </div>
+    <div class="deleteConfirm mx-auto mb-4" id="deleteConfirm">
+        <span class="logourtAlertHead py-2 d-flex justify-content-center fw-bold text-white">Delete Address</span>
+        <div class="logoutMesage  d-flex flex-column justify-content-center">
+            <span class="confirmMessage fw-bold">Are you sure want to Delete?</span>
+            <button class="alertBtn mt-3" type="button" name="alertDeleteBtn" id="alertAddressDeleteBtn" value="" onClick="return deleteProfileAddress(this)">Delete</button>
+            <button class="alertCancelBtn mt-2" type="button" name="alertDeleteBtn" id="" value="cancel" onClick="return deleteAlert(this)">Cancel</button>
+        </div>
+    </div>
 </cfoutput>
+

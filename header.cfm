@@ -11,6 +11,7 @@
             <link rel = "stylesheet" href = "Assets/css/cart.css">
             <link rel = "stylesheet" href = "Assets/css/profile.css">
             <link rel = "stylesheet" href = "Assets/css/order.css">
+            <link rel = "stylesheet" href = "Assets/css/orderHistory.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <cfif structKeyExists(session, "role")>
                 <title>#session.role#</title>
@@ -18,8 +19,8 @@
                 <title>Cart</title>
             </cfif>
         </head>
-        <body>
-            <div class="topDiv">
+        <body id="fullBody">
+            <div class="topDiv" id="topDiv">
                 <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4">
                     <div class = "d-flex align-items-center">
                         <form action="" method="post">
@@ -70,7 +71,7 @@
                             <button class = "logoutBtn fw-bold" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
                         <cfelseif find("login.cfm", CGI.SCRIPT_NAME)>
                             <cfif structKeyExists(URL, "productId")>
-                                <a href="userSignUp.cfm?productId=#URL.productId#" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                                <a href="userSignUp.cfm?productId=#URL.productId#&page=buy" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
                             <cfelse>
                                 <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
                             </cfif>

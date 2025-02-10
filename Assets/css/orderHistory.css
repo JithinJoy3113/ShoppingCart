@@ -1,0 +1,60 @@
+.orderHistoryDiv{
+    padding: 10px 30px;
+    min-width: 780px;
+}
+.itemDetailsDiv{
+    padding: 20px 40px;
+    border-bottom: 1px solid rgb(189, 185, 185);
+}
+.orderHead{
+    padding: 10px 40px;
+    background-color: #46a1a1;
+    color: black;
+}
+.orderIdSpan{
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.orderItemDiv{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.itemNameSpan{
+    font-size: 17px;
+    font-weight: 500;
+}
+.orderItemBrand,.orderAddressSapn{
+    font-size: 14px;
+}
+.orderDeliveryDiv{
+    padding: 10px 40px;
+    margin-top: 10px;
+}
+.deliveryAddress{
+    width: 200px;
+    text-wrap: wrap;
+}
+.invoiceHeadDiv{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.invoiceBodyDIv{
+    display: flex;
+    flex-direction: column;
+}
+.detailsTableHeadDiv{
+    display: flex;
+}
+.headProduct{
+    font-size: 30px;
+}
+.historySearch{
+    width: 70%;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid rgb(165, 165, 165);
+}
+.historySearch:focus{
+    border: 1px solid #39a1a1;
+}

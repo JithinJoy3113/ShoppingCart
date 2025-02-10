@@ -29,24 +29,24 @@ body {
     padding: 18px 8px;
     border-radius: 2px;
     height: 56px;
+    text-align: center;
 }
 .cartBtn {
     background: #ff9f00;
     font-size: 15px;
     font-weight: bold;
-    width: 98%;
 }
 .buyButtondiv {
     background: #fb641b;
-    padding: 18px 8px;
+    padding: 18px 75px;
     border-radius: 2px;
     height: 56px;
 }
 .buy {
+    text-align: center;
     background: #fb641b;
     font-size: 15px;
     font-weight: bold;
-    width: 98%;
 }
 .productDetailsdiv {
     padding-left: 24px;

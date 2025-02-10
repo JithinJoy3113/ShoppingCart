@@ -44,15 +44,15 @@
 
         <cfif structKeyExists(form, "sortProduct")>
             <cfset local.randomProducts = application.obj.randomProducts(
-                                                        subCategoryId = local.subcategoryId,
-                                                        sortBy = form.sortProduct
-                                                        )>
+                subCategoryId = local.subcategoryId,
+                sortBy = form.sortProduct
+            )>
         <cfelseif structKeyExists(form, "filterSubmit")>
             <cfset local.randomProducts = application.obj.randomProducts(
-                                                        subCategoryId = local.subcategoryId,
-                                                        min = form.filterMin,
-                                                        max = form.filterMax
-                                                        )>
+                subCategoryId = local.subcategoryId,
+                min = form.filterMin,
+                max = form.filterMax
+            )>
         <cfelse>
             <cfset local.randomProducts = application.obj.randomProducts(subCategoryId = local.subcategoryId)>
         </cfif>
@@ -81,10 +81,14 @@
                     </a>
                 </cfloop>
             </div>
+            <input type = "hidden" id="viewHidden" value = "#local.count#">
+        <cfelse>
+            <span class="fw-bold">No Products Found</span>
         </cfif>
-        <input type = "hidden" id="viewHidden" value = "#local.count#">
-        <div class = "viewMoreDiv d-flex justify-content-center mt-4" id = "viewMoreDiv">
-            <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this)">View More</button>
-        </div>
+        <cfif arrayLen(local.randomProducts) GT 5>
+            <div class = "viewMoreDiv d-flex justify-content-center mt-4" id = "viewMoreDiv">
+                <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this)">View More</button>
+            </div>
+        </cfif>
     </div>
 </cfoutput>

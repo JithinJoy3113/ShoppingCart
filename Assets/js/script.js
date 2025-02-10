@@ -14,6 +14,73 @@ function logoutValidate(){
     $("#randomProductsMainDiv").addClass("disabled");
 }
 
+function removeSpan(Id){
+    var inputElement = $('#'+Id)
+    var nextElement = inputElement.next();
+    if (inputElement.value !== "") {
+        nextElement.text("");
+    }
+}
+
+function signUpValidate(){
+    let formData = new FormData($('#signUpForm')[0]);
+    $.ajax({
+        url : './Components/shoppingCart.cfc?method=userSignUp',
+        type : 'post',
+        data :formData,
+        processData: false,
+        contentType: false,
+        success : function(response){
+            let data = JSON.parse(response);
+            if (data.signUpResult == 'Error'){
+                for(key in data){
+                    if(key == 'signUpResult'){
+                        continue
+                    }
+                    $("#"+key).text(data[key])
+                }
+                // event.preventDefault()
+            }
+            else if(data.signUpResult == 'Failed'){
+                // event.preventDefault()
+                $('#signUpResult').text('User Already Exist').css({"color":"red"})
+            }
+            else if(data.signUpResult =="Success"){
+                
+                $('#signUpForm')[0].submit();
+            }
+        }
+    })
+
+}
+
+function loginValidation(){
+        var formData = new FormData($('#loginForm')[0]);
+        $.ajax({
+            url : './Components/shoppingCart.cfc?method=userLogin',
+            type : 'post',
+            data :formData,
+            processData: false,
+            contentType: false,
+            success : function(response){
+                let data = JSON.parse(response);
+                console.log(data)
+                if(data.loginResult != 'Success'){
+                    for(key in data){
+                        $("#"+key).text(data[key])
+                    }
+                }
+                else{
+                    $('#loginForm').submit()
+                }
+            }
+        
+        })
+    }
+
+
+
+
 function logoutAlert(value){
     let valid = true;
     if(value == 'yes'){
@@ -344,6 +411,10 @@ function deleteAlert(ID){
         $("#viewSubcategory").removeClass("disabled");
         $("#productViewMainDiv").removeClass("disabled");
         $("#imagesUpdateDiv").removeClass("disabled");
+        $('#topDiv').removeClass('disabled')
+        $('#profileBodyDiv').removeClass('disabled')
+        $('#bodyContents').removeClass('disabled')
+        $('#accordianBody').removeClass('disabled')
     }
     else{
         let splitValue = selectedValue.split(",");
@@ -399,24 +470,24 @@ function subcategoryViewButton(ID){
                 success : function(response) {
                     let data=JSON.parse(response);
                     for (let struct of data) {
-                        var childDiv=`<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${struct.productId}>
-                                        <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
-                                            <div class="d-flex">
-                                                <button class="border-0 imageEditButton" value=${struct.productId} type="button" onClick="editImages(this)">
-                                                    <img src="Assets/uploadImages/${struct.file}" class="" alt="" width="50" height="50">
-                                                </button>
+                        var childDiv = `<div class="similarProductcol d-flex flex-column ms-2 mt-2" id=${struct.productId}>
+                                            <div class="productDiscriptionsdiv d-flex align-items-center mt-3 justify-content-between">
+                                                <div class="d-flex">
+                                                    <button class="border-0 imageEditButton" value=${struct.productId} type="button" onClick="editImages(this)">
+                                                        <img src="Assets/uploadImages/${struct.file}" class="" alt="" width="50" height="50">
+                                                    </button>
+                                                </div>
+                                                <div class="d-flex flex-column px-2">
+                                                    <span class="productsNamespan px-2">${struct.productName}</span>
+                                                    <span class="productsBrandspan fw-bold px-2 mt-2">${struct.brandName}</span>
+                                                    <span class="productsPricespan px-2 mt-2">RS.${struct.price}</span>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                                    <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${struct.productId}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                                </div>
                                             </div>
-                                            <div class="d-flex flex-column px-2">
-                                                <span class="productsNamespan px-2">${struct.productName}</span>
-                                                <span class="productsBrandspan fw-bold px-2 mt-2">${struct.brandName}</span>
-                                                <span class="productsPricespan px-2 mt-2">RS.${struct.price}</span>
-                                            </div>
-                                            <div class="d-flex">
-                                                <button type="button" class="border-0" name="editBtn" value=${struct.productId}  onClick="return editProductsButton(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                                <button type="button" class="border-0" name="deleteBtn" value="tblProducts,${struct.productId}" onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
-                                            </div>
-                                        </div>
-                                    </div>`;
+                                        </div>`;
                         div.append(childDiv)
                     }
                   }
@@ -684,3 +755,4 @@ $(document).ready(function() {
         });	
 	});
 });
+

@@ -7,7 +7,7 @@
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
                         <div class="productImagesdivLeft d-flex flex-column">
-                            <cfset local.productDetails = application.obj.displayProduct(productId = local.productId )>
+                            <cfset local.productDetails = application.obj.displayProduct(productId = local.productId)>
                             <cfset local.imageResult = application.obj.viewImages(productId = local.productId)>
                             <cfloop array="#local.imageResult#" item="item">
                                 <div class="productImg d-flex align-items-center justify-content-center">
@@ -32,22 +32,22 @@
                                     <cfif arrayLen(local.cart)>
                                         <a href="cart.cfm" class="cartBtn text-decoration-none text-white d-flex justify-content-center">GO TO CART</a>
                                     <cfelse>
-                                        <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
+                                        <button type = "button" class="cartBtn border-0 text-white W-50" value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
                                             <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
                                         </button>
                                     </cfif>
                                 <cfelse>
-                                    <button type = "button" class="cartBtn border-0 text-white " value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
+                                    <button type = "button" class="cartBtn border-0 text-white W-50" value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
                                         <img src="" class="cartButtonImg mb-1 me-1" alt="">ADD TO CART
                                     </button>
                                 </cfif>
                             </div>
-                            <div class="buyButtondiv w-50 ms-1">
-                                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
-                                <a  href="order.cfm?productId=#local.encryptedProductId#" class="buy text-decoration-none text-white">
-                                    <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
-                                </a>
-                            </div>
+                            <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
+                            <a  href="order.cfm?productId=#local.encryptedProductId#&page=buy" class="W-50 buy buyButtondiv text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
+                         
+                                        <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
+                                
+                            </a>
                         </div>
                     </form>
                     <div class="productButtondiv d-flex d-sm-none w-100 px-2">
@@ -68,12 +68,15 @@
                                 <a href="homePage.cfm" class="pathLink text-decoration-none">Home</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
+                            <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(local.productDetails.categoryId, application.secretKey, "AES", "Base64"))>
+                            <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(local.productDetails.subCategoryName, application.secretKey, "AES", "Base64"))>
+                            <cfset local.encryptedCategoryName = urlEncodedFormat(encrypt(local.productDetails.categoryName, application.secretKey, "AES", "Base64"))>
                             <div class="pathMobile">
-                                <a href="productListing.cfm?categoryId=#local.productDetails.categoryId#&categoryName=#local.productDetails.categoryName#" class="pathLink mobile text-decoration-none">#local.productDetails.categoryName#</a>
+                                <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="pathLink mobile text-decoration-none">#local.productDetails.categoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile">
-                                <a href="subcategory.cfm?subCategoryId=#local.productDetails.subCategoryId#&subCategoryName=#local.productDetails.subCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
+                                <a href="subcategory.cfm?subCategoryId=#URL.subcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile productName d-flex align-items-center">
@@ -160,11 +163,11 @@
                                 </div>
                             </div>
                             <cfset local.currentDate = now()>
-                            <cfset local.futureDate = dateAdd("d", 10, currentDate)>
-                            <cfset local.dayOfMonth = day(futureDate)>
-                            <cfset local.monthName = left(monthAsString(month(futureDate)),3)>
-                            <cfset local.Weekday = DayOfWeekAsString(dayOfMonth)>
-                            <cfset local.formattedDate = local.dayOfMonth & " " & local.monthName & ", " & local.Weekday>
+                            <cfset local.futureDate = dateAdd("d", 10, local.currentDate)>
+                           <cfset local.dayOfMonth = day(local.futureDate)>
+                             <cfset local.monthName = left(monthAsString(month(local.futureDate)),3)>
+                            <cfset local.Weekday = DayOfWeekAsString(DayOfWeek(local.futureDate))>
+                            <cfset local.formattedDate = local.dayOfMonth & " " & local.monthName & ", " & local.Weekday> 
                             <div class="expectedDeliveydiv d-flex flex-column">
                                 <span class="deliveryDate d-flex">Delivery by #local.formattedDate#
                                                <span class="deliveryFree ms-1"> | Free</span>

@@ -2,7 +2,7 @@
     <cfset local.categoryName = decrypt(URL.categoryName, application.secretKey, "AES", "Base64")>
     <cfset local.categoryId = decrypt(URL.categoryId, application.secretKey, "AES", "Base64")>
     <div class="randomProductsMainDiv d-flex flex-column" id="randomProductsMainDiv">
-        <cfset local.result= application.obj.subcategoryListing(local.categoryId)>
+        <cfset local.result= application.obj.viewSubcategory(categoryId = local.categoryId)>
         <div class="randumHead">
             #local.categoryName#
         </div>

@@ -46,6 +46,11 @@
 .addressModal{
     display: none;
     justify-content: center;
+    background-color: white;
+    margin-top: 15px;
+}
+.accordianAddressModal{
+    position: absolute;
 }
 .addAddressClose{
     justify-content: center;
@@ -64,7 +69,7 @@
 .border {
     border: 5px solid green;
 }
-.addressNameSpan,.addressSpan{
+.addressNameSpan,.addressSpan,.orderItemPrice{
     font-size: 14px;
 }
 .addressEditImg{
@@ -75,6 +80,17 @@
 }
 .addressEditDiv{
     position: absolute;
-    right: 35px;
-    top: 33px;
+    right: 17px;
+    top: 28px;
+}
+.addressEditDiv{
+    display: none;
+}
+.addressDltbtn{
+    border: none;
+    background-color: #0d9191;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 5px 10px;
 }

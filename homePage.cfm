@@ -1,12 +1,17 @@
 <cfoutput>
     <div class="userBodyMainDiv" id="randomProductsMainDiv">
-        <div class="userBodyImageDiv">
-            <!-- <img src="Assets/Images/cartImage.jpg" alt="" class="w-100 h-50"> -->
-        </div>
+        <cfif NOT structKeyExists(form, "myButton")>
+            <div class="userBodyImageDiv">
+                <img src="Assets/Images/cartImage.jpg" alt="" class="w-100 h-50">
+            </div>
+        </cfif>
         <div class="randomProductsMainDiv d-flex flex-column">
             <cfif structKeyExists(form, "myButton")>
                 <cfset local.randomProducts = application.obj.randomProducts(search = form.searchInput)>
                 <div class="randumHead ps-3">
+                    <cfif NOT arrayLen(local.randomProducts)>
+                        No
+                    </cfif>
                     Search Result for "#form.searchInput#"
                 </div>
             <cfelse>
@@ -17,7 +22,9 @@
             </cfif>
             <div class="randomProductsDiv pt-3">
                 <cfloop array="#local.randomProducts#" item="item">
-                    <a href="product.cfm?productId=#item.productId#&subcategoryId=#item.subcategoryId#" class ="productbtn text-decoration-none">
+                    <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
+                    <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
+                    <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class ="productbtn text-decoration-none">
                         <div class="randomProducts d-flex flex-column ms-4 mt-3">
                             <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                             <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
