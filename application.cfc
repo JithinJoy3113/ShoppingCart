@@ -18,7 +18,7 @@
      <cffunction  name="onRequestStart" returnType="boolean">
         <cfargument  name="requestPage" required="true">
             <cfset onApplicationStart()>
-            <cfset local.excludePages = ["/login.cfm","/userSignUp.cfm","/error.cfm"]> 
+            <cfset local.excludePages = ["/login.cfm","/userSignUp.cfm","/error.cfm","/Components/shoppingCart.cfc"]> 
             <cfif ArrayContains(local.excludePages,arguments.requestPage)>
                 <cfif arguments.requestPage EQ '/userSignUp.cfm'>
                     <cfset structClear(session)>

@@ -7,9 +7,8 @@
 </head>
 <body>
     <cfoutput>
-    <div class = "d-flex justify-content-center">
-        <div class="d-flex">
-
+        <div class = "d-flex justify-content-center">
+            <div class="d-flex errorPageDiv">
                 <h2>An unexpected error occurred.</h2>
                 <p>Please provide the following information to technical support:</p>
                 <p>Error Event: #URL.EventName#</p>
@@ -17,7 +16,7 @@
                 <p>
                    #URL.Exception#
                 </p>
-            </div>
+            </div> 
         </div>
     </cfoutput>
 </body>

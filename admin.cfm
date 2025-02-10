@@ -34,9 +34,8 @@
                             <button type="button" class="subAddButton border-0" name="subAddButton" value="" id="subAddButton" onclick="return addSubCategory(this)"><img src="Assets/Images/addBtn.png" alt="" width="25" height="25"></button>
                         </div>
                             <div class="categoryFieldDiv" id="categoryFieldDiv">
-                            
+
                         </div>
-                        
                     </div>
                 </div>
 
