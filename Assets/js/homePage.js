@@ -104,31 +104,6 @@ function viewMoreSubmit(string){
     }
  }
 
-//  function addCart(ID){
-//     if(ID.includes('buy')){
-//         let productId = ID.split(',')[1];
-//     }   
-//     else{
-//         let productId = ID.value;
-//     }
-//     $.ajax({
-//         url : './Components/shoppingCart.cfc?method=addToCart',
-//         type : 'post',
-//         data : {
-//             productId : productId
-//         },
-//         success : function(response){
-//             let data = JSON.parse(response);
-//             if(!data){
-//                 location.href = `./login.cfm?productId=${productId}`
-//             }
-//             else{
-//                 location.href = './cart.cfm'
-//             }
-//         }
-//     })
-//  }
-
  function updateQuantity(ID){
     let btnData = ID.value.split(",")
     let operation = btnData[0];
@@ -142,31 +117,36 @@ function viewMoreSubmit(string){
         },
         success : function(response){
             let data = JSON.parse(response)
-            let dataLen = data.length
-            let totalAmount = 0
-            let totalTax = 0
-            for(let struct of data){
-                if(struct.cartId == cartId){
-                    $("#price"+cartId).text(struct.totalPrice)
-                    $("#tax"+cartId).text(struct.totalTax)
-                    $("#quantity"+cartId).text(struct.quantity).attr('data-value',struct.quantity)
-                }
-                totalAmount = totalAmount + struct.totalPrice
-                totalTax = totalTax + struct.totalTax
-            }
-            let quantitySpan = $('#quantity'+cartId)
-            let count = parseFloat(quantitySpan.attr('data-value'))
-            if(count == 1){
-                $('#minus'+cartId).prop("disabled", true);
+            if(data.status == "error"){
+                location.href = `./error.cfm?Exception=${data.status}&EventName=${data.message}`
             }
             else{
-                $('#minus'+cartId).prop("disabled", false);
+                let dataLen = data.length
+                let totalAmount = 0
+                let totalTax = 0
+                for(let struct of data){
+                    if(struct.cartId == cartId){
+                        $("#price"+cartId).text((struct.totalPrice).toFixed(2))
+                        $("#tax"+cartId).text((struct.totalTax).toFixed(2))
+                        $("#quantity"+cartId).text(struct.quantity).attr('data-value',struct.quantity)
+                    }
+                    totalAmount = totalAmount + struct.totalPrice
+                    totalTax = totalTax + struct.totalTax
+                }
+                let quantitySpan = $('#quantity'+cartId)
+                let count = parseFloat(quantitySpan.attr('data-value'))
+                if(count == 1){
+                    $('#minus'+cartId).prop("disabled", true);
+                }
+                else{
+                    $('#minus'+cartId).prop("disabled", false);
+                }
+                let cartAmount = totalAmount + totalTax
+                $("#cartOrderAmount").text("₹"+cartAmount)
+                $('#cartTotalAmount').text(totalAmount)
+                $("#cartTotalTax").text(totalTax)
+                $("#cartNumber").text(dataLen)
             }
-            let cartAmount = totalAmount + totalTax
-            $("#cartOrderAmount").text("₹"+cartAmount)
-            $('#cartTotalAmount').text(totalAmount)
-            $("#cartTotalTax").text(totalTax)
-            $("#cartNumber").text(dataLen)
         }
     })
  }
@@ -232,7 +212,6 @@ function saveProfile(ID){
         contentType: false,
         success : function(response){
             let data = JSON.parse(response)
-            console.log(data)
             if (data == false){
                 $('#profileError').text('Email/Phone Already exist').addClass("text-danger").removeClass('text-success')
                 $('#profileEmail').val($('#profileEmail').attr('data-value'));
@@ -317,6 +296,8 @@ function addAddressBtn(){
                 let selectDiv = accordianSelectDiv + childDiv + '</div>'
                 accordianDiv.append(selectDiv)
                 div.append(prodileAddressParent)
+                $("#addAddressErrorSpan").css({"display":"none"})
+                $('#orderAddressBtn').removeClass('disabled')
                 $('#addressModal').css({"display":"none"})
                 $('#manageAddressDiv').removeClass('d-none')
                 $('#manageAddressDiv').addClass('d-flex')
