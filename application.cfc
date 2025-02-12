@@ -2,12 +2,12 @@
   <cfset this.name = "shoppingCart">
   <cfset this.sessionManagement = true>
 
-  <cffunction name = "onError">
+ <!---  <cffunction name = "onError">
     <cfargument name = "Exception" required = true>
     <cfargument type = "String" name = "EventName" required = true>
     <cflocation url = "error.cfm?Exception=#arguments.Exception#&EventName=#arguments.EventName#">
     <cfabort>
-  </cffunction>
+  </cffunction> --->
   
   <cffunction  name="onApplicationStart" returnType="void">
     <cfset application.dataSource = "cartDatasource">
