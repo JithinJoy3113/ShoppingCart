@@ -22,7 +22,8 @@ function removeSpan(Id){
     }
 }
 
-function signUpValidate(){
+function signUpValidate(ID){
+    let productId = ID.value;
     let formData = new FormData($('#signUpForm')[0]);
     $.ajax({
         url : './Components/shoppingCart.cfc?method=userSignUp',
@@ -37,17 +38,47 @@ function signUpValidate(){
                     if(key == 'signUpResult'){
                         continue
                     }
-                    $("#"+key).text(data[key])
+                    else{
+                        $("#"+key).text(data[key])
+                    }
                 }
-                // event.preventDefault()
             }
             else if(data.signUpResult == 'Failed'){
-                // event.preventDefault()
                 $('#signUpResult').text('User Already Exist').css({"color":"red"})
             }
             else if(data.signUpResult =="Success"){
-                
-                $('#signUpForm')[0].submit();
+                $('#signUpResult').text('signup Completed')
+                if(productId != ""){
+                    $.ajax({
+                        url : './Components/shoppingCart.cfc?method=userLogin',
+                        type : 'post',
+                        data :{
+                            userName : formData.get('userName'),
+                            password : formData.get('password')
+                        },
+                        success : function(response){
+                            let data = JSON.parse(response)
+                            $.ajax({
+                                url : './Components/shoppingCart.cfc?method=addToCart',
+                                type : 'post',
+                                data :{
+                                    productId : productId,
+                                },
+                                success : function(response){
+                                    let data = JSON.parse(response)
+                                    let url = window.location.href
+                                    if(url.includes('productId')){
+                                        let product = $('#buyProductId').val()
+                                        location.href=`./order.cfm?productId=${product}`
+                                    }
+                                    else{
+                                        location.href="./cart.cfm"
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
             }
         }
     })
@@ -63,10 +94,14 @@ function loginValidation(){
             processData: false,
             contentType: false,
             success : function(response){
+                console.log(response)
                 let data = JSON.parse(response);
                 console.log(data)
                 if(data.loginResult != 'Success'){
                     for(key in data){
+                        if(data[key] == "Error"){
+                            continue
+                        }
                         $("#"+key).text(data[key])
                     }
                 }
@@ -147,11 +182,12 @@ function categoryAdd(ID){
                 let data = JSON.parse(response);
                 $("#addCategoryDiv").css({"display":"flex"});
                 $("#updateCategoryButton").css({"display":"flex"});
-                $("#addCategoryButton").css({"display":"none"});
+                $("#addCategory").css({"display":"none"});
                 $("#addCategoryHeading").text("Edit Category");
                 $("#displayContent").css({"display":"none"});
                 $("#editingID").val(data.FLDCATEGORY_ID);
                 $("#categoryInput").val(data.FLDCATEGORYNAME);
+                $("#addCategoryButton").css({"display":"none"});
                 return true;
             }
         });
@@ -175,7 +211,7 @@ function viewSubButton(ID){
         },
         success : function(response){
             let data = JSON.parse(response);
-            $("#addCategory").addClass("disabled");
+            $("#addCategory").css({"display":"none"});
             $("#displayContent").css({"display":"none"});
             $("#viewSubcategory").css({"display":"flex"});
             $("#subAddButton").val(viewId);
@@ -256,7 +292,8 @@ function viewCategoryCommon(categoryName){
 function editSubcategory(ID){
     let editID = ID.value;
     $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewSubcategoryEdit',
+        url : './Components/shoppingCart.cfc?method=viewSubcategory',
+        // url : './Components/shoppingCart.cfc?method=viewSubcategoryEdit',
         type : 'post',
         data : {
             subCategoryId : editID
@@ -298,7 +335,8 @@ function addSubCategory(ID){
             $("#viewSubcategory").css({"display":"none"});
             $("#displayContent").css({"display":"none"});
             $("#subCategoryInput").val('');
-            $("#subCategorySubmit").val(viewId);
+            $("#subCategorySubmit").val(viewId).css({"display":"flex"});
+            $("#subCategoryUpdate").css({"display":"none"});
             $("#addCategoryCloseValue").val(viewId);
             let categorySelect = $('#categoryDropdown');
             categorySelect.empty() 
@@ -375,6 +413,7 @@ function addCategoryClose(){
     parentDiv.innerHTML = ''
     $('#subCategoryUpdate').css({"display":"none"});
     $('#subCategorySubmit').css({"display":"flex"})
+    $('#addCategory').css({"display":"flex"})
 }
 
 function addSubCategoryClose(){
@@ -428,7 +467,11 @@ function deleteAlert(ID){
                 deleteId : deleteId
             },
             success : function(response){
-                if (response){
+                let data = JSON.parse(response)
+                if(data.status == "Error"){
+                    location.href = `./error.cfm?Exception=${data.status}&EventName=${data.message}`
+                }
+                else{
                     $('#'+deleteId).remove();
                     $("#deleteConfirm").css({"display":"none"})
                     $("#displayContent").removeClass("disabled");
@@ -446,7 +489,8 @@ function deleteAlert(ID){
 function subcategoryViewButton(ID){
     let viewID = ID.value;
     $.ajax({
-        url : './Components/shoppingCart.cfc?method=viewSubcategoryEdit',
+        url : './Components/shoppingCart.cfc?method=viewSubcategory',
+        // url : './Components/shoppingCart.cfc?method=viewSubcategoryEdit',
         type : 'post',
         data : {
             subCategoryId : viewID
