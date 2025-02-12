@@ -348,11 +348,12 @@
       WHERE
         <cfif structKeyExists(arguments, "categoryId")>
           S.fldCategoryId = <cfqueryparam value = #arguments.categoryID# cfsqltype = "integer">
+          AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         <cfelseif structKeyExists(arguments, "subCategoryId")>
           S.fldSubcategory_ID = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer">
+          AND C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         </cfif>
-        AND C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
     </cfquery>
     <cfset local.dataArray = []>
     <cfloop query="local.fetchSubcategory">
@@ -366,19 +367,107 @@
     <cfreturn local.dataArray >
   </cffunction>
 
+  <cffunction  name = "deleteCategory" access = "public" returnType = "boolean">
+    <cfargument name = "deleteId" required = "true" type = "integer">
+      <cfset local.subCategory = deleteSubCategory(categoryId = arguments.deleteId)>
+      <cfquery name = "local.deleteCategory" datasource = #application.dataSource#>
+        UPDATE
+          tblCategory
+        SET
+          fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        WHERE
+          fldCategory_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+      </cfquery>
+      <cfreturn true>
+  </cffunction>
+
+  <cffunction  name = "deleteSubCategory" access = "public" returnType = "boolean">
+    <cfargument name = "deleteId" required = "false" type = "integer">
+    <cfargument name = "categoryId" required = "false" type = "integer">
+    <cfif structKeyExists(arguments, "categoryId")>
+      <cfset local.subCategory = viewSubcategory(categoryId = arguments.categoryId)>
+      <cfloop array="#local.subCategory#" item="item">
+        <cfset deleteProduct(subCategoryId = item.subcategoryId)>
+      </cfloop>
+    <cfelseif structKeyExists(arguments, "deleteId")>
+      <cfset deleteProduct(subCategoryId = arguments.deleteId)>
+    </cfif>
+    <cfquery name = "local.deleteSubCategory" datasource = #application.dataSource#>
+      UPDATE
+        tblSubCategory
+      SET
+        fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+        fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+      WHERE
+        <cfif structKeyExists(arguments, "deleteId")>
+          fldSubCategory_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+        <cfelseif structKeyExists(arguments, "categoryId")>
+          fldCategoryId = <cfqueryparam value = #arguments.categoryId# cfsqltype = "integer">
+        </cfif>
+    </cfquery>
+    <cfreturn true>
+  </cffunction>
+
+  <cffunction  name = "deleteProduct" access = "public" returnType = "boolean">
+    <cfargument name = "deleteId" required = "false" type = "integer">
+    <cfargument name = "subCategoryId" required = "false" type = "integer">
+    <cfif structKeyExists(arguments, "subCategoryId")>
+      <cfset local.products = viewProducts(productSubId = arguments.subCategoryId)>
+      <cfloop array="#local.products#" item="item">
+        <cfset local.functionCall = deleteProductImage(productId = item.productId)>
+      </cfloop>
+    <cfelseif structKeyExists(arguments, "deleteId")>
+      <cfset local.functionCall = deleteProductImage(productId = arguments.deleteId)>
+    </cfif>
+    <cfquery name = "local.deleteSubCategory" datasource = #application.dataSource#>
+      UPDATE
+        tblProducts
+      SET
+        fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+        fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+      WHERE
+        <cfif structKeyExists(arguments, "deleteId")>
+          fldProduct_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+        <cfelseif structKeyExists(arguments, "subCategoryId")>
+          fldSubCategoryId = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer">
+        </cfif>
+    </cfquery>
+    <cfreturn true>
+  </cffunction>
+
+  <cffunction  name = "deleteProductImage" access = "public" returnType = "boolean">
+    <cfargument  name = "productId" required = "false" type = "integer" >
+    <cfargument  name = "deleteId" required = "false" type = "integer" >
+    <cfquery name = "local.deleteProductIamges" datasource = #application.dataSource#>
+        UPDATE
+          tblProductImages
+        SET
+          fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        WHERE
+          <cfif structKeyExists(arguments, "productId")>
+            fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
+          <cfelseif structKeyExists(arguments, "deleteId")>
+            fldProductImage_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+          </cfif>
+      </cfquery>
+      <cfreturn true> 
+  </cffunction>
+
   <cffunction name = "deleteRow" returnType = "struct" access = "remote" returnFormat = "json">
     <cfargument name = "tableName" required = "true" type = "string">
     <cfargument name = "deleteId" required = "true" type = "integer">
     <cfif arguments.tableName EQ 'tblCategory'>
-      <cfset local.columnName = 'fldCategory_ID'>
+      <cfset local.functionCall = deleteCategory(deleteId = arguments.deleteId)>
     <cfelseif arguments.tableName EQ 'tblProducts'>
-      <cfset local.columnName = 'fldProduct_ID'>
+      <cfset local.functionCall = deleteProduct(deleteId = arguments.deleteId)>
     <cfelseif arguments.tableName EQ 'tblProductImages'>
-      <cfset local.columnName = 'fldProductImage_ID'>
+      <cfset local.functionCall = deleteProductImage(deleteId = arguments.deleteId)>
     <cfelseif arguments.tableName EQ 'tblSubCategory'>
-      <cfset local.columnName = 'fldSubcategory_ID'>
+      <cfset local.functionCall = deleteSubCategory(deleteId = arguments.deleteId)>
     </cfif>
-    <cftry>
+   <!---  <cftry>
       <cfquery name = "local.deleteData" datasource = #application.dataSource#>
         UPDATE
           #arguments.tablename#
@@ -392,13 +481,24 @@
         WHERE
           #local.columnName# = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
       </cfquery>
+      <cfif local.columnName EQ 'fldProduct_ID'>
+        <cfquery name = "local.deleteProductIamges" datasource = #application.dataSource#>
+          UPDATE
+            tblProductImages
+          SET
+            fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+            fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+          WHERE
+            fldProductId = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+        </cfquery>
+      </cfif>
     <cfcatch type="any">
       <cfreturn {
         "status" = "Error",
         "message" = "An error occurred while deleting the data. Please try again later."
       }>
     </cfcatch>
-    </cftry>
+    </cftry> --->
     <cfreturn {"status":"true"}>
   </cffunction>
 
@@ -459,8 +559,7 @@
         <cfset local.result["insertError"] = "Failed:Product Already Exist">
       <cfelse>
         <cfset local.uploadPath = expandPath('../Assets/uploadImages')>
-        <cffile  action = "uploadAll" destination = "#local.uploadPath#" nameConflict = "MakeUnique" result = "local.imagePathArray"> 
-
+        <cffile  action = "uploadAll" destination = "#local.uploadPath#" nameConflict = "MakeUnique" result = "local.imagePathArray">
         <cfquery name = "local.insertProduct" result = "local.productInsert" datasource = #application.dataSource#>
           INSERT INTO
             tblProducts(
@@ -572,7 +671,7 @@
     <cfif StructCount(local.result) GT 0>
       <cfreturn local.result>
     <cfelse>
-      <cfquery name = "local.fetchContacts" datasource = #application.dataSource#>
+      <cfquery name = "local.fetchProducts" datasource = #application.dataSource#>
         SELECT 1 
         FROM tblProducts
         WHERE
@@ -580,7 +679,7 @@
           AND fldSubcategoryId = <cfqueryparam value = #arguments.addProductSubcategorySelect# cfsqltype = "integer">
           AND NOT fldProduct_ID = <cfqueryparam value = #arguments.productId# cfsqltype = "integer"> 
       </cfquery>
-      <cfif queryRecordCount(local.fetchContacts)>
+      <cfif queryRecordCount(local.fetchProducts)>
         <cfset local.result["insertError"] = "Failed:Product Already Exist">
       <cfelse>
         <cfquery name = "local.updatePoduct" datasource = #application.dataSource#>
@@ -639,8 +738,7 @@
         fldDefaultImage = <cfqueryparam value = 0 cfsqltype = "integer">
       WHERE
         fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
-        AND
-        fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+        AND fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
     </cfquery>
     <cfquery name = "local.setDefaultImage" datasource = #application.dataSource#>
       UPDATE
@@ -672,9 +770,9 @@
         B.fldBrand_ID,
         B.fldBrandName
       FROM
-        tblBrand B
+        tblProducts P
       INNER JOIN
-        tblProducts P ON B.fldBrand_ID = P.fldBrandId
+        tblBrand B ON P.fldBrandId = B.fldBrand_ID
       INNER JOIN
         tblProductImages I ON P.fldProduct_ID = I.fldProductId
       INNER JOIN
@@ -682,16 +780,21 @@
       INNER JOIN
         tblCategory C ON C.fldCategory_ID = S.fldCategoryId
       WHERE
-        P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        AND I.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        AND B.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        AND C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
-        <cfif arguments.productId NEQ 0>
-          AND P.fldProduct_ID = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
+        <cfif structKeyExists(arguments, "productSubId") AND NOT structKeyExists(arguments, "columnName")>
+          P.fldSubCategoryId = <cfqueryparam value = #arguments.productSubId# cfsqltype = "integer">
+          AND P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         <cfelse>
-          AND P.#arguments.columnName# = <cfqueryparam value = #arguments.productSubId# cfsqltype = "integer">
+          P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND I.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND B.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+          <cfif arguments.productId NEQ 0>
+            AND P.fldProduct_ID = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
+          <cfelseif structKeyExists(arguments, "columnName")>
+            AND P.#arguments.columnName# = <cfqueryparam value = #arguments.productSubId# cfsqltype = "integer">
+          </cfif>
         </cfif>
     </cfquery>
     <cfset local.dataArray = []>
@@ -947,8 +1050,7 @@
       WHERE 
         <cfif structKeyExists(arguments, "cartId")>
           fldCartItem_ID = <cfqueryparam value = #arguments.cartId# cfsqltype = "integer">
-        </cfif>
-        <cfif structKeyExists(arguments, "productId")>
+        <cfelseif structKeyExists(arguments, "productId")>
            fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
         </cfif>
     </cfquery>
