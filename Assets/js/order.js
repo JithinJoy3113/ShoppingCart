@@ -42,53 +42,6 @@ function addCart(ID){
     })
  }
 
-//  function buyNow(Id){
-//     if(window.location.href.includes("product.cfm")){
-//         alert("sagsfgadsg")
-//     }
-//     var buyDetails = {}
-//     let orderTotalAmountSpan = $('#orderTotalAmount')
-//     let orderTotalAmount = parseFloat(orderTotalAmountSpan.attr('data-value'))
-//     let orderTotalTaxSpan = $('#orderTotalTax')
-//     let orderTotalTax = parseFloat(orderTotalTaxSpan.attr('data-value'))
-//     buyDetails.orderAmount = orderTotalAmount
-//     buyDetails.orderTax = orderTotalTax
-//     var cartId = addCart("buy,"+Id)
-//     $.ajax({
-//         url : './Components/shoppingCart.cfc?method=viewProducts',
-//         type : 'post',
-//         data : {
-//             productId : Id
-//         },
-//         success : function(response){
-//             let data = JSON.parse(response)
-//             let orderAmount = 0
-//             let orderTax = 0
-//             for(var struct of data){
-//                 orderAmount += struct.price
-//                 orderTax += struct.tax
-//                 buyDetails[struct.productId] = {}
-//                 buyDetails[struct.productId]['productName'] = struct.productName
-//                 buyDetails[struct.productId]['totalPrice'] = struct.price
-//                 buyDetails[struct.productId]['totalTax'] = struct.tax
-//                 buyDetails[struct.productId]['unitTax'] = struct.tax
-//                 buyDetails[struct.productId]['unitPrice'] = struct.price
-//                 buyDetails[struct.productId]['productId'] = struct.productId
-//                 if('quantity' in struct){
-//                     buyDetails[struct.productId]['totalQuantity'] = struct.quantity
-//                 }
-//                 else{
-//                     buyDetails[struct.productId]['totalQuantity'] = 1
-//                 }
-//             }
-//             buyDetails.orderAmount = orderAmount
-//             buyDetails.orderTax = orderTax
-//             localStorage.setItem("buyDetails",JSON.stringify(buyDetails))
-//             return true;
-//         }
-//     })
-// }
-
 function buyNow(Id){
     var url;
     var productId;
@@ -158,47 +111,6 @@ function buyNow(Id){
         }
     })
 }
-
-// function buyNowCart(Id){
-//     let productId = Id.value
-//     var buyDetails = {}
-//     let orderTotalAmountSpan = $('#orderTotalAmount')
-//     let orderTotalAmount = parseFloat(orderTotalAmountSpan.attr('data-value'))
-//     let orderTotalTaxSpan = $('#orderTotalTax')
-//     let orderTotalTax = parseFloat(orderTotalTaxSpan.attr('data-value'))
-//     buyDetails.orderAmount = orderTotalAmount
-//     buyDetails.orderTax = orderTotalTax
-//     $.ajax({
-//         url : './Components/shoppingCart.cfc?method=cartItems',
-//         type : 'post',
-//         success : function(response){
-//             let data = JSON.parse(response)
-//             let orderAmount = 0
-//             let orderTax = 0
-//             for(var struct of data){
-//                 orderAmount += struct.totalPrice
-//                 orderTax += struct.totalTax
-//                 buyDetails[struct.productId] = {}
-//                 buyDetails[struct.productId]['productName'] = struct.productName
-//                 buyDetails[struct.productId]['totalPrice'] = struct.totalPrice
-//                 buyDetails[struct.productId]['totalTax'] = struct.totalTax
-//                 buyDetails[struct.productId]['unitTax'] = struct.tax
-//                 buyDetails[struct.productId]['unitPrice'] = struct.price
-//                 buyDetails[struct.productId]['productId'] = struct.productId
-//                 if('quantity' in struct){
-//                     buyDetails[struct.productId]['totalQuantity'] = struct.quantity
-//                 }
-//                 else{
-//                     buyDetails[struct.productId]['totalQuantity'] = 1
-//                 }
-//             }
-//             buyDetails.orderAmount = orderAmount
-//             buyDetails.orderTax = orderTax
-//             localStorage.setItem("buyDetails",JSON.stringify(buyDetails))
-//             location.href = "./order.cfm?cartId="+productId
-//         }
-//     })
-// }
 
 function updateQuantityOrder(ID){
     let buyDetails = JSON.parse(localStorage.getItem("buyDetails"))
@@ -296,18 +208,12 @@ function buyProductBtn(ID){
             cvv : cardCvv
         },
         success : function(response){
+            console.log(response)
             let data = JSON.parse(response)
             if(data.Result == true){
                 $('#orderSuccessDiv').css({"display":"flex"})
                 $('#accordianBody').addClass("disabled")
-                $.ajax({
-                    url : './Components/shoppingCart.cfc?method=buyProduct',
-                    type : 'post',
-                    data : {},
-                    success: function(){
 
-                    }
-                })
             }
             else{
                 $('#cardError').text('Invalid Card')
@@ -358,6 +264,7 @@ function deleteProfileAddress(ID){
             $('#address'+addressId).remove()
             $('#topDiv').removeClass('disabled')
             $('#profileBodyDiv').removeClass('disabled')
+            $("#deleteConfirm").css({"display":"none"})
         }
     })
 }
