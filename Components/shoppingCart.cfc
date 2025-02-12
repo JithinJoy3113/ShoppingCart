@@ -392,6 +392,17 @@
         WHERE
           #local.columnName# = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
       </cfquery>
+      <cfif local.columnName EQ 'fldProduct_ID'>
+        <cfquery name = "local.deleteProductIamges" datasource = #application.dataSource#>
+          UPDATE
+            tblProductImages
+          SET
+            fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+            fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+          WHERE
+            fldProductId = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+        </cfquery>
+      </cfif>
     <cfcatch type="any">
       <cfreturn {
         "status" = "Error",
@@ -459,8 +470,7 @@
         <cfset local.result["insertError"] = "Failed:Product Already Exist">
       <cfelse>
         <cfset local.uploadPath = expandPath('../Assets/uploadImages')>
-        <cffile  action = "uploadAll" destination = "#local.uploadPath#" nameConflict = "MakeUnique" result = "local.imagePathArray"> 
-
+        <cffile  action = "uploadAll" destination = "#local.uploadPath#" nameConflict = "MakeUnique" result = "local.imagePathArray">
         <cfquery name = "local.insertProduct" result = "local.productInsert" datasource = #application.dataSource#>
           INSERT INTO
             tblProducts(
@@ -572,7 +582,7 @@
     <cfif StructCount(local.result) GT 0>
       <cfreturn local.result>
     <cfelse>
-      <cfquery name = "local.fetchContacts" datasource = #application.dataSource#>
+      <cfquery name = "local.fetchProducts" datasource = #application.dataSource#>
         SELECT 1 
         FROM tblProducts
         WHERE
@@ -580,7 +590,7 @@
           AND fldSubcategoryId = <cfqueryparam value = #arguments.addProductSubcategorySelect# cfsqltype = "integer">
           AND NOT fldProduct_ID = <cfqueryparam value = #arguments.productId# cfsqltype = "integer"> 
       </cfquery>
-      <cfif queryRecordCount(local.fetchContacts)>
+      <cfif queryRecordCount(local.fetchProducts)>
         <cfset local.result["insertError"] = "Failed:Product Already Exist">
       <cfelse>
         <cfquery name = "local.updatePoduct" datasource = #application.dataSource#>
@@ -639,8 +649,7 @@
         fldDefaultImage = <cfqueryparam value = 0 cfsqltype = "integer">
       WHERE
         fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
-        AND
-        fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+        AND fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
     </cfquery>
     <cfquery name = "local.setDefaultImage" datasource = #application.dataSource#>
       UPDATE
@@ -672,9 +681,9 @@
         B.fldBrand_ID,
         B.fldBrandName
       FROM
-        tblBrand B
+        tblProducts P
       INNER JOIN
-        tblProducts P ON B.fldBrand_ID = P.fldBrandId
+        tblBrand B ON P.fldBrandId = B.fldBrand_ID
       INNER JOIN
         tblProductImages I ON P.fldProduct_ID = I.fldProductId
       INNER JOIN
@@ -690,7 +699,7 @@
         AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
         <cfif arguments.productId NEQ 0>
           AND P.fldProduct_ID = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
-        <cfelse>
+        <cfelseif structKeyExists(arguments, "columnName")>
           AND P.#arguments.columnName# = <cfqueryparam value = #arguments.productSubId# cfsqltype = "integer">
         </cfif>
     </cfquery>
@@ -947,8 +956,7 @@
       WHERE 
         <cfif structKeyExists(arguments, "cartId")>
           fldCartItem_ID = <cfqueryparam value = #arguments.cartId# cfsqltype = "integer">
-        </cfif>
-        <cfif structKeyExists(arguments, "productId")>
+        <cfelseif structKeyExists(arguments, "productId")>
            fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
         </cfif>
     </cfquery>

@@ -180,7 +180,7 @@
                     </div>
                     <div class="price d-flex justify-content-between pt-2">
                         <span class="amount">Tax</span>
-                        <span class="number">&##8377<span class="number" id="orderTotalTax" data-value="#local.totalTax#">&##8377 #local.totalTax#</span></span>
+                        <span class="number">&##8377<span class="number" id="orderTotalTax" data-value="#local.totalTax#">#local.totalTax#</span></span>
                     </div>
                    <!---  <div class="price d-flex justify-content-between">
                         <span class="amount">Discount</span>
