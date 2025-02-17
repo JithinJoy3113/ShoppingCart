@@ -63,7 +63,7 @@
                                <div class = "addressEditBtnDiv d-flex align-items-center" data-value = "#item.addressID#">
                                     <img src="Assets/Images/dots.png" alt="" class = "addressEditImg" data-value = "#item.addressID#" width="20" height="20">
                                 </div>
-                                <div class="addressEditDiv py-3" id="#item.addressID#" data-value = "#item.addressID#">
+                                <div class="addressEditDiv py-3" id="addressDelete#item.addressID#" data-value = "#item.addressID#">
                                     <!-- <button type="button">Edit</button> -->
                                     <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteProfileAddressButton(this)">Delete</button>
                                 </div>
@@ -71,6 +71,9 @@
                         </cfloop>
                 </div>
                 <button type = "button" name = "profileSave" class = "addCategory mt-4 mx-auto d-none" id="profileAddressSave" onclick="">Save</button>
+            </div>
+            <div id="confirmAlert">
+                
             </div>
             <div class = "addressModal pb-3 fw-bold" id="addressModal">
                 <form action="" method="post" id="addressForm">

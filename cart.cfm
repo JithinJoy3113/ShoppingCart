@@ -11,46 +11,50 @@
                                 <button class="pinButton">Enter Delivery Pincode</button>
                             </div>
                         </div>
+                        <cfset local.cartId = 0>
                         <cfset local.totalPrice = 0>
                         <cfset local.totalTax = 0>
                         <cfset local.items = arrayLen(local.cartItems)>
                         <cfloop array="#local.cartItems#" item="item">
-                            <cfset local.cartId = item.cartId>
-                            <cfset local.totalPrice += item.totalPrice>
-                            <cfset local.totalTax += item.totalTax>
-                            <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id = "#item.cartId#">
-                                <div class="itemMain d-flex flex-column">
-                                    <div class="itemDiv d-flex">
-                                        <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
-                                        <div class="detailsDiv">
-                                            <div class="itemName d-flex flex-column">
-                                                <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
-                                                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
-                                                <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
-                                            </div>
-                                            <!--- <div class="sizeDiv">
-                                                <span class="sizeSpan">Size: 10,Black , 10</span>
-                                            </div> --->
-                                            <div class="priceDetailsDiv d-flex flex-column mt-2">
-                                                <span class="amount green">Price :<span class="amount green" id = "price#item.cartId#"> #item.totalPrice#</span></span>
-                                                <span class="number">Tax : <span class="number" id="tax#item.cartId#">#item.totalTax#</span></span>
+                            <cfif structKeyExists(item, "cartId")>
+                                <cfset local.cartId = item.cartId>
+                                <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id = "#item.cartId#">
+                                    <div class="itemMain d-flex flex-column">
+                                        <div class="itemDiv d-flex">
+                                            <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
+                                            <div class="detailsDiv">
+                                                <div class="itemName d-flex flex-column">
+                                                    <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                                    <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
+                                                    <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
+                                                </div>
+                                                <!--- <div class="sizeDiv">
+                                                    <span class="sizeSpan">Size: 10,Black , 10</span>
+                                                </div> --->
+                                                <div class="priceDetailsDiv d-flex flex-column mt-2">
+                                                    <span class="amount green">Price :<span class="amount green" id = "price#item.cartId#"> #item.totalPrice#</span></span>
+                                                    <span class="number">Tax : <span class="number" id="tax#item.cartId#">#item.totalTax#</span></span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="removeDiv d-flex justify-content-between">
-                                        <div class="UpdateQuantityDiv d-flex">
-                                            <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.cartId#" id="minus#item.cartId#" onclick="updateQuantity(this)"
-                                                <cfif item.quantity EQ 1>
-                                                    disabled
-                                                </cfif>
-                                            >-</button>
-                                            <span id="quantity#item.cartId#" data-value = "#item.quantity#">#item.quantity#</span>
-                                            <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.cartId#" onclick="updateQuantity(this)">+</button>
+                                        <div class="removeDiv d-flex justify-content-between">
+                                            <div class="UpdateQuantityDiv d-flex">
+                                                <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.cartId#" id="minus#item.cartId#" onclick="updateQuantity(this)"
+                                                    <cfif item.quantity EQ 1>
+                                                        disabled
+                                                    </cfif>
+                                                >-</button>
+                                                <span id="quantity#item.cartId#" data-value = "#item.quantity#">#item.quantity#</span>
+                                                <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.cartId#" onclick="updateQuantity(this)">+</button>
+                                            </div>
+                                            <button class="later me-5 border-0" type = "button" value = #item.cartId# onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                         </div>
-                                        <button class="later me-5 border-0" type = "button" value = #item.cartId# onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                     </div>
                                 </div>
-                            </div>
+                            <cfelse>
+                                <cfset local.totalPrice = item.orderAmount>
+                                <cfset local.totalTax = item.orderTax>
+                            </cfif>
                         </cfloop>
                         <div class="placeOrderdiv d-flex justify-content-end">
                             <button class="orderButton" type="button" value="#local.cartId#" onclick = "buyNow(this)">PLACE ORDER</button>

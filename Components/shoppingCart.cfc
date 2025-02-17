@@ -339,6 +339,7 @@
       SELECT
         S.fldSubcategoryName,
         S.fldSubcategory_ID,
+        S.fldCategoryID,
         C.fldCategoryName,
         C.fldCategory_ID
       FROM
@@ -353,6 +354,8 @@
           S.fldSubcategory_ID = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer">
           AND C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
           AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+        <cfelse>
+          C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         </cfif>
     </cfquery>
     <cfset local.dataArray = []>
@@ -360,6 +363,7 @@
       <cfset local.jsonData = {}>
       <cfset local.jsonData['subcategoryId'] = local.fetchSubcategory.fldSubcategory_ID>
       <cfset local.jsonData['subcategoryName'] = local.fetchSubcategory.fldSubcategoryName>
+      <cfset local.jsonData['categoryIdTblSub'] = local.fetchSubcategory.fldCategoryID>
       <cfset local.jsonData['categoryId'] = local.fetchSubcategory.fldCategory_ID>
       <cfset local.jsonData['categoryName'] = local.fetchSubcategory.fldCategoryName>
       <cfset arrayAppend(local.dataArray, local.jsonData)>
@@ -464,41 +468,9 @@
       <cfset local.functionCall = deleteProduct(deleteId = arguments.deleteId)>
     <cfelseif arguments.tableName EQ 'tblProductImages'>
       <cfset local.functionCall = deleteProductImage(deleteId = arguments.deleteId)>
-    <cfelseif arguments.tableName EQ 'tblSubCategory'>
+    <cfelseif arguments.tableName EQ 'tblSubcategory'>
       <cfset local.functionCall = deleteSubCategory(deleteId = arguments.deleteId)>
     </cfif>
-   <!---  <cftry>
-      <cfquery name = "local.deleteData" datasource = #application.dataSource#>
-        UPDATE
-          #arguments.tablename#
-        SET
-          fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
-        <cfif arguments.tableName EQ 'tblProductImages'>
-          fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-        <cfelse>
-          fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-        </cfif>
-        WHERE
-          #local.columnName# = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
-      </cfquery>
-      <cfif local.columnName EQ 'fldProduct_ID'>
-        <cfquery name = "local.deleteProductIamges" datasource = #application.dataSource#>
-          UPDATE
-            tblProductImages
-          SET
-            fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
-            fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-          WHERE
-            fldProductId = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
-        </cfquery>
-      </cfif>
-    <cfcatch type="any">
-      <cfreturn {
-        "status" = "Error",
-        "message" = "An error occurred while deleting the data. Please try again later."
-      }>
-    </cfcatch>
-    </cftry> --->
     <cfreturn {"status":"true"}>
   </cffunction>
 
@@ -672,7 +644,7 @@
       <cfreturn local.result>
     <cfelse>
       <cfquery name = "local.fetchProducts" datasource = #application.dataSource#>
-        SELECT 1 
+        SELECT 1
         FROM tblProducts
         WHERE
           fldProductName = <cfqueryparam value = "#arguments.addProductNameInput#" cfsqltype = "varchar">
@@ -804,6 +776,10 @@
       <cfset local.jsonData['productName'] = local.viewProduct.fldProductName>
       <cfset local.jsonData['price'] = local.viewProduct.fldPrice>
       <cfset local.jsonData['tax'] = local.viewProduct.fldTax>
+      <cfset local.jsonData['totalPrice'] = local.viewProduct.fldPrice>
+      <cfset local.jsonData['totalTax'] = local.viewProduct.fldTax>
+      <cfset local.jsonData['orderAmount'] = local.viewProduct.fldPrice>
+      <cfset local.jsonData['orderTax'] = local.viewProduct.fldTax>
       <cfset local.jsonData['description'] = local.viewProduct.fldDescription>
       <cfset local.jsonData['productId'] = local.viewProduct.fldProduct_ID>
       <cfset local.jsonData['categoryId'] = local.viewProduct.fldCategory_ID>
@@ -813,7 +789,9 @@
       <cfset local.jsonData['file'] = local.viewProduct.fldImageFileName>
       <cfset local.jsonData['brandId'] = local.viewProduct.fldBrand_ID>
       <cfset local.jsonData['brandName'] = local.viewProduct.fldBrandName>
+      <cfset local.jsonData['quantity'] = 1>
     </cfloop>
+    <cfset arrayAppend(local.dataArray, {"orderAmount" :   local.viewProduct.fldPrice, "orderTax" : local.viewProduct.fldTax})>
     <cfreturn local.dataArray>
   </cffunction>
 
@@ -990,27 +968,34 @@
         C.fldUserId = <cfqueryparam value = #session.userId# cfsqltype = "integer">
         AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
         <cfif arguments.cartId NEQ 0>
-          AND C.fldCart_ID = <cfqueryparam value = #arguments.cartId# cfsqltype = "integer">
+          AND C.fldCartItem_ID = <cfqueryparam value = #arguments.cartId# cfsqltype = "integer">
         </cfif>
         <cfif arguments.productId NEQ 0>
           AND C.fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
         </cfif>
     </cfquery>
     <cfset local.dataArray = []>
-    <cfloop query="local.fetchCart">
-      <cfset local.data = {}>
-      <cfset local.data['cartId'] = local.fetchCart.fldCartItem_ID>
-      <cfset local.data['productId'] = local.fetchCart.fldProductId>
-      <cfset local.data['quantity'] = local.fetchCart.fldQuantity>
-      <cfset local.data['productName'] = local.fetchCart.fldProductName>
-      <cfset local.data['subcategoryId'] = local.fetchCart.fldSubCategoryId>
-      <cfset local.data['totalPrice'] = local.fetchCart.totalPrice>
-      <cfset local.data['totalTax'] = local.fetchCart.totalTax>
-      <cfset local.data['price'] = local.fetchCart.fldPrice>
-      <cfset local.data['tax'] = local.fetchCart.fldTax>
-      <cfset local.data['file'] = local.fetchCart.fldImageFileName>
-      <cfset arrayAppend(local.dataArray, local.data)>
-    </cfloop>
+    <cfif queryRecordCount(local.fetchCart)>
+      <cfset local.orderAmount = 0>
+      <cfset local.orderTax = 0>
+      <cfloop query="local.fetchCart">
+        <cfset local.data = {}>
+        <cfset local.orderAmount += local.fetchCart.totalPrice>
+        <cfset local.orderTax += local.fetchCart.totalTax>
+        <cfset local.data['cartId'] = local.fetchCart.fldCartItem_ID>
+        <cfset local.data['productId'] = local.fetchCart.fldProductId>
+        <cfset local.data['quantity'] = local.fetchCart.fldQuantity>
+        <cfset local.data['productName'] = local.fetchCart.fldProductName>
+        <cfset local.data['subcategoryId'] = local.fetchCart.fldSubCategoryId>
+        <cfset local.data['totalPrice'] = local.fetchCart.totalPrice>
+        <cfset local.data['totalTax'] = local.fetchCart.totalTax>
+        <cfset local.data['price'] = local.fetchCart.fldPrice>
+        <cfset local.data['tax'] = local.fetchCart.fldTax>
+        <cfset local.data['file'] = local.fetchCart.fldImageFileName>
+        <cfset arrayAppend(local.dataArray, local.data)>
+      </cfloop>
+      <cfset arrayAppend(local.dataArray, {"orderAmount" :  local.orderAmount, "orderTax" : local.orderTax})>
+    </cfif>
     <cfreturn local.dataArray>
   </cffunction>
 
@@ -1057,6 +1042,18 @@
     <cfset local.dataArray = cartItems()>
     <cfreturn local.dataArray>
   </cffunction>
+
+  <cffunction name = "updateProductquantity" returnType = "any" returnFormat = "json" access = "remote">
+    <cfargument  name = "productId" required = "false" type = "integer">
+    <cfargument  name = "cartId" required = "false" type = "integer">
+    <cfif arguments.productId NEQ 0>
+      <cfset local.queryData = viewProducts(productId = arguments.productId)>
+    <cfelse>
+      <cfset local.queryData = cartItems()>
+    </cfif>
+    <cfset session.updateItems = local.queryData>
+    <cfreturn local.queryData>
+  </cffunction> 
 
   <cffunction name = "updateProfile" returnType = "any" returnFormat = "json" access = "remote">
     <cfargument name = "profileFirstName" required = "true" type = "string">
@@ -1209,6 +1206,88 @@
   </cffunction>
 
   <cffunction name = "buyProduct" access = "remote" returnType = "any" returnFormat = "json">
+<!---     <cfargument name = "totalOrderPrice" type = "numeric" required = "true"> --->
+<!---     <cfargument name = "totalOrderTax" type = "numeric" required = "true"> --->
+    <cfargument name = "addressId" type = "integer" required = "true">
+    <cfargument name = "cardNumber" type = "numeric" required = "true" default = 1>
+    <cfargument name = "cvv" type = "numeric" required = "true" default = 1>
+<!---     <cfargument name = "detailsStruct" type = "struct" required = "true"> --->
+    <cfset local.cardNumber = 123456789123>
+    <cfset local.cvv = 123>
+    <cfset local.jsonData = {}>
+    <cfif (arguments.cardNumber EQ local.cardNumber) AND (arguments.cvv EQ local.cvv)>
+    <cfset local.generatedUUID = createUUID()>
+    <cfset detailsStructJSON = []>
+      <cfloop array = "#session.updateItems#" index = "item">
+        <cfif structKeyExists(item, "productId")>
+          <cfset productJson = {
+            "productId" = item.productId,
+            "totalQuantity" = item.quantity,
+            "unitPrice" = item.price,
+            "unitTax" = item.tax
+          }>
+          <cfset arrayAppend(detailsStructJSON, productJson)>
+          <cfelse>
+            <cfset local.payAmount = item.orderAmount + item.orderTax>
+            <cfset local.orderAmount = item.orderAmount>
+            <cfset local.orderTax = item.orderTax>
+        </cfif>
+      </cfloop>
+      <cfset detailsStructJSON = serializeJSON(detailsStructJSON)>
+      <cfstoredproc procedure="sp_CreateOrder" datasource = "#application.dataSource#" result = "local.sp_CreateOrder">
+        <cfprocparam type="in" value="#session.userId#" cfsqltype="integer">
+        <cfprocparam type="in" value="#arguments.addressId#" cfsqltype="integer">
+        <cfprocparam type="in" value="#local.orderAmount#" cfsqltype="decimal">
+        <cfprocparam type="in" value="#local.orderTax#" cfsqltype="decimal">
+        <cfprocparam type="in" value="#detailsStructJSON#" cfsqltype="varchar">
+         <cfprocparam type="in" value="#local.generatedUUID#" cfsqltype="varchar">
+      </cfstoredproc>
+      <cfset local.jsonData['Result'] = true>
+      <cfmail from="jithinj3113@gmail.com" subject="Order Placed" to="jithinj403113@gmail.com" type = "html">
+        Order placed successfully!<br>
+        Dear #session.firstName#,<br>
+        Thank you for your order! We are pleased to confirm that we have received your order and are processing it.
+        Below are the details of your order:
+        <table border="1" cellpadding="5" cellspacing="0">
+          <tr>
+            <th>Order Id</th>
+            <td>#local.generatedUUID#</td>
+          </tr>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Tax</th>
+          </tr>
+          <cfloop array = "#session.updateItems#" index = "item">
+            <cfif structKeyExists(item, "productId")>
+              <tr>
+                <td>#item.productName#</td>
+                <td> #item.quantity#</td>
+                <td>#item.price#</td>
+                <td> #item.tax#</td>
+              </tr>
+            </cfif>
+          </cfloop>
+          <tr>
+            <th>Total Amount</th>
+            <td>#DecimalFormat(local.payAmount)#</td>
+          </tr>
+        </table><br>
+        If you have any questions or need assistance, please feel free to contact us at <a href="">clickCark.com</a>. We're here to help!<br>
+        Thank you for shopping with us! We look forward to serving you again soon.<br>
+        Best regards,<br>
+        ClickCart<br>
+        <a href="">ClickCart.com</a><br>
+      </cfmail>
+    <cfelse>
+      <cfset local.jsonData['Result'] = false>
+    </cfif>
+    <cfreturn local.jsonData>
+  </cffunction>
+
+
+    <!--- <cffunction name = "buyProduct" access = "remote" returnType = "any" returnFormat = "json">
     <cfargument name = "totalOrderPrice" type = "numeric" required = "true">
     <cfargument name = "totalOrderTax" type = "numeric" required = "true">
     <cfargument name = "addressId" type = "integer" required = "true">
@@ -1244,7 +1323,10 @@
       </cfstoredproc>
       <cfset local.jsonData['Result'] = true>
       <cfmail from="jithinj3113@gmail.com" subject="Order Placed" to="jithinj403113@gmail.com" type = "html">
-        Order placed successfully!
+        Order placed successfully!<br>
+        Dear #session.firstName#,<br>
+        Thank you for your order! We are pleased to confirm that we have received your order and are processing it.
+        Below are the details of your order:
         <table border="1" cellpadding="5" cellspacing="0">
           <tr>
             <th>Order Id</th>
@@ -1270,13 +1352,18 @@
             <th>Total Amount</th>
             <td> #local.payAmount#</td>
           </tr>
-        </table>
+        </table><br>
+        If you have any questions or need assistance, please feel free to contact us at <a href="">clickCark.com</a>. We're here to help!<br>
+        Thank you for shopping with us! We look forward to serving you again soon.<br>
+        Best regards,<br>
+        ClickCart<br>
+        <a href="">ClickCart.com</a><br>
       </cfmail>
     <cfelse>
       <cfset local.jsonData['Result'] = false>
     </cfif>
     <cfreturn local.jsonData>
-  </cffunction>
+  </cffunction> --->
 
   <cffunction name = "getOrders" access = "public" returnType = "array">
     <cfargument name = "search" required = "false" type = "string">
@@ -1450,6 +1537,47 @@
         fldAddress_ID = <cfqueryparam value = #arguments.addressId# cfsqltype = "integer">
     </cfquery>
     <cfreturn true>
+  </cffunction>
+  
+  <cffunction  name = "updateOrderItems" access = "remote" returnType = "any" returnFormat = "json">
+    <cfargument  name = "productId" required = "true" type = "integer">
+    <cfargument  name = "operation" required = "true" type = "string">
+    <cfset local.arrayLength = arrayLen(session.updateItems)>
+    <cfset local.totalPrice = 0>
+    <cfset local.totalTax = 0>
+    <cfloop array = "#session.updateItems#" index = "item">
+      <cfif structKeyExists(item, "productName") AND item.productId EQ arguments.productId AND arguments.operation EQ 'Plus'>
+        <cfset item.totalPrice += item.price>
+        <cfset item.totalTax += item.tax>
+        <cfset item.quantity += 1>
+        <cfset local.price = item.price>
+        <cfset local.tax = item.tax>
+      <cfelseif structKeyExists(item, "productName") AND item.productId EQ arguments.productId AND arguments.operation EQ 'Minus'>
+        <cfset item.totalPrice -= item.price>
+        <cfset item.totalTax -= item.tax>
+        <cfset item.quantity -= 1>
+        <cfset local.price = item.price>
+        <cfset local.tax = item.tax>
+      <cfelseif structKeyExists(item, "productName") AND item.productId EQ arguments.productId AND arguments.operation EQ 'Remove'>
+        <cfset local.totalPrice = item.totalPrice>
+        <cfset local.totalTax = item.totalTax>
+        <cfset local.index = ArrayFind(session.updateItems, item)>
+        <cfset ArrayDeleteAt(session.updateItems, local.index)>
+        <cfset local.arrayLength = arrayLen(session.updateItems)>
+        <cfbreak>
+      </cfif>
+    </cfloop>
+    <cfif arguments.operation EQ 'Plus'>
+      <cfset session.updateItems[local.arrayLength].orderAmount += local.price>
+      <cfset session.updateItems[local.arrayLength].orderTax += local.tax>
+    <cfelseif arguments.operation EQ 'Minus'>
+      <cfset session.updateItems[local.arrayLength].orderAmount -= local.price>
+      <cfset session.updateItems[local.arrayLength].orderTax -= local.tax>
+    <cfelseif arguments.operation EQ 'Remove'>
+      <cfset session.updateItems[local.arrayLength].orderAmount -= local.totalPrice>
+      <cfset session.updateItems[local.arrayLength].orderTax -= local.totalTax>
+    </cfif>
+    <cfreturn session.updateItems>
   </cffunction>
 
 </cfcomponent>

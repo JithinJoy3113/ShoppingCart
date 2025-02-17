@@ -100,24 +100,23 @@
                         <div class="headingDiv">#local.productDetails.productName#</div>
                         <div class="mobileRatingdiv">
                             <div class="rating d-none d-md-flex align-items-center py-1">
-                                <!--- <img src="assets/images/rating.png" class="" alt=""> --->
                                 <span class="ratingSpan ms-2">37,817 Ratings & 1,431 Reviews</span>
-                               <!---  <img src="assets/images/assured.png" class="ms-2" alt=""> --->
                             </div>
                             <div class="rating d-flex d-md-none align-items-center justify-content-between py-1">
                                 <div class="d-flex">
-                                    <!--- <img src="assets/images/ratingstar.png" class="" alt=""> --->
                                     <a class="ratingSpan ms-2 text-decoration-none">8,715 ratings</a>
                                 </div>
                                 <div class="">
-                                    <!--- <img src="assets/images/flipassured.png" class="ms-auto" alt=""> --->
                                 </div>
                             </div>
                             <div class="priceDiv d-none d-md-flex align-items-center">
                                 <span class="price">RS. #local.productDetails.price#</span>
                             </div>
-                            <div class="fee mt-2 m-sm-none">+ ₹59 Secured Packaging Fee</div>
-                            <div class="fee d-flex">No cost EMI RS.2,345/month<a href="" class="d-flex d-sm-none deliverPlans text-decoration-none ms-1">View Plans</a></div>
+                            <div class="discriptionDiv d-none d-sm-flex">
+                                <span class="colorSpan">Discription</span>
+                                <span class="discription"># local.productDetails.description#</span>
+                            </div>
+                            <div class="fee d-flex mt-3">No cost EMI RS.2,345/month<a href="" class="d-flex deliverPlans text-decoration-none ms-1">View Plans</a></div>
                             <div class="sellerFinddiv d-flex d-sm-none justify-content-between align-items-center">
                                 <span class="findSeller">Find a seller that delivers to you</span>
                                 <div class="findPin d-flex">
@@ -184,33 +183,12 @@
                         <div class="sellerDetailsdiv d-flex flex-column">
                             <div class="sellerName d-flex">
                                 <a href="" class="checkSpan text-decoration-none ms-3 me-2">#local.productDetails.brand#</a>
-                                <!--- <img src="assets/images/sellerrating.png" alt=""> --->
                             </div>
                             <ul class="highlightUl">
-                                <li class="highlightLi">7 Days Service Center Replacement/Repair <!--- <img src="assets/images/roundquestion.png" alt=""> ---></li>
-                                <li class="highlightLi">GST invoice available <!--- <img src="assets/images/roundquestion.png" alt=""> ---></li>
+                                <li class="highlightLi">7 Days Service Center Replacement/Repair</li>
+                                <li class="highlightLi">GST invoice available</li>
                                 <li class="highlightView"><a href="" class="checkSpan text-decoration-none">See other sellers</a>
                             </ul>
-                        </div>
-                    </div>
-                    <div class="superCoindiv d-none d-sm-flex">
-                        <!--- <img src="assets/images/supercoin.png" class="superImg w-100" alt=""> --->
-                    </div>
-                    <div class="discriptionDiv d-none d-sm-flex">
-                        <span class="colorSpan">Discription</span>
-                        <span class="discription"># local.productDetails.description#</span>
-                    </div>
-                    <div class="productHighlightdiv d-flex flex-column d-sm-none">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="productHighlightHead px-4 py-3">Product Highlights</span>
-                           <!---  <img src="assets/images/productarrow.png" class="" height="20" alt=""> --->
-                        </div>
-                        <div class="productHighlightsImages d-flex flex-column">
-                            <!--- <img src="assets/images/highlight1.webp" class="" alt="">
-                            <img src="assets/images/highlight2.webp" class="" alt="">
-                            <img src="assets/images/highlight3.webp" class="" alt="">
-                            <img src="assets/images/highlight4.webp" class="" alt="">
-                            <img src="assets/images/highlight5.webp" class="" alt=""> --->
                         </div>
                     </div>
                     <div class="reviewsRatingdiv d-flex flex-column">
@@ -278,154 +256,60 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="progressCirclediv d-flex mx-auto mx-md-3 ">
-                                <div class="progressCircle d-flex flex-column">
-                                    <!--- <img src="assets/images/rate3.9.png" class="progressImg" width="70" alt=""> --->
-                                    <span class="progressCategory mx-auto">Camera</span>
-                                </div>
-                                <div class="progressCircle d-flex flex-column">
-                                  <!---   <img src="assets/images/rate4.png" class="progressImg" width="70" alt=""> --->
-                                    <span class="progressCategory mx-auto">Battery</span>
-                                </div>
-                                <div class="progressCircle d-flex flex-column">
-                                    <!--- <img src="assets/images/rate4.2.png" class="progressImg" width="70" alt=""> --->
-                                    <span class="progressCategory mx-auto">Display</span>
-                                </div>
-                                <div class="progressCircle d-flex flex-column">
-                                   <!---  <img src="assets/images/rate4.png" class="progressImg" width="70" alt=""> --->
-                                    <span class="progressCategory mx-auto">design</span>
-                                </div>
-                            </div>
                         </div>
-                        <div class="reviewPhotosdiv d-flex">
-                            <!--- <img src="assets/images/review1.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review2.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review3.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review4.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review5.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review6.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review7.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/review8.png" class="reviewImg" width="90" alt="">
-                            <img src="assets/images/reviewplus.png" class="reviewImg" width="90" alt=""> --->
-                        </div>
+                
                         <div class="customerReviewdiv d-flex flex-column">
                             <div class="customerReviewhead">
-                               <!---  <img src="assets/images/fivestar.png" class="" width="35" height="23" alt=""> --->
                                 <span class="reviewHead">Terrific purchase</span>
-                            </div>
-                            <div class="customerReview d-flex flex-column pt-2">
-                                <span class="customerReviewspan">Nice camera 😍😍</span>
-                                <span class="customerReviewspan">Nice battery 😊😊</span>
-                            </div>
-                            <div class="customerReviewphotos d-flex pt-3">
-                                <!--- <img src="assets/images/review1.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review2.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review3.png" class="reviewImg" width="60" alt=""> --->
                             </div>
                             <div class="customerDetailsdiv d-flex flex-column flex-md-row w-100 justify-content-md-between pt-2">
                                 <div class="customerDetails d-flex w-75 align-items-center">
                                     <span class="customerName">Sachin Roy</span>
-                                    <!--- <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
                                     <span class="customerLocation">Certified Buyer, Kolkata</span>
                                     <span class="customerLocation ms-1">1 month ago</span>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                   <!---  <img src="assets/images/like.png" class="" alt=""> --->
-                                    <span class="likeCount me-4">1318</span>
-                                 <!---    <img src="assets/images/dislike.png" class="" alt=""> --->
-                                    <span class="likeCount me-4">415</span>
-                                   <!---  <img src="assets/images/arrowdown.png" class="" alt=""> --->
                                 </div>
                             </div>
                         </div>
                         <div class="customerReviewdiv d-flex flex-column">
                             <div class="customerReviewhead">
-                             <!---    <img src="assets/images/fivestar.png" class="" width="35" height="23" alt=""> --->
                                 <span class="reviewHead">Worth every penny</span>
                             </div>
                             <div class="customerReview d-flex flex-column pt-2">
                                 <span class="customerReviewspan">Good looking 🤩</span>
-                                <span class="customerReviewspan">battery backup 95% good 👍</span>
-                                <span class="customerReviewspan">Camera 📸 quality batter 🤏</span>
-                                <span class="customerReviewspan">Nice Processor for BGMI</span>
                                 <span class="customerReviewspan">Price range all-over best.✅</span>
-                            </div>
-                            <div class="customerReviewphotos d-flex pt-3">
-                                <!--- <img src="assets/images/review4.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review5.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review6.png" class="reviewImg" width="60" alt=""> --->
                             </div>
                             <div class="customerDetailsdiv d-flex flex-column flex-md-row w-100 justify-content-md-between pt-2">
                                 <div class="customerDetails d-flex w-75 align-items-center">
                                     <span class="customerName">Deepak Sah</span>
-                                   <!---  <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
                                     <span class="customerLocation">Certified Buyer, Pashchim Champaran District</span>
                                     <span class="customerLocation ms-1">2 months ago</span>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                  <!---   <img src="assets/images/like.png" class="" alt=""> --->
-                                    <span class="likeCount me-4">1678</span>
-                             <!---        <img src="assets/images/dislike.png" class="" alt=""> --->
-                                    <span class="likeCount me-4">455</span>
-                                   <!---  <img src="assets/images/arrowdown.png" class="" alt=""> --->
                                 </div>
                             </div>
                         </div>
                         <div class="customerReviewdiv d-flex flex-column">
                             <div class="customerReviewhead">
-                              <!---   <img src="assets/images/fivestar.png" class="" width="35" height="23" alt=""> --->
                                 <span class="reviewHead">Fabulous!</span>
                             </div>
                             <div class="customerReview d-flex flex-column pt-2">
                                 <span class="customerReviewspan">Good 👍👍👍👍 love 💕💕💕💕💕</span>
                             </div>
-                            <div class="customerReviewphotos d-flex pt-3">
-                             <!---    <img src="assets/images/review7.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review8.png" class="reviewImg" width="60" alt=""> --->
-                            </div>
                             <div class="customerDetailsdiv d-flex flex-column flex-md-row w-100 justify-content-md-between pt-2">
                                 <div class="customerDetails d-flex w-75 align-items-center">
                                     <span class="customerName">Mukesh Hindustani</span>
-                                  <!---   <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
                                     <span class="customerLocation">Certified Buyer, Mumbai</span>
                                     <span class="customerLocation ms-1">2 months ago</span>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                 <!---    <img src="assets/images/like.png" class="" alt="">
-                                    <span class="likeCount me-4">2318</span> --->
-                                    <!--- <img src="assets/images/dislike.png" class="" alt="">
-                                    <span class="likeCount me-4">345</span>
-                                    <img src="assets/images/arrowdown.png" class="" alt=""> --->
                                 </div>
                             </div>
                         </div>
                         <div class="customerReviewdiv d-flex flex-column">
                             <div class="customerReviewhead">
-                              <!---   <img src="assets/images/fivestar.png" class="" width="35" height="23" alt=""> --->
                                 <span class="reviewHead">Terrific purchase</span>
-                            </div>
-                            <div class="customerReview d-flex flex-column pt-2">
-                                <span class="customerReviewspan">Nice camera 😍😍</span>
-                                <span class="customerReviewspan">Nice battery 😊😊</span>
-                            </div>
-                            <div class="customerReviewphotos d-flex pt-3">
-                               <!---  <img src="assets/images/review1.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review2.png" class="reviewImg" width="60" alt="">
-                                <img src="assets/images/review3.png" class="reviewImg" width="60" alt=""> --->
                             </div>
                             <div class="customerDetailsdiv d-flex flex-column flex-md-row w-100 justify-content-md-between pt-2">
                                 <div class="customerDetails d-flex w-75 align-items-center">
                                     <span class="customerName">Sachin Roy</span>
-                                   <!---  <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
                                     <span class="customerLocation">Certified Buyer, Kolkata</span>
                                     <span class="customerLocation ms-1">1 month ago</span>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                   <!---  <img src="assets/images/like.png" class="" alt="">
-                                    <span class="likeCount me-4">1318</span>
-                                    <img src="assets/images/dislike.png" class="" alt="">
-                                    <span class="likeCount me-4">415</span>
-                                    <img src="assets/images/arrowdown.png" class="" alt=""> --->
                                 </div>
                             </div>
                         </div>
@@ -434,7 +318,6 @@
                     <div class="questionAnswerdiv d-flex flex-column">
                         <div class="questionAnswerrow d-flex justify-content-between align-items-center">
                             <span class="questionAnswerHead">Questions and Answers</span>
-                           <!---  <img src="assets/images/searchanswer.png" class="" alt=""> --->
                         </div>
                         <div class="customerQuestiondiv d-flex flex-column">
                             <span class="questions">Q: What about gaming.. Like free fire how it performs</span>
@@ -443,56 +326,8 @@
                                 <div class="answerdCustomer d-flex flex-column">
                                     <span class="customerName mt-1">Mayank Kashyap</span>
                                     <div class="questionCertified">
-                                       <!---  <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
                                         <span class="customerLocation">Certified Buyer, Kolkata</span>
                                     </div>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                    <!--- <img src="assets/images/like.png" class="" alt="">
-                                    <span class="likeCount me-4">1318</span>
-                                    <img src="assets/images/dislike.png" class="" alt="">
-                                    <span class="likeCount me-4">415</span>
-                                    <img src="assets/images/arrowdown.png" class="" alt=""> --->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="customerQuestiondiv d-flex flex-column">
-                            <span class="questions">Q: Jio sim accept in this phone</span>
-                            <span class="answers mt-2"><b>A:</b> Jio pio Lio all are fine working</span>
-                            <div class="questionCustomerdiv d-flex align-items-center justify-content-between">
-                                <div class="answerdCustomer d-flex flex-column">
-                                    <span class="customerName mt-1">Anonymous</span>
-                                    <div class="questionCertified">
-                                        <!--- <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
-                                        <span class="customerLocation">Certified Buyer, Kolkata</span>
-                                    </div>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                   <!---  <img src="assets/images/like.png" class="" alt="">
-                                    <span class="likeCount me-4">1318</span>
-                                    <img src="assets/images/dislike.png" class="" alt="">
-                                    <span class="likeCount me-4">415</span>
-                                    <img src="assets/images/arrowdown.png" class="" alt=""> --->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="customerQuestiondiv d-flex flex-column">
-                            <span class="questions">Q: In this phone has a game turbo in voice change option yes or not</span>
-                            <span class="answers mt-2"><b>A:</b> Yes</span>
-                            <div class="questionCustomerdiv d-flex align-items-center justify-content-between">
-                                <div class="answerdCustomer d-flex flex-column">
-                                    <span class="customerName mt-1">Mayank Kashyap</span>
-                                    <div class="questionCertified">
-                                      <!---   <img src="assets/images/certified.png" class="" width="20" height="20" alt=""> --->
-                                        <span class="customerLocation">Certified Buyer, Kolkata</span>
-                                    </div>
-                                </div>
-                                <div class="responseDiv d-flex align-items-center">
-                                   <!---  <img src="assets/images/like.png" class="" alt="">
-                                    <span class="likeCount me-4">1318</span>
-                                    <img src="assets/images/dislike.png" class="" alt="">
-                                    <span class="likeCount me-4">415</span>
-                                    <img src="assets/images/arrowdown.png" class="" alt=""> --->
                                 </div>
                             </div>
                         </div>
@@ -516,8 +351,6 @@
                                     <span class="productsNamespan">#item.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">
                                         <span class="similarPrice text-success">RS.#item.price#</span>
-                                        <!-- <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>
-                                        <span class="similarOff text-success ms-2">23% off</span> -->
                                     </div>
                                 </div>
                             </div>

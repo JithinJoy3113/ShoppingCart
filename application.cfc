@@ -2,17 +2,23 @@
   <cfset this.name = "shoppingCart">
   <cfset this.sessionManagement = true>
 
- <!---  <cffunction name = "onError">
+<!---   <cffunction name = "onError">
     <cfargument name = "Exception" required = true>
     <cfargument type = "String" name = "EventName" required = true>
     <cflocation url = "error.cfm?Exception=#arguments.Exception#&EventName=#arguments.EventName#">
     <cfabort>
-  </cffunction> --->
+  </cffunction>
+ --->
+  <cffunction name="onMissingTemplate">
+    <cfargument name="targetPage" type="string" required=true/>
+    <cflog type="error" text="Missing template: #Arguments.targetPage#">
+    <cflocation url = "error.cfm?page=#arguments.targetPage#">
+  </cffunction>
   
   <cffunction  name="onApplicationStart" returnType="void">
     <cfset application.dataSource = "cartDatasource">
     <cfset application.obj = createObject("component", "Components.shoppingCart")>
-    <!--- <cfset application.secretKey = generateSecretKey("AES")>  --->
+    <cfset application.secretKey = "ga054hPJQYlv0YXpu4ZMIg==">
   </cffunction>
 
    <cffunction  name = "onRequestStart" returnType = "boolean">
@@ -35,6 +41,9 @@
 
   <cffunction  name = "onRequest"  returnType = "void">
     <cfargument  name = "requestPage" required = "true">
+    <cfif structKeyExists(session, "updateItems") AND arguments.requestPage NEQ '/order.cfm'>
+        <cfset StructDelete(session, "updateItems")>
+    </cfif>
     <cfif arguments.requestPage EQ '/error.cfm'>
       <cfinclude  template = "#arguments.requestPage#">
     <cfelse>

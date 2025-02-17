@@ -99,25 +99,22 @@
                                 </cfif>
                             </cfloop>
                         </cfif>
-                        <div class="pageListDiv d-flex justify-content-center">
-                            <div class="displayDiv d-flex flex-column justify-content-center">
-                                <!---   <cfset local.obj = new components.shoppingCart()> --->
-                                <cfset local.result = application.obj.viewCategory()>
-                                <cfloop array="#local.result#" item = "item">
-                                    <div class="pageDisplayDiv d-flex justify-content-between align-items-center" id="#item.categoryId#">
-                                        <a href="" class="text-decoration-none text-dark">
-                                            <div class="pageNameDiv d-flex text-dark fw-bold overflow-hidden text-truncate">
-                                                #item.categoryName#
-                                            </div>
-                                        </a>
-                                        <div class="pageButtonDiv d-flex">
-                                            <button type="button" class="pageButton adminEditColor" name="editBtn" value=#item.categoryId#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                            <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
-                                            <button type="button" class="pageButton adminEditColor" name="viewBtn"  value=#item.categoryId# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
+                        <div class="pageListDiv d-flex justify-content-center flex-column">
+                            <cfset local.result = application.obj.viewCategory()>
+                            <cfloop array="#local.result#" item = "item">
+                                <div class="pageDisplayDiv d-flex justify-content-between align-items-center" id="#item.categoryId#">
+                                    <a href="" class="text-decoration-none text-dark">
+                                        <div class="pageNameDiv d-flex text-dark fw-bold overflow-hidden text-truncate">
+                                            #item.categoryName#
                                         </div>
+                                    </a>
+                                    <div class="pageButtonDiv d-flex">
+                                        <button type="button" class="pageButton adminEditColor" name="editBtn" value=#item.categoryId#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                        <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                        <button type="button" class="pageButton adminEditColor" name="viewBtn"  value=#item.categoryId# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
                                     </div>
-                                </cfloop>
-                            </div>
+                                </div>
+                            </cfloop>
                         </div>
                     </div>
                 </div>
@@ -153,6 +150,7 @@
                 <div class="d-flex justify-content-end px-3 py-3">
                     <button type="button" class="createClose border-0" value="" onclick="imageEditClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                 </div>
+                <span class="addCategoryHeading fw-bold mx-auto">Product Images</span>
                 <div  class="imagesUpdateSubDiv" id = "imagesUpdateSubDiv">
 
                 </div>
@@ -187,7 +185,7 @@
                     </select>
                     <span class="fw-bold text-danger" id="brandError"></span>
                     <label for="addProductDescription" class="productLabel">Product Description</label>
-                    <input type="text" class="addProductDescription form-control" name = "addProductDescription" id = "addProductDescription" value = "">
+                    <textarea class="addProductDescription form-control" name = "addProductDescription" id = "addProductDescription" value = ""></textarea>
                     <span class="fw-bold text-danger" id="descriptionError"></span>
                     <label for="addProductPrice" class="productLabel">Product Price</label>
                     <input type="text" class="addProductPrice form-control" name = "addProductPrice" id = "addProductPrice" value = "">

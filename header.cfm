@@ -62,7 +62,11 @@
                             <div class="cartNumber" id="cartNumber">
                                 <cfif structKeyExists(session, "role")>
                                     <cfset local.cart = application.obj.cartItems()>
-                                    <cfset local.items = arrayLen((local.cart))>
+                                    <cfif arrayLen((local.cart)) EQ 0>
+                                        <cfset local.items = arrayLen((local.cart))>
+                                    <cfelse>
+                                        <cfset local.items = arrayLen((local.cart))-1>
+                                    </cfif>
                                     #local.items#
                                 </cfif>
                             </div>
@@ -84,6 +88,7 @@
                     <div class="homePageDiv d-flex w-100" id="headerNav">
                         <div class="navMenuDiv d-flex justify-content-between w-100">
                             <cfset local.result= application.obj.viewCategory('Home')>
+                            <cfset local.subCategoryResult= application.obj.viewSubcategory()>
                             <cfloop array="#local.result#" item="struct">
                                 <div class="categoryNameDiv ">
                                     <div class="categoryHeadDiv" data-value="#struct.categoryId#">
@@ -92,13 +97,12 @@
                                         <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
                                     </div>
                                     <div class="subCategoryListDiv" id="#struct.categoryId#">
-                                        <cfset local.subCategoryResult= application.obj.viewSubcategory(
-                                                                                                categoryId = #struct.categoryId#
-                                                                                                )>
-                                        <cfloop array="#local.subCategoryResult#" item="struct">
-                                            <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(struct.subcategoryId, application.secretKey, "AES", "Base64"))>
-                                            <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(struct.subcategoryName, application.secretKey, "AES", "Base64"))>
-                                            <a href="subcategory.cfm?subCategoryId=#local.encryptedSubcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#struct.subcategoryId#">#struct.subcategoryName#</a>
+                                        <cfloop array="#local.subCategoryResult#" item="data">
+                                            <cfif data.categoryIdTblSub EQ struct.categoryId>
+                                                <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(data.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                                <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(data.subcategoryName, application.secretKey, "AES", "Base64"))>
+                                                <a href="subcategory.cfm?subCategoryId=#local.encryptedSubcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#data.subcategoryId#">#data.subcategoryName#</a>
+                                            </cfif>
                                         </cfloop>
                                     </div>
                                 </div>

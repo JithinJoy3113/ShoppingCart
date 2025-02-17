@@ -24,14 +24,11 @@
             <cfelseif session.roleId EQ 2>
                 <cfif structKeyExists(url, "productId")>
                     <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
-                    <cfdump  var="#local.cart#">
-                    <cfif local.cart EQ 'cart exist'>
-                        <cfif structKeyExists(URL, "page")>
-                            <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
-                            <cflocation url="order.cfm?productId=#local.encryptedProductId#&page=buy" addtoken="no">
-                        <cfelse>
-                            <cflocation url="cart.cfm">
-                        </cfif>
+                    <cfif structKeyExists(URL, "page")>
+                        <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
+                        <cflocation url="order.cfm?productId=#local.encryptedProductId#&page=buy" addtoken="no">
+                    <cfelseif local.cart EQ 'cart exist'>
+                        <cflocation url="cart.cfm">
                     <cfelse> 
                         <cflocation url="cart.cfm">
                     </cfif>
