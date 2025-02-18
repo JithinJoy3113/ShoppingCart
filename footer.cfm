@@ -11,7 +11,40 @@
                         </a>
                     </div>
                 </cfif>
-        
+                <div class="sidebar" id="sidebar">
+                <cfoutput>
+                    <cfset local.result= application.obj.viewCategory('Home')>
+                    <cfset local.subCategoryResult= application.obj.viewSubcategory()>
+                    <a href="javascript:void(0)" class="close-btn" id="closeBtn">&times;</a>
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <cfloop from = "5" to = "#arrayLen(local.result)#" index="i">
+                            <div class="accordion-item">
+                                <div class="d-flex categoryBtnHead" id="category#local.result[i].categoryId#">
+                                    <div class="d-flex align-items-center">
+                                        <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(local.result[i].categoryId, application.secretKey, "AES", "Base64"))>
+                                        <cfset local.encryptedCategoryName = urlEncodedFormat(encrypt(local.result[i].categoryName, application.secretKey, "AES", "Base64"))>
+                                        <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="categoryLink text-decoration-none fw-bold">#local.result[i].categoryName#</a>
+                                    </div>
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="##categoryId#local.result[i].categoryId#" aria-expanded="false" aria-controls="flush-collapseOne" value="category#local.result[i].categoryId#" onclick="accordianHead(this)">
+                                        
+                                    </button>
+                                </div>
+                                <div id="categoryId#local.result[i].categoryId#" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="##accordionFlushExample">
+                                    <div class="accordion-body d-flex flex-column">
+                                        <cfloop array="#local.subCategoryResult#" item="data">
+                                            <cfif data.categoryIdTblSub EQ local.result[i].categoryId>
+                                                <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(data.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                                <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(data.subcategoryName, application.secretKey, "AES", "Base64"))>
+                                                <a href="subcategory.cfm?subCategoryId=#local.encryptedSubcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#data.subcategoryId#">#data.subcategoryName#</a>
+                                            </cfif>
+                                        </cfloop>
+                                    </div>
+                                </div>
+                            </div>
+                        </cfloop>
+                    </div>
+                </cfoutput>
+            </div>
             <div class="footerDiv d-flex flex-column bg-dark">
                 <div class="footerContents d-flex px-5 pt-5">
                     <div class="footerColOne d-flex w-75 justify-content-between ps-3 pe-5 me-4">

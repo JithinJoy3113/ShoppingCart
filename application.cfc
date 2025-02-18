@@ -2,19 +2,6 @@
   <cfset this.name = "shoppingCart">
   <cfset this.sessionManagement = true>
 
-<!---   <cffunction name = "onError">
-    <cfargument name = "Exception" required = true>
-    <cfargument type = "String" name = "EventName" required = true>
-    <cflocation url = "error.cfm?Exception=#arguments.Exception#&EventName=#arguments.EventName#">
-    <cfabort>
-  </cffunction>
- --->
-  <cffunction name="onMissingTemplate">
-    <cfargument name="targetPage" type="string" required=true/>
-    <cflog type="error" text="Missing template: #Arguments.targetPage#">
-    <cflocation url = "error.cfm?page=#arguments.targetPage#">
-  </cffunction>
-  
   <cffunction  name="onApplicationStart" returnType="void">
     <cfset application.dataSource = "cartDatasource">
     <cfset application.obj = createObject("component", "Components.shoppingCart")>
@@ -23,7 +10,9 @@
 
    <cffunction  name = "onRequestStart" returnType = "boolean">
     <cfargument  name = "requestPage" required = "true">
-      <cfset onApplicationStart()>
+      <cfif structKeyExists(URL, "reload") AND URL.reload EQ 1>
+        <cfset onApplicationStart()>
+      </cfif>
       <cfset local.excludePages = ["/login.cfm","/userSignUp.cfm","/error.cfm","/Components/shoppingCart.cfc"]> 
       <cfif ArrayContains(local.excludePages,arguments.requestPage)>
         <cfif arguments.requestPage EQ '/userSignUp.cfm'>
@@ -44,7 +33,7 @@
     <cfif structKeyExists(session, "updateItems") AND arguments.requestPage NEQ '/order.cfm'>
         <cfset StructDelete(session, "updateItems")>
     </cfif>
-    <cfif arguments.requestPage EQ '/error.cfm'>
+    <cfif arguments.requestPage EQ '/error.cfm'<!---  or arguments.requestPage EQ '/demo.cfm' --->>
       <cfinclude  template = "#arguments.requestPage#">
     <cfelse>
       <cfinclude  template = "header.cfm">
@@ -52,5 +41,19 @@
       <cfinclude  template = "footer.cfm">
     </cfif>
   </cffunction>
+
+  <cffunction name="onMissingTemplate">
+    <cfargument name="targetPage" type="string" required=true/>
+    <cflog type="error" text="Missing template: #Arguments.targetPage#">
+    <cflocation url = "error.cfm?page=#arguments.targetPage#">
+  </cffunction>
+  
+<!---   <cffunction name = "onError">
+    <cfargument name = "Exception" required = true>
+    <cfargument type = "String" name = "EventName" required = true>
+    <cflocation url = "error.cfm?Exception=#arguments.Exception#&EventName=#arguments.EventName#">
+    <cfabort>
+  </cffunction>
+ --->
 
  </cfcomponent>

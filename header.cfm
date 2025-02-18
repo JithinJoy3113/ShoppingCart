@@ -89,7 +89,10 @@
                         <div class="navMenuDiv d-flex justify-content-between w-100">
                             <cfset local.result= application.obj.viewCategory('Home')>
                             <cfset local.subCategoryResult= application.obj.viewSubcategory()>
-                            <cfloop array="#local.result#" item="struct">
+                            <cfloop array="#local.result#" item="struct" index="i">
+                                <cfif i EQ 10>
+                                    <cfbreak>
+                                </cfif>
                                 <div class="categoryNameDiv ">
                                     <div class="categoryHeadDiv" data-value="#struct.categoryId#">
                                         <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(struct.categoryId, application.secretKey, "AES", "Base64"))>
@@ -106,7 +109,8 @@
                                         </cfloop>
                                     </div>
                                 </div>
-                            </cfloop> 
+                            </cfloop>
+                            <button type="button" class="categoryLink border-0 fw-bold" id="openBtn">More</button>
                         </div>
                     </div>
                 </cfif>

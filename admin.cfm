@@ -13,10 +13,10 @@
                                 
                             </div>
                             <div class="categoryInputDiv my-4 d-flex flex-column justify-content-center">
-                                <input class="categoryInput form-control" name="categoryInput" id="categoryInput" placeholder="Enter Category Name">
-                                <span calss="text-danger" id="categoryError"></span>
-                                <button type="submit" class="addCategoryButton mt-4" id="addCategoryButton" name="addCategoryButton">Submit</button>
-                                <button type="submit" class="updateCategoryButton mt-4" id="updateCategoryButton" name="updateCategoryButton">Update</button>
+                                <input class="categoryInput productInput" name="categoryInput" id="categoryInput" placeholder="Enter Category Name">
+                                <span class="removeSpan" id="categoryError"></span>
+                                <button type="button" class="addCategoryButton mt-4" id="addCategoryButton" name="addCategoryButton" onclick = "addCategorySubmit('add')">Submit</button>
+                                <button type="button" class="updateCategoryButton mt-4" id="updateCategoryButton" name="updateCategoryButton" onclick="addCategorySubmit('update')">Update</button>
                             </div>
                         </div>
                     </div>
@@ -45,23 +45,32 @@
                             <button type="button" class="createClose border-0" value="" id="addCategoryCloseValue" onclick="addSubCategoryClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                         </div>
                         <div class="addSubcategoryInput categoryFieldDiv">
-                            <span class="addCategoryHeading" id="addSubcategoryHeading"></span>
-                            <div class="addSubcategoryInputDiv mt-4">
-                                <!--- <cfset local.obj = new Components.shoppingCart()> --->
+                            <span class="addCategoryHeading d-flex justify-content-center" id="addSubcategoryHeading"></span>
+                            <div class="mt-4 container">
                                 <cfset local.result = application.obj.viewCategory()>
                                 <span class="removeSpan" id="addSubMessage"></span>
-                                <div class="categoryDropdown" id="categoryDropdownDiv">
-                                    <label for="categoryDropLabel" class="fw-bold">Category Name</label><br>
-                                    <select name="categoryDropdown" id="categoryDropdown">
-                                        <cfloop array = "#local.result#" item = "item">
-                                            <option value=#item.categoryId#>#item.categoryName#</option>
-                                        </cfloop>
-                                    </select>
+                                <div class="categoryDropdown row" id="categoryDropdownDiv">
+                                    <div class="col">
+                                        <label for="categoryDropLabel" class="fw-bold">Category Name</label><br>
+                                    </div>
+                                    <div class="col">
+                                        <select name="categoryDropdown" class="productInput" id="categoryDropdown">
+                                            <cfloop array = "#local.result#" item = "item">
+                                                <option value=#item.categoryId#>#item.categoryName#</option>
+                                            </cfloop>
+                                        </select>
+                                    </div>
                                 </div>
                                 <span id="addCategoryError" class=""></span>
                                 <input type="hidden" id="categoryId" name="categoryIdHidden">
-                                <label for="subCategoryInputLabel" class="mt-3 fw-bold">Subcategory Name</label>
-                                <input type="text" class="form-control" name="subCategoryInput" id="subCategoryInput" placeholder="Subcategory Name">
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label for="subCategoryInputLabel" class="mt-3 fw-bold">Subcategory Name</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="productInput" name="subCategoryInput" id="subCategoryInput" placeholder="Subcategory Name">
+                                    </div>
+                                </div>
                                 <span id="addSubCategoryError" class=""></span>
                                 <button type="button" class="subCategorySubmit mx-auto mt-2" name="subCategorySubmit" value="" id="subCategorySubmit" onclick="return addSubcategorySubmit(this)">Submit</button>
                                 <button type="button" class="subCategoryUpdate mx-auto mt-2" name="subCategoryUpdate" value="" id="subCategoryUpdate" onclick="return updateSubcategorySubmit(this)">Update</button>
@@ -71,34 +80,9 @@
                 </div> 
 
                 <div class="displayContent" id="displayContent">
-                    <input type="hidden" name="editID" value="" id="editingID">
+                    <input type="hidden" name="editID" value="" id="categoryEditID">
                     <div class="d-flex flex-column" >
                         <span class="pageHead fw-bold mx-auto my-4">List of Categories</span>
-                        <cfif structKeyExists(form, "addCategoryButton")> 
-                            <!--- <cfset local.obj = new components.shoppingCart()> --->
-                            <cfset local.result = application.obj.addCategory(categoryName = form.categoryInput)>
-                            <cfloop collection="#local.result#" item="key">
-                                <cfif key EQ "Success">
-                                    <span class="text-success fw-bold removeSpan">#local.result[key]#</span>
-                                <cfelse>
-                                    <span class="text-danger fw-bold removeSpan">#local.result[key]#</span>
-                                </cfif>
-                            </cfloop>
-                        </cfif>
-                        <cfif structKeyExists(form, "updateCategoryButton")>
-                            <!--- <cfset local.obj = new components.shoppingCart()> --->
-                            <cfset local.result = application.obj.updateCategory(
-                                                    editId = form.editID,
-                                                    categoryName=form.categoryInput
-                                                    )>
-                            <cfloop collection="#local.result#" item="key">
-                                <cfif key EQ "Success">
-                                    <span class="text-success fw-bold removeSpan">#local.result[key]#</span>
-                                <cfelse>
-                                    <span class="text-danger fw-bold removeSpan">#local.result[key]#</span>
-                                </cfif>
-                            </cfloop>
-                        </cfif>
                         <div class="pageListDiv d-flex justify-content-center flex-column">
                             <cfset local.result = application.obj.viewCategory()>
                             <cfloop array="#local.result#" item = "item">
@@ -159,44 +143,88 @@
         <!-- ADD PRODUCT -->
         <form id="productForm" method="post" enctype = "multipart/form-data">
             <div class="addProductModal" id="addProductModal">
-                <div class="addProductInputDiv d-flex flex-column mx-auto">
-                    <span class="addProductHeading mx-auto" id="addProductHeading"></span>
+                <div class="addProductInputDiv d-flex flex-column mx-auto container">
+                    <span class="addProductHeading mx-auto mb-3" id="addProductHeading"></span>
                     <span class="fw-bold" id="insertError"></span>
-                    <div class="addProductCategoryDiv">
-                        <label for="addProductCategory" class="productLabel">Category Name</label>
-                        <select name="addProductCategorySelect" id="addProductCategorySelect" value="" class="form-control">
-                        
-                        </select>
-                        <span class="fw-bold text-danger" id="categoryError"></span>
-                    </div>
-                    <div class="addProductSubcategoryDiv">
-                        <label for="addProductSubcategory" class="productLabel">SubCategory Name</label>
-                        <select name="addProductSubcategorySelect" id="addProductSubcategorySelect" value="" class="form-control">
+                    <div class="addProductCategoryDiv row">
+                        <div class="col">
+                            <label for="addProductCategory" class="productLabel">Category Name</label>
+                        </div>
+                        <div class="col">
+                            <select name="addProductCategorySelect" id="addProductCategorySelect" value="" class="productInput">
                             
-                        </select>
-                        <span class="fw-bold text-danger" id="subCategoryError"></span>
+                            </select>
+                            <span class="fw-bold text-danger" id="categoryError"></span>
+                        </div>
                     </div>
-                    <label for="addProductName" class="productLabel">Product Name</label>
-                    <input type="text" class="addProductNameInput form-control" name="addProductNameInput" id = "addProductNameInput" value = "" >
-                    <span class="fw-bold text-danger" id="nameError"></span>
-                    <label for="addProductBrand" class="productLabel">Product Brand</label>
-                    <select name="addProductBrandInput" id="brandSelect" class="form-control">
-                        
-                    </select>
-                    <span class="fw-bold text-danger" id="brandError"></span>
-                    <label for="addProductDescription" class="productLabel">Product Description</label>
-                    <textarea class="addProductDescription form-control" name = "addProductDescription" id = "addProductDescription" value = ""></textarea>
-                    <span class="fw-bold text-danger" id="descriptionError"></span>
-                    <label for="addProductPrice" class="productLabel">Product Price</label>
-                    <input type="text" class="addProductPrice form-control" name = "addProductPrice" id = "addProductPrice" value = "">
-                    <span class="fw-bold text-danger" id="priceError"></span>
-                    <label for="addProductTax" class="productLabel">Product Tax</label>
-                    <input type="text" class="addProductTax form-control" name = "addProductTax" id = "addProductTax" value = "">
-                    <span class="fw-bold text-danger" id="taxError"></span>
-                    <label for="addProductImage" id="addProductLabel" class="productLabel">Product Image</label>
-                    <input type="file" class="addProductImage form-control" name="addProductImage" id = "addProductImage" multiple>
-                    <span class="fw-bold text-danger" id="fileError"></span>
-                    <div class="addProductButtonDiv d-flex ms-auto mt-3">
+                    <div class="addProductSubcategoryDiv row">
+                        <div class="col">
+                            <label for="addProductSubcategory" class="productLabel">SubCategory Name</label>
+                        </div>
+                        <div class="col">
+                            <select name="addProductSubcategorySelect" id="addProductSubcategorySelect" value=""  class="productInput">
+                                
+                            </select>
+                            <span class="fw-bold text-danger" id="subCategoryError"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="addProductName" class="productLabel">Product Name</label>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="addProductNameInput productInput" name="addProductNameInput" id = "addProductNameInput" value = "" oninput="removeSpan('addProductNameInput')">
+                            <span class="fw-bold text-danger" id="nameError"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="addProductBrand" class="productLabel">Product Brand</label>
+                        </div>
+                        <div class="col">
+                            <select name="addProductBrandInput" id="brandSelect" class="productInput">
+                                
+                            </select>
+                            <span class="fw-bold text-danger" id="brandError"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="addProductDescription" class="productLabel">Product Description</label>
+                        </div>
+                        <div class="col">
+                            <textarea class="productInput" name = "addProductDescription" id = "addProductDescription" value = "" oninput="removeSpan('addProductDescription')"></textarea>
+                            <span class="fw-bold text-danger" id="descriptionError"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="addProductPrice" class="productLabel">Product Price</label>
+                        </div>
+                        <div class="col">
+                            <input type="number" class="addProductPrice productInput" name = "addProductPrice" id = "addProductPrice" value = "" oninput="removeSpan('addProductPrice')">
+                            <span class="fw-bold text-danger" id="priceError"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="addProductTax" class="productLabel">Product Tax</label>
+                        </div>
+                        <div class="col">
+                            <input type="number" class="addProductTax productInput" name = "addProductTax" id = "addProductTax" value = "" oninput="removeSpan('addProductTax')">
+                            <span class="fw-bold text-danger" id="taxError"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="addProductImage" id="addProductLabel" class="productLabel">Product Image</label>
+                        </div>
+                        <div class="col">
+                            <input type="file" class="addProductImage productInput" name="addProductImage" id = "addProductImage" multiple oninput="removeSpan('addProductImage')">
+                            <span class="fw-bold text-danger" id="fileError"></span>
+                        </div>
+                    </div>
+                    <div class="addProductButtonDiv d-flex mx-auto mt-3">
                         <button type="button" class="addProductSubmit" name="addProductSubmit" id="addProductSubmit" value="" onclick="return addProductsubmit()">Submit</button>
                         <button type="button" class="updateProductSubmit" name="updateProductSubmit" id="updateProductSubmit" value="" onclick="return updateProductsubmit(this)">Update</button>
                         <button type="button" class="addProductClose ms-2" value="" id="addProductClose" onclick="addProductCloseBtn(this)">Close</button>
