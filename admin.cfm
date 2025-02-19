@@ -93,9 +93,9 @@
                                         </div>
                                     </a>
                                     <div class="pageButtonDiv d-flex">
-                                        <button type="button" class="pageButton adminEditColor" name="editBtn" value=#item.categoryId#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                        <button type="button" class="pageButton adminDeleteColor " name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
-                                        <button type="button" class="pageButton adminEditColor" name="viewBtn"  value=#item.categoryId# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
+                                        <button type="button" class="pageButton adminEditColor scrollTop" name="editBtn" value=#item.categoryId#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
+                                        <button type="button" class="pageButton adminDeleteColor scrollTop" name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                        <button type="button" class="pageButton adminEditColor scrollTop" name="viewBtn"  value=#item.categoryId# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
                                     </div>
                                 </div>
                             </cfloop>

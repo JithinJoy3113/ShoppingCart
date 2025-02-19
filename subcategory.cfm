@@ -73,8 +73,6 @@
                                 <span class="productsNamespan mx-auto">#item.productName#</span>
                                 <div class="similarPriceDiv d-flex align-items-center mt-2">
                                     <span class="similarPrice text-success">RS.#item.price#</span>
-                                    <!--- <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>
-                                    <span class="similarOff text-success ms-2">23% off</span> --->
                                 </div>
                             </div>
                         </div>

@@ -7,8 +7,9 @@
                 <div class="productLeft d-flex flex-column">
                     <div class="productImgdiv d-flex">
                         <div class="productImagesdivLeft d-flex flex-column">
-                            <cfset local.productDetails = application.obj.displayProduct(productId = local.productId)>
+                            <cfset local.productDetails = application.obj.viewProducts(productId = local.productId)>
                             <cfset local.imageResult = application.obj.viewImages(productId = local.productId)>
+                            <cfset local.productDetails = local.productDetails[1]>
                             <cfloop array="#local.imageResult#" item="item">
                                 <div class="productImg d-flex align-items-center justify-content-center">
                                     <img src="Assets/uploadImages/#item.imageFileName#" class="sideImage" alt="" width="60" height="62">
@@ -69,14 +70,14 @@
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(local.productDetails.categoryId, application.secretKey, "AES", "Base64"))>
-                            <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(local.productDetails.subCategoryName, application.secretKey, "AES", "Base64"))>
+                            <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(local.productDetails.subcategoryName, application.secretKey, "AES", "Base64"))>
                             <cfset local.encryptedCategoryName = urlEncodedFormat(encrypt(local.productDetails.categoryName, application.secretKey, "AES", "Base64"))>
                             <div class="pathMobile">
                                 <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="pathLink mobile text-decoration-none">#local.productDetails.categoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile">
-                                <a href="subcategory.cfm?subCategoryId=#URL.subcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subCategoryName#</a>
+                                <a href="subcategory.cfm?subCategoryId=#URL.subcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="pathLink text-decoration-none">#local.productDetails.subcategoryName#</a>
                                 <img src="Assets/Images/rightarrowgrey.PNG" class="me-1" alt="">
                             </div>
                             <div class="pathMobile productName d-flex align-items-center">
@@ -182,7 +183,7 @@
                         <span class="colorSpan">Seller</span>
                         <div class="sellerDetailsdiv d-flex flex-column">
                             <div class="sellerName d-flex">
-                                <a href="" class="checkSpan text-decoration-none ms-3 me-2">#local.productDetails.brand#</a>
+                                <a href="" class="checkSpan text-decoration-none ms-3 me-2">#local.productDetails.brandName#</a>
                             </div>
                             <ul class="highlightUl">
                                 <li class="highlightLi">7 Days Service Center Replacement/Repair</li>

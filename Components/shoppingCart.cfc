@@ -171,8 +171,8 @@
     <cfreturn local.result>
   </cffunction>
 
-  <cffunction name = "editCategory" returnType = "struct" returnFormat = "JSON" access="remote">
-    <cfargument name = "editId" required = "true" type = "integer">
+<!---   <cffunction name = "editCategory" returnType = "struct" returnFormat = "JSON" access="remote">
+    <cfargument name = "editId" required = "false" type = "integer">
     <cfquery name = "local.selectCategory" datasource = #application.dataSource#>
       SELECT 
         fldCategory_ID,
@@ -184,10 +184,10 @@
     </cfquery>
     <cfset local.jsonData = QueryGetRow(local.selectCategory,1)>
     <cfreturn local.jsonData>
-  </cffunction>
+  </cffunction> --->
 
   <cffunction name = "viewCategory" access = "remote" returnformat = "json" returnType = "array">
-    <cfargument name = "homeView" default = "" required = "false">
+    <cfargument name = "editId" required = "false" type = "integer">
     <cfquery name = "local.selectCategory" datasource = #application.dataSource#>
       SELECT 
         fldCategory_ID,
@@ -196,13 +196,13 @@
         tblCategory
       WHERE
         fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-      <cfif arguments.homeView EQ 'Home'>
-        LIMIT 10
-      </cfif>
+        <cfif structKeyExists(arguments, "editId")>
+          AND fldCategory_ID = <cfqueryparam value = '#arguments.editId#' cfsqltype = "integer">
+        </cfif>
     </cfquery>
     <cfset local.dataArray = []>
     <cfloop query="local.selectCategory">
-      <cfset local.jsonData = {}>
+    <cfset local.jsonData = {}>
       <cfset local.jsonData['categoryId'] = local.selectCategory.fldCategory_ID>
       <cfset local.jsonData['categoryName'] = local.selectCategory.fldCategoryName>
       <cfset arrayAppend(local.dataArray, local.jsonData)>
@@ -334,6 +334,56 @@
     </cfif>
   </cffunction>
 
+  <cffunction  name = "productListing" returnType = "ANY" access = "public">
+    <cfargument  name = "categoryId" required = "true" type = "integer">
+    <cfquery name = "local.productListing" datasource = "#application.dataSource#">
+        SELECT
+          SC.fldSubcategory_ID,
+          SC.fldSubcategoryName,
+          P.fldProductName,
+          P.fldPrice,
+          P.fldProduct_ID,
+          P.fldDescription,
+          P.fldTax,
+          PI.fldImageFileName,
+          B.fldBrand_ID,
+          B.fldBrandName
+        FROM
+          tblSubCategory SC
+          INNER JOIN tblProducts P ON SC.fldSubCategory_ID = P.fldSubCategoryId
+          INNER JOIN tblProductImages PI ON P.fldProduct_ID = PI.fldProductId
+          INNER JOIN tblBrand B ON B.fldBrand_ID = P.fldBrandId
+        WHERE
+          SC.fldcategoryId = <cfqueryparam value = #arguments.categoryId# cfsqltype = "integer">
+          AND SC.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND PI.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND PI.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+      </cfquery>
+      <cfset local.dataStruct = {}>
+      <cfloop query = "local.productListing">
+        <cfset local.jsonData = {}>
+        <cfset local.jsonData['productName'] = local.productListing.fldProductName>
+        <cfset local.jsonData['price'] = local.productListing.fldPrice>
+        <cfset local.jsonData['tax'] = local.productListing.fldTax>
+        <cfset local.jsonData['description'] = local.productListing.fldDescription>
+        <cfset local.jsonData['productId'] = local.productListing.fldProduct_ID>
+        <cfset local.jsonData['subcategoryName'] = local.productListing.fldSubcategoryName>
+        <cfset local.jsonData['subcategoryId'] = local.productListing.fldSubcategory_ID>
+        <cfset local.jsonData['file'] = local.productListing.fldImageFileName>
+        <cfset local.jsonData['brand'] = local.productListing.fldBrandName>
+
+        <cfset local.subCategoryName = local.productListing.fldSubcategoryName>
+        <cfif structKeyExists(local.dataStruct, local.subCategoryName)>
+          <cfset arrayAppend(local.dataStruct['#local.subCategoryName#'], local.jsonData)>
+        <cfelse>
+          <cfset local.dataStruct['#local.subCategoryName#'] = []>
+          <cfset arrayAppend(local.dataStruct['#local.subCategoryName#'], local.jsonData)>
+        </cfif>
+      </cfloop>
+      <cfreturn local.dataStruct>
+  </cffunction>
+
   <cffunction name = "viewSubcategory" returnType = "array" access = "remote" returnFormat = "json">
     <cfargument name = "categoryId" required = "false" type = "integer">
     <cfargument name = "subCategoryId" required = "false" type = "integer">
@@ -343,13 +393,15 @@
         S.fldSubcategory_ID,
         S.fldCategoryID,
         C.fldCategoryName,
-        C.fldCategory_ID
+        C.fldCategory_ID,
+        S.fldActive
       FROM
-        tblSubcategory S
-        INNER JOIN tblCategory C ON C.fldCategory_ID = S.fldCategoryId
+        tblCategory C
+        LEFT JOIN tblSubCategory S ON C.fldCategory_ID = S.fldCategoryId
       WHERE
         <cfif structKeyExists(arguments, "categoryId")>
           S.fldCategoryId = <cfqueryparam value = #arguments.categoryID# cfsqltype = "integer">
+          AND C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
           AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         <cfelseif structKeyExists(arguments, "subCategoryId")>
           S.fldSubcategory_ID = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer">
@@ -357,6 +409,7 @@
           AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         <cfelse>
           C.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND S.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
         </cfif>
     </cfquery>
     <cfset local.dataArray = []>
@@ -372,108 +425,67 @@
     <cfreturn local.dataArray >
   </cffunction>
 
-  <cffunction  name = "deleteCategory" access = "public" returnType = "boolean">
-    <cfargument name = "deleteId" required = "true" type = "integer">
-      <cfset local.subCategory = deleteSubCategory(categoryId = arguments.deleteId)>
-      <cfquery name = "local.deleteCategory" datasource = #application.dataSource#>
-        UPDATE
-          tblCategory
-        SET
-          fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
-          fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-        WHERE
-          fldCategory_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
-      </cfquery>
-      <cfreturn true>
-  </cffunction>
-
-  <cffunction  name = "deleteSubCategory" access = "public" returnType = "boolean">
-    <cfargument name = "deleteId" required = "false" type = "integer">
-    <cfargument name = "categoryId" required = "false" type = "integer">
-   
-    <cfif structKeyExists(arguments, "categoryId") AND val(arguments.categoryId)>
-      <cfset local.subCategory = viewSubcategory(categoryId = arguments.categoryId)>
-      <cfloop array="#local.subCategory#" item="item">
-        <cfset deleteProduct(subCategoryId = item.subcategoryId)>
-      </cfloop>
-    <cfelseif structKeyExists(arguments, "deleteId")>
-      <cfset deleteProduct(subCategoryId = arguments.deleteId)>
-    </cfif>
-    <cfquery name = "local.deleteSubCategory" datasource = #application.dataSource#>
-      UPDATE
-        tblSubCategory
-      SET
-        fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
-        fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-      WHERE
-        <cfif structKeyExists(arguments, "deleteId")>
-          fldSubCategory_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
-        <cfelseif structKeyExists(arguments, "categoryId")>
-          fldCategoryId = <cfqueryparam value = #arguments.categoryId# cfsqltype = "integer">
-        </cfif>
-    </cfquery>
-    <cfreturn true>
-  </cffunction>
-
-  <cffunction  name = "deleteProduct" access = "public" returnType = "boolean">
-    <cfargument name = "deleteId" required = "false" type = "integer">
-    <cfargument name = "subCategoryId" required = "false" type = "integer">
-    <cfif structKeyExists(arguments, "subCategoryId")>
-      <cfset local.products = viewProducts(productSubId = arguments.subCategoryId)>
-      <cfloop array="#local.products#" item="item">
-        <cfif structKeyExists(item, "productId")>
-          <cfset local.functionCall = deleteProductImage(productId = item.productId)>
-        </cfif>
-      </cfloop>
-    <cfelseif structKeyExists(arguments, "deleteId")>
-      <cfset local.functionCall = deleteProductImage(productId = arguments.deleteId)>
-    </cfif>
-    <cfquery name = "local.deleteSubCategory" datasource = #application.dataSource#>
-      UPDATE
-        tblProducts
-      SET
-        fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
-        fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-      WHERE
-        <cfif structKeyExists(arguments, "deleteId")>
-          fldProduct_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
-        <cfelseif structKeyExists(arguments, "subCategoryId")>
-          fldSubCategoryId = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer">
-        </cfif>
-    </cfquery>
-    <cfreturn true>
-  </cffunction>
-
-  <cffunction  name = "deleteProductImage" access = "public" returnType = "boolean">
-    <cfargument  name = "productId" required = "false" type = "integer" >
-    <cfargument  name = "deleteId" required = "false" type = "integer" >
-    <cfquery name = "local.deleteProductIamges" datasource = #application.dataSource#>
-        UPDATE
-          tblProductImages
-        SET
-          fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
-          fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
-        WHERE
-          <cfif structKeyExists(arguments, "productId")>
-            fldProductId = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
-          <cfelseif structKeyExists(arguments, "deleteId")>
-            fldProductImage_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
-          </cfif>
-      </cfquery>
-      <cfreturn true> 
-  </cffunction>
-
-  <cffunction name = "deleteRow" returnType = "struct" access = "remote" returnFormat = "json">
+  <cffunction name = "deleteRow" access = "remote" returnType = "struct" returnFormat = "json">
     <cfargument name = "tableName" required = "true" type = "string">
     <cfargument name = "deleteId" required = "true" type = "integer">
-    <cfif arguments.tableName EQ 'tblCategory'>
-      <cfset local.functionCall = deleteCategory(deleteId = arguments.deleteId)>
-    <cfelseif arguments.tableName EQ 'tblProducts'>
-      <cfset local.functionCall = deleteProduct(deleteId = arguments.deleteId)>
-    <cfelseif arguments.tableName EQ 'tblProductImages'>
-      <cfset local.functionCall = deleteProductImage(deleteId = arguments.deleteId)>
-    <cfelseif arguments.tableName EQ 'tblSubcategory'>
-      <cfset local.functionCall = deleteSubCategory(deleteId = arguments.deleteId)>
+    <cfif arguments.tableName EQ "tblCategory">
+      <cfquery name = "local.deleteItems" datasource = "#application.dataSource#">
+        UPDATE 
+          tblCategory C
+          LEFT JOIN tblSubCategory SC ON C.fldCategory_ID = SC.fldCategoryId
+          LEFT JOIN tblProducts P ON SC.fldSubCategory_ID = P.fldSubCategoryId
+          LEFT JOIN tblProductImages PI ON P.fldProduct_ID = PI.fldProductId
+        SET
+          C.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          C.fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">,
+          SC.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          SC.fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">,
+          P.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          P.fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">,
+          PI.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          PI.fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        WHERE
+          C.fldCategory_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+      </cfquery>
+    <cfelseif arguments.tableName EQ "tblSubcategory">
+      <cfquery name = "local.deleteItems" datasource = "#application.dataSource#">
+        UPDATE 
+          tblSubCategory SC
+          LEFT JOIN tblProducts P ON SC.fldSubCategory_ID = P.fldSubCategoryId
+          LEFT JOIN tblProductImages PI ON P.fldProduct_ID = PI.fldProductId
+        SET
+          SC.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          SC.fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">,
+          P.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          P.fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">,
+          PI.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          PI.fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        WHERE
+          SC.fldSubCategory_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+      </cfquery>
+    <cfelseif arguments.tableName EQ "tblProducts">
+      <cfquery name = "local.deleteItems" datasource = "#application.dataSource#">
+        UPDATE 
+          tblProducts P
+          LEFT JOIN tblProductImages PI ON P.fldProduct_ID = PI.fldProductId
+        SET
+          P.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          P.fldUpdatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">,
+          PI.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          PI.fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        WHERE
+          P.fldProduct_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+      </cfquery>
+    <cfelseif arguments.tableName EQ "tblProductImages">
+      <cfquery name = "local.deleteItems" datasource = "#application.dataSource#">
+        UPDATE 
+          tblProductImages PI
+        SET
+          PI.fldActive = <cfqueryparam value = 0 cfsqltype = "integer">,
+          PI.fldDeactivatedBy = <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        WHERE
+          P.fldProductImage_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
+      </cfquery>
     </cfif>
     <cfreturn {"status":"true"}>
   </cffunction>
@@ -731,6 +743,70 @@
     <cfreturn true>
   </cffunction>
 
+  <cffunction name = "randomProducts" returnType = "array">
+    <cfargument name = "subCategoryId" type = "integer" default = 0 required = "false">
+    <cfargument name = "sortBy" type = "string" default = "noSort" required = "false">
+    <cfargument name = "min" type = "string" default = 0 required = "false">
+    <cfargument name = "max" type = "string" default = 0 required = "false">
+    <cfargument name = "search" type = "string" default = "" required = "false">
+    <cfquery name = "local.fetchProducts" datasource = #application.dataSource#>
+      SELECT
+        P.fldProduct_ID, 
+        P.fldProductName,
+        P.fldPrice,
+        P.fldTax,
+        P.fldSubcategoryId,
+        P.fldDescription,
+        I.fldImageFileName,
+        I.fldDefaultImage
+      FROM 
+        tblProducts P
+        INNER JOIN tblProductImages I ON P.fldProduct_ID = I.fldProductId
+        INNER JOIN tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
+      WHERE 
+        <cfif arguments.search EQ "">
+          P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+        </cfif>
+        <cfif arguments.subCategoryId NEQ 0>
+          AND P.fldSubcategoryId = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer"> 
+        </cfif>
+        <cfif arguments.subCategoryId EQ 0 AND arguments.search EQ "">
+          ORDER BY 
+            RAND()
+          LIMIT 10
+        <cfelseif arguments.sortBy EQ "min">
+          ORDER BY P.fldPrice
+        <cfelseif arguments.sortBy EQ "max">
+          ORDER BY P.fldPrice DESC;
+        <cfelseif arguments.min NEQ 0 AND arguments.max NEQ 0>
+          AND P.fldPrice >= <cfqueryparam value ="#arguments.min#" cfsqltype = "varchar">
+          <cfif NOT Find("+", arguments.max)>
+            AND P.fldPrice <= <cfqueryparam value ="#arguments.max#" cfsqltype = "varchar">
+          </cfif>
+        <cfelseif arguments.search NEQ "">
+          I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+          AND(
+            P.fldProductName LIKE <cfqueryparam value = "%#arguments.search#%" cfsqltype = "varchar">
+            OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.search#%" cfsqltype = "varchar">
+            OR S.fldSubcategoryName = <cfqueryparam value = #arguments.search# cfsqltype = "varchar">
+          )
+          AND P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
+        </cfif>
+    </cfquery>
+    <cfset local.dataArray = []>
+    <cfloop query = "local.fetchProducts">
+      <cfset local.jsonData = {}>
+      <cfset local.jsonData['productId'] = local.fetchProducts.fldProduct_ID>
+      <cfset local.jsonData['productName'] = local.fetchProducts.fldProductName>
+      <cfset local.jsonData['price'] = local.fetchProducts.fldPrice>
+      <cfset local.jsonData['productFileName'] = local.fetchProducts.fldImageFileName>
+      <cfset local.jsonData['subcategoryId'] = local.fetchProducts.fldSubcategoryId>
+      <cfset arrayAppend(local.dataArray, local.jsonData)>
+    </cfloop>
+    <cfreturn local.dataArray>
+  </cffunction>
+
   <cffunction name = "viewProducts" returnType = "array" returnFormat = "json" access = "remote">
     <cfargument name = "columnName" required = "false" type = "string">
     <cfargument name = "productSubId" required = "false" type = "integer">
@@ -802,70 +878,7 @@
     <cfreturn local.dataArray>
   </cffunction>
 
-  <cffunction name = "randomProducts" returnType = "array">
-    <cfargument name = "subCategoryId" type = "integer" default = 0 required = "false">
-    <cfargument name = "sortBy" type = "string" default = "noSort" required = "false">
-    <cfargument name = "min" type = "string" default = 0 required = "false">
-    <cfargument name = "max" type = "string" default = 0 required = "false">
-    <cfargument name = "search" type = "string" default = "" required = "false">
-    <cfquery name = "local.fetchProducts" datasource = #application.dataSource#>
-      SELECT
-        P.fldProduct_ID, 
-        P.fldProductName,
-        P.fldPrice,
-        P.fldTax,
-        P.fldSubcategoryId,
-        P.fldDescription,
-        I.fldImageFileName,
-        I.fldDefaultImage
-      FROM tblProducts P
-        INNER JOIN tblProductImages I ON P.fldProduct_ID = I.fldProductId
-        INNER JOIN tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
-      WHERE 
-        <cfif arguments.search EQ "">
-          P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-          AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
-        </cfif>
-        <cfif arguments.subCategoryId NEQ 0>
-          AND P.fldSubcategoryId = <cfqueryparam value = #arguments.subCategoryId# cfsqltype = "integer"> 
-        </cfif>
-        <cfif arguments.subCategoryId EQ 0 AND arguments.search EQ "">
-          ORDER BY 
-            RAND()
-          LIMIT 10
-        <cfelseif arguments.sortBy EQ "min">
-          ORDER BY P.fldPrice
-        <cfelseif arguments.sortBy EQ "max">
-          ORDER BY P.fldPrice DESC;
-        <cfelseif arguments.min NEQ 0 AND arguments.max NEQ 0>
-          AND P.fldPrice >= <cfqueryparam value ="#arguments.min#" cfsqltype = "varchar">
-          <cfif NOT Find("+", arguments.max)>
-            AND P.fldPrice <= <cfqueryparam value ="#arguments.max#" cfsqltype = "varchar">
-          </cfif>
-        <cfelseif arguments.search NEQ "">
-          I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
-          AND(
-            P.fldProductName LIKE <cfqueryparam value = "%#arguments.search#%" cfsqltype = "varchar">
-            OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.search#%" cfsqltype = "varchar">
-            OR S.fldSubcategoryName = <cfqueryparam value = #arguments.search# cfsqltype = "varchar">
-          )
-          AND P.fldActive = <cfqueryparam value = 1 cfsqltype = "integer">
-        </cfif>
-    </cfquery>
-    <cfset local.dataArray = []>
-    <cfloop query = "local.fetchProducts">
-      <cfset local.jsonData = {}>
-      <cfset local.jsonData['productId'] = local.fetchProducts.fldProduct_ID>
-      <cfset local.jsonData['productName'] = local.fetchProducts.fldProductName>
-      <cfset local.jsonData['price'] = local.fetchProducts.fldPrice>
-      <cfset local.jsonData['productFileName'] = local.fetchProducts.fldImageFileName>
-      <cfset local.jsonData['subcategoryId'] = local.fetchProducts.fldSubcategoryId>
-      <cfset arrayAppend(local.dataArray, local.jsonData)>
-    </cfloop>
-    <cfreturn local.dataArray>
-  </cffunction>
-
-  <cffunction name = "displayProduct" returnType = "struct" returnFormat = "json" access = "remote">
+  <!--- <cffunction name = "displayProduct" returnType = "struct" returnFormat = "json" access = "remote">
     <cfargument name = "productId" type = "integer" required = "true">
     <cfquery name = "local.fetchProduct" datasource = #application.dataSource#>
       SELECT 
@@ -907,7 +920,7 @@
       <cfset local.jsonData['categoryId'] = local.fetchProduct.fldCategory_ID>
     </cfloop>
     <cfreturn local.jsonData>
-  </cffunction>
+  </cffunction> --->
 
   <cffunction name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
     <cfargument name = "productId" type = "integer" required = "true">
@@ -1287,86 +1300,7 @@
     <cfreturn local.jsonData>
   </cffunction>
 
-
-    <!--- <cffunction name = "buyProduct" access = "remote" returnType = "any" returnFormat = "json">
-    <cfargument name = "totalOrderPrice" type = "numeric" required = "true">
-    <cfargument name = "totalOrderTax" type = "numeric" required = "true">
-    <cfargument name = "addressId" type = "integer" required = "true">
-    <cfargument name = "cardNumber" type = "numeric" required = "true" default = 1>
-    <cfargument name = "cvv" type = "numeric" required = "true" default = 1>
-    <cfargument name = "detailsStruct" type = "struct" required = "true">
-    <cfset local.cardNumber = 123456789123>
-    <cfset local.cvv = 123>
-    <cfset local.jsonData = {}>
-    <cfset local.payAmount = arguments.totalOrderPrice + arguments.totalOrderTax>
-    <cfif (arguments.cardNumber EQ local.cardNumber) AND (arguments.cvv EQ local.cvv)>
-    <cfset local.generatedUUID = createUUID()>
-    <cfset detailsStructJSON = []>
-      <cfloop collection="#arguments.detailsStruct#" item="key">
-        <cfif isStruct(arguments.detailsStruct[key])>
-          <cfset productJson = {
-            "productId" = arguments.detailsStruct[key].productId,
-            "totalQuantity" = arguments.detailsStruct[key].totalQuantity,
-            "unitPrice" = arguments.detailsStruct[key].unitPrice,
-            "unitTax" = arguments.detailsStruct[key].unitTax
-          }>
-          <cfset arrayAppend(detailsStructJSON, productJson)>
-        </cfif>
-      </cfloop>
-      <cfset detailsStructJSON = serializeJSON(detailsStructJSON)>
-      <cfstoredproc procedure="sp_CreateOrder" datasource = "#application.dataSource#" result = "local.sp_CreateOrder">
-        <cfprocparam type="in" value="#session.userId#" cfsqltype="integer">
-        <cfprocparam type="in" value="#arguments.addressId#" cfsqltype="integer">
-        <cfprocparam type="in" value="#arguments.totalOrderPrice#" cfsqltype="decimal">
-        <cfprocparam type="in" value="#arguments.totalOrderTax#" cfsqltype="decimal">
-        <cfprocparam type="in" value="#detailsStructJSON#" cfsqltype="varchar">
-         <cfprocparam type="in" value="#local.generatedUUID#" cfsqltype="varchar">
-      </cfstoredproc>
-      <cfset local.jsonData['Result'] = true>
-      <cfmail from="jithinj3113@gmail.com" subject="Order Placed" to="jithinj403113@gmail.com" type = "html">
-        Order placed successfully!<br>
-        Dear #session.firstName#,<br>
-        Thank you for your order! We are pleased to confirm that we have received your order and are processing it.
-        Below are the details of your order:
-        <table border="1" cellpadding="5" cellspacing="0">
-          <tr>
-            <th>Order Id</th>
-            <td>#local.generatedUUID#</td>
-          </tr>
-          <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Tax</th>
-          </tr>
-          <cfloop collection="#arguments.detailsStruct#" item="item">
-            <cfif isStruct(arguments.detailsStruct[item])>
-              <tr>
-                <td>#arguments.detailsStruct[item].productName#</td>
-                <td> #arguments.detailsStruct[item].totalQuantity#</td>
-                <td>#arguments.detailsStruct[item].totalPrice#</td>
-                <td> #arguments.detailsStruct[item].totalTax#</td>
-              </tr>
-            </cfif>
-          </cfloop>
-          <tr>
-            <th>Total Amount</th>
-            <td> #local.payAmount#</td>
-          </tr>
-        </table><br>
-        If you have any questions or need assistance, please feel free to contact us at <a href="">clickCark.com</a>. We're here to help!<br>
-        Thank you for shopping with us! We look forward to serving you again soon.<br>
-        Best regards,<br>
-        ClickCart<br>
-        <a href="">ClickCart.com</a><br>
-      </cfmail>
-    <cfelse>
-      <cfset local.jsonData['Result'] = false>
-    </cfif>
-    <cfreturn local.jsonData>
-  </cffunction> --->
-
-  <cffunction name = "getOrders" access = "public" returnType = "array">
+ <!---  <cffunction name = "getOrders" access = "public" returnType = "array">
     <cfargument name = "search" required = "false" type = "string">
     <cfquery name = "local.orders" datasource = #application.dataSource#>
       SELECT
@@ -1413,9 +1347,82 @@
       <cfset arrayAppend(local.dataArray, local.jsonData)>
     </cfloop>
     <cfreturn local.dataArray>
+  </cffunction> --->
+
+  
+  <cffunction name = "getOrders" access = "remote" returnType = "struct" returnFormat = "json">
+    <cfargument name = "search" required = "false" type = "string">
+    <cfquery name = "local.orders" datasource = #application.dataSource#>
+      SELECT
+        O.fldOrder_ID,
+        O.fldTotalPrice,
+        O.fldTotalTax,
+        DATE_FORMAT(O.fldOrderDate, '%d-%m-%Y %H:%i:%s') AS datetime,
+        A.fldAddress_Id,
+        A.fldFirstName,
+        A.fldlastname,
+        A.fldAddressLine1,
+        A.fldAddressLine2,
+        A.fldCity,
+        A.fldState,
+        A.fldPincode,
+        A.fldPhoneNumber,
+        OI.fldQuantity,
+        OI.fldUnitPrice,
+        OI.fldUnitTax,
+        P.fldProductName,
+        I.fldImageFileName,
+        B.fldBrandName
+      FROM
+        tblOrders O
+        INNER JOIN tblOrderItems OI ON O.fldOrder_ID = OI.fldOrderId
+        INNER JOIN tblAddress A ON O.fldAddressId = A.fldAddress_ID
+        INNER JOIN tblProducts P ON P.fldProduct_ID = OI.fldProductId
+        INNER JOIN tblProductImages I ON I.fldProductId = P.fldProduct_ID
+        INNER JOIN tblBrand B ON B.fldBrand_ID = P.fldBrandId
+      WHERE
+        O.fldUserId =  <cfqueryparam value = #session.userId# cfsqltype = "integer">
+        AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
+        <cfif structKeyExists(arguments, 'search')>
+          AND O.fldOrder_ID =<cfqueryparam value = "#arguments.search#" cfsqltype = "varchar">
+        </cfif>
+      ORDER BY 
+        O.fldOrderDate DESC
+    </cfquery>
+    <cfset local.dataStruct = {}>
+    <cfloop query = "local.orders">
+      <cfset local.jsonData = {}>
+      <cfset local.jsonData['orderId'] = local.orders.fldOrder_ID>
+      <cfset local.jsonData['totalPrice'] = local.orders.fldTotalPrice>
+      <cfset local.jsonData['totalTax'] = local.orders.fldTotalTax>
+      <cfset local.jsonData['orderDate'] = local.orders.datetime>
+      <cfset local.jsonData['addressId'] = local.orders.fldAddress_Id>
+      <cfset local.jsonData['firstName'] = local.orders.fldFirstName>
+      <cfset local.jsonData['lastName'] = local.orders.fldlastname>
+      <cfset local.jsonData['address1'] = local.orders.fldAddressLine1>
+      <cfset local.jsonData['address2'] = local.orders.fldAddressLine2>
+      <cfset local.jsonData['city'] = local.orders.fldCity>
+      <cfset local.jsonData['state'] = local.orders.fldState>
+      <cfset local.jsonData['pincode'] = local.orders.fldPincode>
+      <cfset local.jsonData['phone'] = local.orders.fldPhoneNumber>
+      <cfset local.jsonData['quantity'] = local.orders.fldQuantity>
+      <cfset local.jsonData['unitPrice'] = local.orders.fldUnitPrice>
+      <cfset local.jsonData['unitTax'] = local.orders.fldUnitTax>
+      <cfset local.jsonData['productName'] = local.orders.fldProductName>
+      <cfset local.jsonData['fileName'] = local.orders.fldImageFileName>
+      <cfset local.jsonData['brandName'] = local.orders.fldBrandName>
+      <cfset local.orderId = local.orders.fldOrder_ID>
+      <cfif structKeyExists(local.dataStruct, local.orderId)>
+        <cfset arrayAppend(local.dataStruct['#local.orderId#'], local.jsonData)>
+      <cfelse>
+        <cfset local.dataStruct['#local.orderId#'] = []>
+        <cfset arrayAppend(local.dataStruct['#local.orderId#'], local.jsonData)>
+      </cfif>
+    </cfloop>
+    <cfreturn local.dataStruct>
   </cffunction>
 
-  <cffunction name = "getOrderItems" access = "public" returnType = "array">
+ <!---  <cffunction name = "getOrderItems" access = "public" returnType = "array">
     <cfargument name = "orderId" required = "true" type = "string">
     <cfquery name = "local.getItems" datasource = #application.dataSource#>
       SELECT
@@ -1446,13 +1453,12 @@
       <cfset arrayAppend(local.dataArray, local.jsonData)>
     </cfloop>
     <cfreturn local.dataArray>
-  </cffunction>
+  </cffunction> --->
 
   <cffunction name = "getPdf" returnType = "string" access = "remote" returnFormat="json"> 
     <cfargument name="orderId" default = 1 required = "true">
-    <cfset local.pdf = getOrderItems(orderId = arguments.orderId)>
-    <cfset local.address = getOrders(search = arguments.orderId)>
-    <cfset local.address = local.address[1]>
+    <cfset local.orders = getOrders(search = arguments.orderId)>
+    <cfset local.orderDetails = local.orders[arguments.orderId][1]>
     <cfset local.nameDate = "#arguments.orderId#.pdf">
     <cfset local.count = 1>
     <cfset local.totalAmount = 0>
@@ -1480,15 +1486,15 @@
             <div class="pdfAddressDiv">
               Shipping Address : <br><br>
               <span>
-                #local.address.firstName# #local.address.lastName# <br>
-                #local.address.address1#, #local.address.address2#<br>
-                #local.address.city#, #local.address.state#<br>
-                #local.address.pincode#<br>
-                #local.address.phone#  
+                #local.orderDetails.firstName# #local.orderDetails.lastName# <br>
+                #local.orderDetails.address1#, #local.orderDetails.address2#<br>
+                #local.orderDetails.city#, #local.orderDetails.state#<br>
+                #local.orderDetails.pincode#<br>
+                #local.orderDetails.phone#  
               </span>
             <div><br>
             Order ID : #arguments.orderId#<br>
-            Order Date : #local.address.orderDate#
+            Order Date : #local.orderDetails.orderDate#
           <div>
         </cfoutput>
         <table>
@@ -1500,7 +1506,7 @@
             <th>Tax</th>
             <th>Total</th>
           </tr>
-          <cfloop array = "#local.pdf#" item = "item">
+          <cfloop array = "#local.orders[arguments.orderId]#" item = "item">
             <cfset local.totalAmount += item.quantity*(item.unitTax + item.unitPrice)>
             <tr>
               <td>#local.count#</td>

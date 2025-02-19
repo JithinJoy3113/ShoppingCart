@@ -34,11 +34,6 @@
                         <cfif structKeyExists(form, "homeBtn") AND (NOT find("admin.cfm", CGI.SCRIPT_NAME))>
                             <cflocation  url="homePage.cfm">
                         </cfif>
-                        <cfif structKeyExists(session, "role")>
-                            <span class="userTypeSpan ms-2 text-uppercase">
-                                #session.role#
-                            </span>
-                        </cfif>
                     </div>
                     <cfif NOT find("admin.cfm", CGI.SCRIPT_NAME) AND NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME)>
                         <div class="searchDiv d-flex h-100  align-items-center">
@@ -52,27 +47,29 @@
                         </div> 
                     </cfif>
                     <div class="navButtonDiv d-flex align-items-center">
-                        <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1)  AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
+                        <cfif (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
                             <cfif structKeyExists(session, "role")>
-                                <a href="profile.cfm" class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">#session.firstName#</a>
-                            <cfelse>
-                                <a href="" class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">Account</a>
+                                <a href=<cfif session.roleId EQ 2>
+                                            "profile.cfm"
+                                        <cfelse>
+                                            ""
+                                        </cfif> class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">#session.firstName#</a>
                             </cfif>
-                            <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
-                            <div class="cartNumber" id="cartNumber">
-                                <cfif structKeyExists(session, "role")>
-                                    <cfset local.cart = application.obj.cartItems()>
-                                    <cfif arrayLen((local.cart)) EQ 0>
-                                        <cfset local.items = arrayLen((local.cart))>
-                                    <cfelse>
-                                        <cfset local.items = arrayLen((local.cart))-1>
-                                    </cfif>
-                                    #local.items#
-                                </cfif>
-                            </div>
+                            <cfif structKeyExists(session, "role") AND session.roleId EQ 2>
+                                <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
+                                <div class="cartNumber" id="cartNumber">
+                                        <cfset local.cart = application.obj.cartItems()>
+                                        <cfif arrayLen((local.cart)) EQ 0>
+                                            <cfset local.items = arrayLen((local.cart))>
+                                        <cfelse>
+                                            <cfset local.items = arrayLen((local.cart))-1>
+                                        </cfif>
+                                        #local.items#
+                                </div>
+                            </cfif>
                         </cfif>
                         <cfif structKeyExists(session, "role")>
-                            <button class = "logoutBtn fw-bold" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
+                            <button class = "logoutBtn fw-bold scrollTop" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
                         <cfelseif find("login.cfm", CGI.SCRIPT_NAME)>
                             <cfif structKeyExists(URL, "productId")>
                                 <a href="userSignUp.cfm?productId=#URL.productId#&page=buy" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
@@ -87,10 +84,11 @@
                 <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1) AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
                     <div class="homePageDiv d-flex w-100" id="headerNav">
                         <div class="navMenuDiv d-flex justify-content-between w-100">
-                            <cfset local.result= application.obj.viewCategory('Home')>
+                            <cfset local.result= application.obj.viewCategory()>
                             <cfset local.subCategoryResult= application.obj.viewSubcategory()>
                             <cfloop array="#local.result#" item="struct" index="i">
                                 <cfif i EQ 10>
+                                    <button type="button" class="categoryLink border-0 fw-bold" id="openBtn">More</button>
                                     <cfbreak>
                                 </cfif>
                                 <div class="categoryNameDiv ">
@@ -110,7 +108,6 @@
                                     </div>
                                 </div>
                             </cfloop>
-                            <button type="button" class="categoryLink border-0 fw-bold" id="openBtn">More</button>
                         </div>
                     </div>
                 </cfif>
