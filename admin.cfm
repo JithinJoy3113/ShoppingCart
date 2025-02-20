@@ -13,7 +13,7 @@
                                 
                             </div>
                             <div class="categoryInputDiv my-4 d-flex flex-column justify-content-center">
-                                <input class="categoryInput productInput" name="categoryInput" id="categoryInput" placeholder="Enter Category Name">
+                                <input class="categoryInput productInput mx-auto" name="categoryInput" id="categoryInput" placeholder="Enter Category Name">
                                 <span class="removeSpan" id="categoryError"></span>
                                 <button type="button" class="addCategoryButton mt-4" id="addCategoryButton" name="addCategoryButton" onclick = "addCategorySubmit('add')">Submit</button>
                                 <button type="button" class="updateCategoryButton mt-4" id="updateCategoryButton" name="updateCategoryButton" onclick="addCategorySubmit('update')">Update</button>
@@ -130,12 +130,12 @@
 
                 </div>
             </div>
-            <div class="imagesUpdateDiv mt-4 mx-auto" id="imagesUpdateDiv">
-                <div class="d-flex justify-content-end px-3 py-3">
+            <div class="imagesUpdateDiv mt-4 mx-auto align-items-center" id="imagesUpdateDiv">
+                <div class="d-flex justify-content-end px-3 py-3 ms-auto">
                     <button type="button" class="createClose border-0" value="" onclick="imageEditClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                 </div>
                 <span class="addCategoryHeading fw-bold mx-auto">Product Images</span>
-                <div  class="imagesUpdateSubDiv" id = "imagesUpdateSubDiv">
+                <div  class="imagesUpdateSubDiv d-flex justify-content-center" id = "imagesUpdateSubDiv">
 
                 </div>
             </div>

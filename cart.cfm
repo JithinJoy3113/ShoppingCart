@@ -23,7 +23,7 @@
                                         <div class="itemDiv d-flex">
                                             <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
                                             <div class="detailsDiv">
-                                                <div class="itemName d-flex flex-column">
+                                                <div class="d-flex flex-column">
                                                     <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
                                                     <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
                                                     <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>

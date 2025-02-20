@@ -65,18 +65,23 @@
                 <cfloop array="#local.randomProducts#" item="item">
                     <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
                     <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
-                    <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class ="productbtn text-decoration-none">
-                        <div class="randomProducts d-flex flex-column ms-4 mt-3">
-                            <cfset local.count += 1>
-                            <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
-                            <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                                <span class="productsNamespan mx-auto">#item.productName#</span>
-                                <div class="similarPriceDiv d-flex align-items-center mt-2">
-                                    <span class="similarPrice text-success">RS.#item.price#</span>
+                    <div>
+                        <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class ="productbtn text-decoration-none">
+                            <div class="randomProducts d-flex flex-column ms-4 mt-3">
+                                <cfset local.count += 1>
+                                <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
+                                <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
+                                    <span class="productsNamespan mx-auto">#item.productName#</span>
+                                    <div class="similarPriceDiv d-flex align-items-center mt-2">
+                                        <span class="similarPrice text-success">RS.#item.price#</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
+                    <cfif local.count == 5>
+                        <cfbreak>
+                    </cfif>
                 </cfloop>
             </div>
             <input type = "hidden" id="viewHidden" value = "#local.count#">
@@ -85,7 +90,8 @@
         </cfif>
         <cfif arrayLen(local.randomProducts) GT 5>
             <div class = "viewMoreDiv d-flex justify-content-center mt-4" id = "viewMoreDiv">
-                <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this)">View More</button>
+                <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this,#local.subCategoryId#)">View More</button>
+                <button type = "button" class = "viewMoreSubmit d-none" id = "viewMoreSubmitLess" value ="Less" onclick = "return viewMoreSubmit(this)">View Less</button>
             </div>
         </cfif>
     </div>

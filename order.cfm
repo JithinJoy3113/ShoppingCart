@@ -1,7 +1,7 @@
 <cfoutput>
     <cfif structKeyExists(session, "updateItems")>
         <div class="d-flex accordianBody" id="accordianBody">
-            <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion accordion-flush orderAccordianUser" id="accordionFlushExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="flush-headingOne">
                         <button class="titleDiv topBtn" type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseOne" id="top" value="top" aria-expanded="true" aria-controls="flush-collapseOne" onclick="accordianHead(this)">
