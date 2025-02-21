@@ -16,17 +16,18 @@
             </div>
         </form>
 
-        <cfif structKeyExists(form, "userName") AND structKeyExists(form, "password")>
+        <cfif structKeyExists(session, "role")>
             <cfif structKeyExists(URL, "cartLogin")>
-                <cflocation  url="cart.cfm" addtoken="no">
+                <cflocation  url="cart.cfm">
             <cfelseif session.roleId EQ 1>
                 <cflocation  url="admin.cfm" addtoken="no">
             <cfelseif session.roleId EQ 2>
-                <cfif structKeyExists(url, "productId")>
+                <cfif structKeyExists(URL, "productId")>
                     <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
+                     <cfset local.productDetails = application.obj.updateProductquantity(productId = URL.productId)>
                     <cfif structKeyExists(URL, "page")>
                         <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
-                        <cflocation url="order.cfm?productId=#local.encryptedProductId#&page=buy" addtoken="no">
+                        <cflocation url="order.cfm?productId=#local.encryptedProductId#" addtoken="no">
                     <cfelseif local.cart EQ 'cart exist'>
                         <cflocation url="cart.cfm">
                     <cfelse> 

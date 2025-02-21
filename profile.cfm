@@ -29,13 +29,13 @@
                     <div class = "profileInputDiv d-flex flex-column">
                         <span class="profileLabel">Name</span>
                         <div class = "nameInputDiv d-flex pt-2">
-                            <input type="text" class = "form-control profileInput" value="#session.firstName#" name="profileFirstName" id="profileFirstName" disabled>
-                            <input type="text" class = "ms-3 form-control profileInput" value="#session.lastName#" name="profileLastName" id="profileLastName" disabled>
+                            <input type="text" class = "productInput profileInput" value="#session.firstName#" name="profileFirstName" id="profileFirstName" disabled>
+                            <input type="text" class = "ms-3 productInput profileInput" value="#session.lastName#" name="profileLastName" id="profileLastName" disabled>
                         </div>
                         <span class="mt-4 profileLabel">Email/Phone</span>
                         <div class = "emailInputDiv d-flex pt-2">
-                            <input type="text" class = "form-control profileInput" data-value="#session.userMail#" value="#session.userMail#" name="profileEmail" id="profileEmail" disabled>
-                            <input type="text" class = "ms-3 form-control profileInput" data-value="#session.phone#" value="#session.phone#" name="profilePhone" id="profilePhone" disabled>
+                            <input type="text" class = "productInput profileInput" data-value="#session.userMail#" value="#session.userMail#" name="profileEmail" id="profileEmail" disabled>
+                            <input type="text" class = "ms-3 productInput profileInput" data-value="#session.phone#" value="#session.phone#" name="profilePhone" id="profilePhone" disabled>
                         </div>
                     </div>
                     <span class = "fw-bold removeSpan" id = "profileError"></span>
@@ -80,41 +80,41 @@
                     <span class="addressHead px-2 py-3">Add New Address</span>
                     <div class="addressNameDiv d-flex py-3">
                         <div class="d-flex flex-column">
-                            <input type="text" placeholder="FirstName" class="form-control" name="firstName" id="profileFName" oninput="removeSpan('profileFName')">
+                            <input type="text" placeholder="FirstName" class="productInput" name="firstName" id="profileFName" oninput="removeSpan('profileFName')">
                             <span class="text-danger" id="profileFirstNameError"></span>
                         </div>
                         <div class="d-flex flex-column">
-                            <input type="text" placeholder="LastName" class="form-control ms-2" name="lastName" id="profileLname" oninput="removeSpan('profileLname')">
+                            <input type="text" placeholder="LastName" class="productInput ms-2" name="lastName" id="profileLname" oninput="removeSpan('profileLname')">
                             <span class="text-danger" id=""></span>
                         </div>
                     </div>
-                    <div class="addressLineDiv d-flex py-3">
+                    <div class="addressLineDiv d-flex py-3 justify-content-between">
                         <div class="d-flex flex-column">
-                            <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="form-control" oninput="removeSpan('lineOne')"></textarea>
+                            <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="productInput" oninput="removeSpan('lineOne')"></textarea>
                             <span class="text-danger" id="profileAddressOneError"></span>
                         </div>
                         <div class="d-flex flex-column">
-                            <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="form-control ms-2" oninput="removeSpan('lineTwo')"></textarea>
+                            <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="productInput ms-2" oninput="removeSpan('lineTwo')"></textarea>
                             <span class="text-danger" id="profileAddressOneError"></span>
                         </div>
                     </div>
                     <div class="stateDiv d-flex py-3">
                         <div class="d-flex flex-column">
-                            <input type="text" class="form-control" placeholder="City" name="city" id="profilePin" oninput="removeSpan('profilePin')">
+                            <input type="text" class="productInput" placeholder="City" name="city" id="profilePin" oninput="removeSpan('profilePin')">
                             <span class="text-danger" id="profileCityError"></span>
                         </div>
                         <div class="d-flex flex-column">
-                            <input type="text" class="form-control  ms-2" placeholder="State" name="state" id="profileState" oninput="removeSpan('profileState')">
+                            <input type="text" class="productInput ms-2" placeholder="State" name="state" id="profileState" oninput="removeSpan('profileState')">
                             <span class="text-danger" id="profileStateError"></span>
                         </div>
                     </div>
                     <div class="pinDiv d-flex py-3">
                         <div class="d-flex flex-column">
-                            <input type="text" class="form-control" placeholder="Pincode" name="pincode" id="profilePincode" oninput="removeSpan('profilePincode')">
+                            <input type="text" class="productInput" placeholder="Pincode" name="pincode" id="profilePincode" oninput="removeSpan('profilePincode')">
                             <span class="text-danger" id="profilePincodeError"></span>
                         </div>
                         <div class="d-flex flex-column">
-                            <input type="text" class="form-control ms-2" placeholder="Phone" name="phone" id="profileMoile" oninput="removeSpan('profileMoile')">
+                            <input type="text" class="productInput ms-2" placeholder="Phone" name="phone" id="profileMoile" oninput="removeSpan('profileMoile')">
                             <span class="text-danger" id="profilePhoneError"></span>
                         </div>
                     </div>

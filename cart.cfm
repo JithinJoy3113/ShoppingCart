@@ -1,7 +1,7 @@
 <cfoutput>
     <cfif structKeyExists(session, "role")>
         <cfset local.cartItems = application.obj.cartItems()>
-        <cfif arrayLen(local.cartItems)>
+        <cfif arrayLen(local.cartItems) GT 1>
             <div class="bodyContents d-flex" id = "bodyContents">
                 <div class="bodyLeftdiv w-100">
                     <div class="scroll d-flex flex-column w-100">
@@ -68,21 +68,13 @@
                         </div>
                         <div class="priceMaindiv d-flex flex-column">
                             <div class="price d-flex justify-content-between pt-2">
-                                <span class="amount" >Price (<span id="totalItems">#local.items#</span> items)</span>
+                                <span class="amount" >Price (<span id="totalItems">#local.items-1#</span> items)</span>
                                 <span class="number">₹<span class="number" id="cartTotalAmount">#local.totalPrice#</span></span>
                             </div>
                             <div class="price d-flex justify-content-between pt-2">
                                 <span class="amount">Tax</span>
                                 <span class="number">₹<span class="number" id="cartTotalTax">#local.totalTax#</span></span>
                             </div>
-                            <!--- <div class="price d-flex justify-content-between">
-                                <span class="amount">Discount</span>
-                                <span class="number green">− ₹11,961</span>
-                            </div>
-                            <div class="price d-flex justify-content-between">
-                                <span class="amount">Coupons for you</span>
-                                <span class="number green">-187</span>
-                            </div> --->
                             <div class="price d-flex justify-content-between align-items-center">
                                 <span class="amount">Delivery Charges</span>
                                 <span class="deliverySpan d-flex align-items-center">
@@ -95,7 +87,6 @@
                                 <cfset local.totalAmount = local.totalPrice+local.totalTax>
                                 <span class="totalAmount" id="cartOrderAmount">₹#local.totalAmount#</span>
                             </div>
-                            <!--- <span class="save pb-3">You will save ₹12,148 on this order</span>--->
                         </div>
                     </div>
                     <div class="safeDiv d-flex mt-4 ps-3">
@@ -105,7 +96,7 @@
                 </div> 
             </div> 
         <cfelse>
-            <div class = "cartEmptyDiv">
+            <div class = "cartEmptyDiv" id="cartEmptyDiv">
                 <div class = "cartLogin d-flex flex-column justify-content-center">
                     <img src="Assets/Images/cartEmpty.jpg" alt="" class = "mx-auto cartEmptyImg">
                     <span class = "mt-2 missingDiv  d-flex justify-content-center">

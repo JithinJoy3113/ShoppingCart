@@ -12,11 +12,11 @@
                     </div>
                 </cfif>
                 <div class="sidebar" id="sidebar">
-                <cfoutput>
+                    <cfoutput>
                     <cfset local.result = application.obj.viewCategory()>
                     <cfset local.subCategoryResult = application.obj.viewSubcategory()>
                     <a href="javascript:void(0)" class="close-btn" id="closeBtn">&times;</a>
-                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion accordion-flush sideAccordian" id="accordionFlushExample">
                         <cfloop from = "9" to = "#arrayLen(local.result)#" index="i">
                             <div class="accordion-item">
                                 <div class="d-flex categoryBtnHead" id="category#local.result[i].categoryId#">

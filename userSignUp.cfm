@@ -3,7 +3,6 @@
         <cfif structKeyExists(URL, "productId")>
             <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
             <input type="hidden" value=#local.encryptedProductId# id="buyProductId">
-            <cfdump  var="#local.encryptedProductId#">
         </cfif>
         <form action="" method="post" id="signUpForm">
             <div class="signupDiv d-flex flex-column justify-content-center">
@@ -33,19 +32,5 @@
                 <a href="login.cfm" class="text-decoration-none fw-bold mx-auto my-3 text-dark">Already have account? Login</a>
             </div>
         </form>
-                <!--- <cfif structKeyExists(form, "userName") AND structKeyExists(form, "password")>
-                    <cfif structKeyExists(URL, "productId")>
-                        <cfset local.login = application.obj.userLogin(
-                            userName = form.userName,
-                            password = form.password 
-                            )>
-                            <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
-                                <cfif local.cart>
-                                    <cflocation url="cart.cfm">
-                                    </cfif>
-                                    <cfelse>
-                                        <span class = "fw-bold text-success">SignUp Completed</span>
-                                    </cfif>
-                                </cfif> --->
     </div>
 </cfoutput>

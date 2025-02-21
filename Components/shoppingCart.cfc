@@ -32,7 +32,6 @@
     <cfif arguments.password NEQ arguments.confirmPassword>
       <cfset local.jsonData['confirmpasswordError'] = 'Password mismatch'>
     </cfif>
-
     <cfif structCount(local.jsonData)>
       <cfset local.jsonData['signUpResult'] = 'Error'>
       <cfreturn local.jsonData>
@@ -170,7 +169,6 @@
     </cfif>
     <cfreturn local.result>
   </cffunction>
-
 
   <cffunction name = "viewCategory" access = "remote" returnformat = "json" returnType = "array">
     <cfargument name = "editId" required = "false" type = "integer">
@@ -320,7 +318,7 @@
     </cfif>
   </cffunction>
 
-  <cffunction  name = "productListing" returnType = "ANY" access = "public">
+  <cffunction  name = "productListing" returnType = "struct" access = "public">
     <cfargument  name = "categoryId" required = "true" type = "integer">
     <cfquery name = "local.productListing" datasource = "#application.dataSource#">
         SELECT
@@ -729,7 +727,7 @@
     <cfreturn true>
   </cffunction>
 
-  <cffunction name = "randomProducts" returnType = "any" returnformat = "json" access="remote">
+  <cffunction name = "randomProducts" returnType = "array" returnformat = "json" access="remote">
     <cfargument name = "subCategoryId" type = "integer" default = 0 required = "false">
     <cfargument name = "offset" type = "integer" required = "false">
     <cfargument name = "sortBy" type = "string" default = "noSort" required = "false">
@@ -869,51 +867,7 @@
     <cfreturn local.dataArray>
   </cffunction>
 
-  <!--- <cffunction name = "displayProduct" returnType = "struct" returnFormat = "json" access = "remote">
-    <cfargument name = "productId" type = "integer" required = "true">
-    <cfquery name = "local.fetchProduct" datasource = #application.dataSource#>
-      SELECT 
-        P.fldProduct_ID,
-        P.fldProductName,
-        P.fldDescription,
-        P.fldPrice,
-        P.fldTax,
-        B.fldBrand_ID,
-        B.fldBrandName,
-        I.fldImageFileName,
-        S.fldSubcategoryName,
-        S.fldSubcategory_ID,
-        C.fldCategoryName,
-        C.fldCategory_ID
-      FROM
-        tblProducts P
-        INNER JOIN tblBrand B ON B.fldBrand_ID = P.fldBrandId
-        INNER JOIN tblProductImages I ON P.fldProduct_ID = I.fldProductId
-        INNER JOIN tblSubcategory S ON S.fldSubcategory_ID = P.fldSubcategoryId
-        INNER JOIN tblCategory C ON C.fldCategory_ID = S.fldCategoryId
-      WHERE 
-        P.fldProduct_ID = <cfqueryparam value = #arguments.productId# cfsqltype = "integer">
-        AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
-    </cfquery>
-    <cfset local.jsonData = {}>
-    <cfloop query = "local.fetchProduct">
-      <cfset local.jsonData['productId'] = local.fetchProduct.fldProduct_ID>
-      <cfset local.jsonData['productName'] = local.fetchProduct.fldProductName>
-      <cfset local.jsonData['description'] = local.fetchProduct.fldDescription>
-      <cfset local.jsonData['price'] = local.fetchProduct.fldPrice>
-      <cfset local.jsonData['tax'] = local.fetchProduct.fldTax>
-      <cfset local.jsonData['brand'] = local.fetchProduct.fldBrandName>
-      <cfset local.jsonData['brandId'] = local.fetchProduct.fldBrand_ID>
-      <cfset local.jsonData['file'] = local.fetchProduct.fldImageFileName>
-      <cfset local.jsonData['subCategoryName'] = local.fetchProduct.fldSubcategoryName>
-      <cfset local.jsonData['subCategoryId'] = local.fetchProduct.fldSubcategory_ID>
-      <cfset local.jsonData['categoryName'] = local.fetchProduct.fldCategoryName>
-      <cfset local.jsonData['categoryId'] = local.fetchProduct.fldCategory_ID>
-    </cfloop>
-    <cfreturn local.jsonData>
-  </cffunction> --->
-
-  <cffunction name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
+  <cffunction name = "addToCart" returnType = "boolean" access = "remote" returnFormat = "json">
     <cfargument name = "productId" type = "integer" required = "true">
     <cfif structKeyExists(session, "role")>
       <cfquery name = "local.fetchCart" datasource = "#application.dataSource#">
@@ -941,7 +895,7 @@
             <cfqueryparam value = 1 cfsqltype = "integer">
           )
         </cfquery>
-        <cfreturn local.cartResult.generatedKey>
+        <cfreturn true>
       </cfif>
     <cfelse>
       <cfreturn false>
@@ -979,9 +933,9 @@
         </cfif>
     </cfquery>
     <cfset local.dataArray = []>
+    <cfset local.orderAmount = 0>
+    <cfset local.orderTax = 0>
     <cfif queryRecordCount(local.fetchCart)>
-      <cfset local.orderAmount = 0>
-      <cfset local.orderTax = 0>
       <cfloop query="local.fetchCart">
         <cfset local.data = {}>
         <cfset local.orderAmount += local.fetchCart.totalPrice>
@@ -998,12 +952,12 @@
         <cfset local.data['file'] = local.fetchCart.fldImageFileName>
         <cfset arrayAppend(local.dataArray, local.data)>
       </cfloop>
-      <cfset arrayAppend(local.dataArray, {"orderAmount" :  local.orderAmount, "orderTax" : local.orderTax})>
     </cfif>
+    <cfset arrayAppend(local.dataArray, {"orderAmount" :  local.orderAmount, "orderTax" : local.orderTax})>
     <cfreturn local.dataArray>
   </cffunction>
 
-  <cffunction name="updateCart" returnType="any" returnFormat="json" access="remote">
+  <cffunction name="updateCart" returnType="array" returnFormat="json" access="remote">
     <cfargument name="cartId" required="true" type="integer">
     <cfargument name="operation" required="true" type="string">
     <cftry>
@@ -1022,10 +976,10 @@
       <cfset local.dataArray = cartItems()>
       <cfreturn local.dataArray>
     <cfcatch type="any">
-      <cfreturn {
+      <cfreturn [{
         "status" = "error",
         "message" = "An error occurred while updating the cart. Please try again later."
-      }>
+      }]>
     </cfcatch>
     </cftry>
   </cffunction>
@@ -1048,7 +1002,7 @@
     <cfreturn local.dataArray>
   </cffunction>
 
-  <cffunction name = "updateProductquantity" returnType = "any" returnFormat = "json" access = "remote">
+  <cffunction name = "updateProductquantity" returnType = "array" returnFormat = "json" access = "remote">
     <cfargument  name = "productId" required = "false" type = "integer">
     <cfargument  name = "cartId" required = "false" type = "integer">
     <cfif arguments.productId NEQ 0>
@@ -1210,7 +1164,7 @@
     <cfreturn local.dataArray>
   </cffunction>
 
-  <cffunction name = "buyProduct" access = "remote" returnType = "any" returnFormat = "json">
+  <cffunction name = "buyProduct" access = "remote" returnType = "struct" returnFormat = "json">
     <cfargument name = "addressId" type = "integer" required = "true">
     <cfargument name = "cardNumber" type = "numeric" required = "true" default = 1>
     <cfargument name = "cvv" type = "numeric" required = "true" default = 1>
@@ -1363,7 +1317,6 @@
     <cfreturn local.dataStruct>
   </cffunction>
 
-
   <cffunction name = "getPdf" returnType = "string" access = "remote" returnFormat="json"> 
     <cfargument name="orderId" default = 1 required = "true">
     <cfset local.orders = getOrders(search = arguments.orderId)>
@@ -1451,7 +1404,7 @@
     <cfreturn true>
   </cffunction>
   
-  <cffunction  name = "updateOrderItems" access = "remote" returnType = "any" returnFormat = "json">
+  <cffunction  name = "updateOrderItems" access = "remote" returnType = "array" returnFormat = "json">
     <cfargument  name = "productId" required = "true" type = "integer">
     <cfargument  name = "operation" required = "true" type = "string">
     <cfset local.arrayLength = arrayLen(session.updateItems)>

@@ -30,7 +30,7 @@
                             <div class="cartButtondiv w-50 me-1">
                                 <cfif structKeyExists(session, "role")>
                                     <cfset local.cart = application.obj.cartItems(productId = local.productDetails.productId)>
-                                    <cfif arrayLen(local.cart)>
+                                    <cfif arrayLen(local.cart) GT 1>
                                         <a href="cart.cfm" class="cartBtn text-decoration-none text-white d-flex justify-content-center">GO TO CART</a>
                                     <cfelse>
                                         <button type = "button" class="cartBtn border-0 text-white W-50" value = "#local.productDetails.productId#" name="cartBtn" onclick = "addCart(this)">
@@ -44,15 +44,12 @@
                                 </cfif>
                             </div>
                             <cfset local.encryptedProductId = urlEncodedFormat(encrypt(local.productDetails.productId, application.secretKey, "AES", "Base64"))>
-                            <a  href="order.cfm?productId=#local.encryptedProductId#&page=buy" class="W-50 buy buyButtondiv text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
-                         
-                                        <!--- <img src="assets/images/buy.png" class="cartButtonImg mb-1 me-1" alt=""> --->BUY NOW
-                                
+                            <a href="order.cfm?productId=#local.encryptedProductId#&page=buy" class="W-50 buy buyButtondiv text-decoration-none text-white" onClick="return buyNow(#local.productDetails.productId#)">
+                                BUY NOW
                             </a>
                         </div>
                     </form>
                     <div class="productButtondiv d-flex d-sm-none w-100 px-2">
-                        <!--- <img src="assets/images/mobilecart.webp" class="" alt=""> --->
                         <div class="payButtondiv d-flex flex-column mx-1 align-items-center j ustify-content-center">
                             <span class="payEmi">Pay with EMI</span>
                             <span class="emiAmount">From ₹2,675/m</span>

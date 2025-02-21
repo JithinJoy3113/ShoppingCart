@@ -21,11 +21,11 @@
         </head>
         <body id="fullBody">
             <div class="topDiv" id="topDiv">
-                <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4">
+                <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4 align-items-center">
                     <div class = "d-flex align-items-center">
                         <form action="" method="post">
                             <button class="border-0 cartLogoDiv d-flex justify-content-center align-items-center" type="submit" name="homeBtn">
-                                <img src = "Assets/Images/shoppingBag.png" alt = "" width="20" height = "20">
+                                <img src = "Assets/Images/shoppingCartLogo.png" alt = "" width="25" height = "25">
                                 <span class="cartNameLogo ms-2">
                                     clickCart
                                 </span>
@@ -71,8 +71,10 @@
                         <cfif structKeyExists(session, "role")>
                             <button class = "logoutBtn fw-bold scrollTop" type = "button" name = "logout" onclick="logoutValidate()">Logout</button>
                         <cfelseif find("login.cfm", CGI.SCRIPT_NAME)>
-                            <cfif structKeyExists(URL, "productId")>
+                            <cfif structKeyExists(URL, "productId") AND structKeyExists(URL, "page")>
                                 <a href="userSignUp.cfm?productId=#URL.productId#&page=buy" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
+                            <cfelseif structKeyExists(URL, "productId")>
+                                <a href="userSignUp.cfm?productId=#URL.productId#" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
                             <cfelse>
                                 <a href="userSignUp.cfm" class = "logoutBtn fw-bold text-decoration-none">SignUp</a>
                             </cfif>

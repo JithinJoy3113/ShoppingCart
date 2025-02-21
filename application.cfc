@@ -47,13 +47,13 @@
     <cflog type="error" text="Missing template: #Arguments.targetPage#">
     <cflocation url = "error.cfm?page=#arguments.targetPage#">
   </cffunction>
-  
+  <!--- 
   <cffunction name = "onError">
     <cfargument name = "Exception" required = true>
     <cfargument type = "String" name = "EventName" required = true>
     <cflocation url = "error.cfm?Exception=#arguments.Exception#&EventName=#arguments.EventName#">
     <cfabort>
-  </cffunction>
+  </cffunction> --->
  
 
  </cfcomponent>

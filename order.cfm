@@ -179,21 +179,13 @@
                     </div>
                     <div class="priceMaindiv d-flex flex-column">
                         <div class="price d-flex justify-content-between pt-2">
-                            <span class="amount">Price (#local.items# items)</span>
+                            <span class="amount">Price (#local.items-1# items)</span>
                             <span class="number">&##8377<span class="number" id="orderTotalAmount" data-value="#local.totalPrice#">#local.totalPrice#</span></span>
                         </div>
                         <div class="price d-flex justify-content-between pt-2">
                             <span class="amount">Tax</span>
                             <span class="number">&##8377<span class="number" id="orderTotalTax" data-value="#local.totalTax#">#local.totalTax#</span></span>
                         </div>
-                    <!---  <div class="price d-flex justify-content-between">
-                            <span class="amount">Discount</span>
-                            <span class="number green">&##8722 &##8377 11,961</span>
-                        </div>
-                        <div class="price d-flex justify-content-between">
-                            <span class="amount">Coupons for you</span>
-                            <span class="number green">&##8722 187</span>
-                        </div> --->
                         <div class="price d-flex justify-content-between align-items-center">
                             <span class="amount">Delivery Charges</span>
                             <span class="deliverySpan d-flex align-items-center">
@@ -205,8 +197,7 @@
                             <span class="totalAmount">Total Amount</span>
                             <cfset local.totalAmount = local.totalPrice+local.totalTax>
                             <span class="totalAmount">&##8377<span class="totalAmount" id="orderAmount" data-value="#local.totalAmount#">#local.totalAmount#</span></span>
-                        </div>
-                        <!--- <span class="save pb-3">You will save &##8377 12,148 on this order</span>    --->                   
+                        </div>                 
                     </div>
                 </div>
                 <div class="safeDiv d-flex mt-4 ps-3">
@@ -219,26 +210,26 @@
             <form action="" method="post" id="addressForm">
                 <span class="addressHead px-2 py-3">Add New Address</span>
                 <div class="addressNameDiv d-flex py-3">
-                    <input type="text" placeholder="FirstName" class="form-control" name="firstName">
-                    <input type="text" placeholder="LastName" class="form-control ms-2" name="lastName">
+                    <input type="text" placeholder="FirstName" class="productInput" name="firstName">
+                    <input type="text" placeholder="LastName" class="productInput ms-2" name="lastName">
                 </div>
                 <span class="text-danger removeSpan" id="profileFirstNameError"></span>
                 <div class="addressLineDiv d-flex py-3">
-                    <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="form-control"></textarea>
-                    <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="form-control ms-2"></textarea>
+                    <textarea name="addressOne" id="lineOne" placeholder="Address Line 1" class="productInput"></textarea>
+                    <textarea name="addressTwo" id="lineTwo" placeholder="Address Line 2 " class="productInput ms-2"></textarea>
                 </div>
                 <span class="text-danger removeSpan" id="profileAddressOneError"></span>
                 <div class="stateDiv d-flex py-3">
-                    <input type="text" class="form-control" placeholder="City" name="city">
-                    <input type="text" class="form-control  ms-2" placeholder="State" name="state">
+                    <input type="text" class="productInput" placeholder="City" name="city">
+                    <input type="text" class="productInput  ms-2" placeholder="State" name="state">
                 </div>
                 <div class="d-flex justify-content-between">
                     <span class="text-danger removeSpan" id="profileCityError"></span>
                     <span class="text-danger removeSpan" id="profileStateError"></span>
                 </div>
                 <div class="pinDiv d-flex py-3">
-                    <input type="text" class="form-control" placeholder="Pincode" name="pincode">
-                    <input type="text" class="form-control ms-2" placeholder="Phone" name="phone">
+                    <input type="text" class="productInput" placeholder="Pincode" name="pincode">
+                    <input type="text" class="productInput ms-2" placeholder="Phone" name="phone">
                 </div>
                 <div class="d-flex justify-content-between">
                     <span class="text-danger removeSpan" id="profilePincodeError"></span>
