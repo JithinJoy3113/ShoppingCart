@@ -27,13 +27,11 @@
                                                     <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
                                                     <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
                                                     <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
+                                                    <span class = "orderBrand">Brand : #item.brandName#</span>
                                                 </div>
-                                                <!--- <div class="sizeDiv">
-                                                    <span class="sizeSpan">Size: 10,Black , 10</span>
-                                                </div> --->
                                                 <div class="priceDetailsDiv d-flex flex-column mt-2">
                                                     <span class="amount green">Price :<span class="amount green" id = "price#item.cartId#"> #item.totalPrice#</span></span>
-                                                    <span class="number">Tax : <span class="number" id="tax#item.cartId#">#item.totalTax#</span></span>
+                                                    <span class="number">Tax : <span class="number" id="tax#item.cartId#">#item.totalTax#</span><span> (#numberFormat(item.tax)# %)</span></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -68,24 +66,24 @@
                         </div>
                         <div class="priceMaindiv d-flex flex-column">
                             <div class="price d-flex justify-content-between pt-2">
-                                <span class="amount" >Price (<span id="totalItems">#local.items-1#</span> items)</span>
-                                <span class="number">₹<span class="number" id="cartTotalAmount">#local.totalPrice#</span></span>
+                                <span class="amount" >Total Price (<span id="totalItems">#local.items-1#</span> items)</span>
+                                <span class="number">&##8377<span class="number" id="cartTotalAmount"> #local.totalPrice#</span></span>
                             </div>
                             <div class="price d-flex justify-content-between pt-2">
-                                <span class="amount">Tax</span>
-                                <span class="number">₹<span class="number" id="cartTotalTax">#local.totalTax#</span></span>
+                                <span class="amount">Total Tax</span>
+                                <span  class="number">&##8377<span class="number" id="cartTotalTax">#local.totalTax#</span></span>
                             </div>
                             <div class="price d-flex justify-content-between align-items-center">
                                 <span class="amount">Delivery Charges</span>
                                 <span class="deliverySpan d-flex align-items-center">
-                                    <span class="number text-decoration-line-through">₹200</span>
+                                    <span class="number text-decoration-line-through">&##8377</span>
                                     <span class="number green">Free</span>
                                 </span>
                             </div>
                             <div class="price d-flex justify-content-between py-3">
                                 <span class="totalAmount">Total Amount</span>
                                 <cfset local.totalAmount = local.totalPrice+local.totalTax>
-                                <span class="totalAmount" id="cartOrderAmount">₹#local.totalAmount#</span>
+                                <span class="totalAmount" id="cartOrderAmount"><span>&##8377</span> #local.totalAmount#</span>
                             </div>
                         </div>
                     </div>

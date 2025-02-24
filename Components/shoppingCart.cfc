@@ -849,7 +849,7 @@
       <cfset local.jsonData['price'] = local.viewProduct.fldPrice>
       <cfset local.jsonData['tax'] = local.viewProduct.fldTax>
       <cfset local.jsonData['totalPrice'] = local.viewProduct.fldPrice>
-      <cfset local.jsonData['totalTax'] = local.viewProduct.fldTax>
+      <cfset local.jsonData['totalTax'] = (local.viewProduct.fldPrice/100)*local.viewProduct.fldTax>
       <cfset local.jsonData['orderAmount'] = local.viewProduct.fldPrice>
       <cfset local.jsonData['orderTax'] = local.viewProduct.fldTax>
       <cfset local.jsonData['description'] = local.viewProduct.fldDescription>
@@ -863,7 +863,7 @@
       <cfset local.jsonData['brandName'] = local.viewProduct.fldBrandName>
       <cfset local.jsonData['quantity'] = 1>
     </cfloop>
-    <cfset arrayAppend(local.dataArray, {"orderAmount" :   local.viewProduct.fldPrice, "orderTax" : local.viewProduct.fldTax})>
+    <cfset arrayAppend(local.dataArray, {"orderAmount" :   local.viewProduct.fldPrice, "orderTax" : (local.viewProduct.fldPrice/100)*local.viewProduct.fldTax})>
     <cfreturn local.dataArray>
   </cffunction>
 
@@ -914,14 +914,16 @@
         P.fldSubCategoryId,
         P.fldPrice,
         P.fldTax,
+        B.fldBrandName,
         (C.fldQuantity * P.fldPrice) AS totalPrice,
-        (C.fldQuantity * P.fldTax) AS totalTax,
+        (((C.fldQuantity * P.fldPrice)/100)*P.fldTax) AS totalTax,
         P.fldTax,
         I.fldImageFileName
       FROM
         tblCart C
         INNER JOIN tblProducts P ON P.fldProduct_ID = C.fldProductId
         INNER JOIN tblProductImages I ON P.fldProduct_ID = I.fldProductId
+        INNER JOIN tblBrand B ON B.fldBrand_ID = P.fldBrandId
       WHERE
         C.fldUserId = <cfqueryparam value = #session.userId# cfsqltype = "integer">
         AND I.fldDefaultImage = <cfqueryparam value = 1 cfsqltype = "integer">
@@ -943,6 +945,7 @@
         <cfset local.data['cartId'] = local.fetchCart.fldCartItem_ID>
         <cfset local.data['productId'] = local.fetchCart.fldProductId>
         <cfset local.data['quantity'] = local.fetchCart.fldQuantity>
+        <cfset local.data['brandName'] = local.fetchCart.fldBrandName>
         <cfset local.data['productName'] = local.fetchCart.fldProductName>
         <cfset local.data['subcategoryId'] = local.fetchCart.fldSubCategoryId>
         <cfset local.data['totalPrice'] = local.fetchCart.totalPrice>
@@ -1216,17 +1219,18 @@
             <th>Tax</th>
             <th>Total</th>
           </tr>
-          <cfloop array = "#session.updateItems#" index = "item">
-            <cfif structKeyExists(item, "productId")>
-              <cfset local.itemTotal = (item.price+item.tax)*item.quantity>
+          <cfset local.getOrders = getOrders(search = local.generatedUUID)>
+          <cfloop collection = "#local.getOrders#" item = "items">
+            <cfloop array="#local.getOrders[items]#" item="item">
+              <cfset local.itemTotal = (item.unitPrice*item.quantity+((item.unitPrice*item.quantity)/100)*item.unitTax)>
               <tr>
                 <td>#item.productName#</td>
-                <td> #item.quantity#</td>
-                <td>#item.price#</td>
-                <td> #item.tax#</td>
-                <td> # local.itemTotal#</td>
+                <td>#item.quantity#</td>
+                <td>#item.unitPrice*item.quantity#</td>
+                <td>#((item.unitPrice*item.quantity)/100)*item.unitTax#</td>
+                <td>#local.itemTotal#</td>
               </tr>
-            </cfif>
+            </cfloop>
           </cfloop>
           <tr>
             <th>Total Amount</th>
@@ -1368,21 +1372,24 @@
             <th>Tax</th>
             <th>Total</th>
           </tr>
-          <cfloop array = "#local.orders[arguments.orderId]#" item = "item">
-            <cfset local.totalAmount += item.quantity*(item.unitTax + item.unitPrice)>
+          <cfset local.getOrders = getOrders(search = arguments.orderId)>
+          <cfloop collection = "#local.getOrders#" item = "items">
+            <cfloop array="#local.getOrders[items]#" item="item">
+            <cfset local.itemTotal = (item.unitPrice*item.quantity+((item.unitPrice*item.quantity)/100)*item.unitTax)>
             <tr>
               <td>#local.count#</td>
               <td>#item.productName#</td>
               <td>#item.quantity#</td>
-              <td>#item.unitPrice#</td>
-              <td>#item.unitTax#</td>
-              <td>#item.quantity*(item.unitTax + item.unitPrice)#</td>
+              <td>#item.unitPrice*item.quantity#</td>
+              <td>#((item.unitPrice*item.quantity)/100)*item.unitTax#</td>
+              <td>#local.itemTotal#</td>
             </tr>
             <cfset local.count += 1>
+           </cfloop>
           </cfloop>
           <tr>
             <th>Total:</th>
-            <td>#local.totalAmount#</td>
+            <td>#item.totalPrice + item.totalTax#</td>
           </tr>
         </table>
       </cfdocument>
@@ -1413,19 +1420,19 @@
     <cfloop array = "#session.updateItems#" index = "item">
       <cfif structKeyExists(item, "productName") AND item.productId EQ arguments.productId AND arguments.operation EQ 'Plus'>
         <cfset item.totalPrice += item.price>
-        <cfset item.totalTax += item.tax>
+        <cfset item.totalTax += (item.price/100)*item.tax>
         <cfset item.quantity += 1>
         <cfset local.price = item.price>
-        <cfset local.tax = item.tax>
+        <cfset local.tax = (item.price/100)*item.tax>
       <cfelseif structKeyExists(item, "productName") AND item.productId EQ arguments.productId AND arguments.operation EQ 'Minus'>
         <cfset item.totalPrice -= item.price>
-        <cfset item.totalTax -= item.tax>
+        <cfset item.totalTax -= (item.price/100)*item.tax>
         <cfset item.quantity -= 1>
         <cfset local.price = item.price>
-        <cfset local.tax = item.tax>
+        <cfset local.tax = (item.price/100)*item.tax>
       <cfelseif structKeyExists(item, "productName") AND item.productId EQ arguments.productId AND arguments.operation EQ 'Remove'>
         <cfset local.totalPrice = item.totalPrice>
-        <cfset local.totalTax = item.totalTax>
+        <cfset local.totalTax = (item.totalPrice/100)*item.tax>
         <cfset local.index = ArrayFind(session.updateItems, item)>
         <cfset ArrayDeleteAt(session.updateItems, local.index)>
         <cfset local.arrayLength = arrayLen(session.updateItems)>

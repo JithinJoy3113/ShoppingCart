@@ -110,10 +110,11 @@
                                                             <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
                                                             <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
                                                             <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
+                                                            <span class = "orderBrand">Brand : #item.brandName#</span>
                                                         </div>
                                                         <div class="priceDetailsDiv d-flex flex-column mt-2">
-                                                            <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#" data-value=#item.price * local.quantity#> #item.price * local.quantity#</span></span>
-                                                            <span class="number">Tax : <span class="number" id="tax#item.productId#" data-value=#item.tax* local.quantity#>#item.tax* local.quantity#</span></span>
+                                                            <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#"> #item.price * local.quantity#</span></span>
+                                                            <span class="number">Tax : <span class="number" id="tax#item.productId#">#item.totalTax#</span><span> (#numberFormat(item.Tax)# %)</span></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -127,7 +128,7 @@
                                                         <span id="quantity#item.productId#" data-value = "#local.quantity#" class = "quantitySpan">#local.quantity#</span>
                                                         <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.productId#" onclick="updateQuantityOrder(this)">+</button>
                                                     </div>
-                                                    <button class="later me-5 border-0" type = "button" value = "Remove,#item.productId#"  onClick= "deleteProfileAddressButton(this)">REMOVE</button>
+                                                    <button class="later me-2 border-0" type = "button" value = "Remove,#item.productId#"  onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -156,9 +157,8 @@
                             <div class = "accordianCardDiv d-flex flex-column">
                                 <span class="fw-bold my-2">Card Details</span>
                                 <div class="cardNumberDiv d-flex">
-                                    <input type="text" id="cardNumberInput" name="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter your card number" maxlength="14" required pattern="\d{4}(\s?\d{4}){3}" oninput="checkCard()">
-                                    <!-- <input type="text" name="cardNumberInput" id="cardNumberInput" class="w-50 form-control cardNumberInput" placeholder="Enter Card Number"> -->
-                                    <input type="text" name="cardCVVInput" id="cardCVVInput" class="ms-2 w-25 form-control cardCVVInput" maxlength="3" placeholder="CVV" oninput="checkCard()">
+                                    <input type="text" id="cardNumberInput" name="cardNumberInput" class="w-50 cardNumberInput productInput" placeholder="Enter your card number" maxlength="14" required pattern="\d{4}(\s?\d{4}){3}" oninput="checkCard()">
+                                    <input type="text" name="cardCVVInput" id="cardCVVInput" class="ms-2 w-25 cardCVVInput productInput" maxlength="3" placeholder="CVV" oninput="checkCard()">
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end">
@@ -206,7 +206,7 @@
                 </div>
             </div>
         </div>
-        <div class = "addressModal accordianAddressModal pb-3 fw-bold" id="addressModal">
+        <div class = "addressModal accordianAddressModal pb-3 fw-bold mt-2" id="addressModal">
             <form action="" method="post" id="addressForm">
                 <span class="addressHead px-2 py-3">Add New Address</span>
                 <div class="addressNameDiv d-flex py-3">

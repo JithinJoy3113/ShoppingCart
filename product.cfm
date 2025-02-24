@@ -348,7 +348,7 @@
                             <div class="randomProducts d-flex flex-column ms-4">
                                 <img src="Assets/uploadImages/#item.productFileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                                 <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                                    <span class="productsNamespan">#item.productName#</span>
+                                    <span class="productsNamespan d-flex justify-content-center">#item.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">
                                         <span class="similarPrice text-success">RS.#item.price#</span>
                                     </div>
