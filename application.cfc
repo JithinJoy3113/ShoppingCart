@@ -19,12 +19,10 @@
           <cfset structClear(session)>
         </cfif>
       <cfreturn true>
-      <cfelseif structKeyExists(session, "role") AND session.roleId EQ 1 AND arguments.requestPage EQ '/admin.cfm'>
-        <cfreturn true>
-      <cfelseif (NOT structKeyExists(session, "role") OR (structKeyExists(session, "role") AND session.roleId EQ 2)) AND arguments.requestPage NEQ '/admin.cfm'>
-        <cfreturn true>
-      <cfelseif (structKeyExists(session, "role") AND session.roleId EQ 1) AND NOT ArrayContains(local.excludePages,arguments.requestPage)>
+      <cfelseif (structKeyExists(session, "role") AND session.roleId EQ 2) AND arguments.requestPage EQ '/admin.cfm'>
         <cflocation  url="/login.cfm">
+      <cfelseif (NOT structKeyExists(session, "role") AND arguments.requestPage NEQ '/admin.cfm') OR structKeyExists(session, "role")>
+        <cfreturn true>
       </cfif>
   </cffunction>
 

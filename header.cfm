@@ -24,16 +24,13 @@
                 <div class = "signUpHeader adminHeaderDiv w-100 d-flex justify-content-between px-4 align-items-center">
                     <div class = "d-flex align-items-center">
                         <form action="" method="post">
-                            <button class="border-0 cartLogoDiv d-flex justify-content-center align-items-center" type="submit" name="homeBtn">
+                            <a href = "homePage.cfm" class="text-decoration-none cartLogoDiv d-flex justify-content-center align-items-center" name="homeBtn">
                                 <img src = "Assets/Images/shoppingCartLogo.png" alt = "" width="25" height = "25">
                                 <span class="cartNameLogo ms-2">
                                     clickCart
                                 </span>
-                            </button>
+                            </a>
                         </form> 
-                        <cfif structKeyExists(form, "homeBtn") AND (NOT find("admin.cfm", CGI.SCRIPT_NAME))>
-                            <cflocation  url="homePage.cfm">
-                        </cfif>
                     </div>
                     <cfif NOT find("admin.cfm", CGI.SCRIPT_NAME) AND NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME)>
                         <div class="searchDiv d-flex h-100  align-items-center">
@@ -49,13 +46,9 @@
                     <div class="navButtonDiv d-flex align-items-center">
                         <cfif (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
                             <cfif structKeyExists(session, "role")>
-                                <a href=<cfif session.roleId EQ 2>
-                                            "profile.cfm"
-                                        <cfelse>
-                                            ""
-                                        </cfif> class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">#session.firstName#</a>
+                                <a href="profile.cfm" class="menuLink text-white text-decoration-none fw-bold me-4 d-flex align-items-center"><img src="Assets/Images/account.png" alt="" width="26" height="26" class="me-2">#session.firstName#</a>
                             </cfif>
-                            <cfif structKeyExists(session, "role") AND session.roleId EQ 2>
+                            <cfif structKeyExists(session, "role") AND NOT find("admin.cfm", CGI.SCRIPT_NAME)>
                                 <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
                                 <div class="cartNumber" id="cartNumber">
                                         <cfset local.cart = application.obj.cartItems()>
@@ -83,7 +76,7 @@
                         </cfif>
                     </div>
                 </div>
-                <cfif (NOT structKeyExists(session, "role") OR session.roleId NEQ 1) AND (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))>
+                <cfif (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))  AND NOT find("admin.cfm", CGI.SCRIPT_NAME)>
                     <div class="homePageDiv d-flex w-100" id="headerNav">
                         <div class="navMenuDiv d-flex justify-content-between w-100">
                             <cfset local.result= application.obj.viewCategory()>

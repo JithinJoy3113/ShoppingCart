@@ -15,29 +15,21 @@
                 <span id="existError" class="fw-bold text-danger" ></span>
             </div>
         </form>
-
         <cfif structKeyExists(session, "role")>
             <cfif structKeyExists(URL, "cartLogin")>
-                <cflocation  url="cart.cfm">
+                <cflocation  url="cart.cfm?productId=#local.encryptedProductId#">
+            <cfelseif structKeyExists(URL, "page")>
+                <cfset local.productDetails = application.obj.updateProductquantity(productId = URL.productId)>
+                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
+                <cflocation  url="order.cfm?productId=#local.encryptedProductId#">
+            <cfelseif structKeyExists(session, "role") AND structKeyExists(URL, "productId")>
+                <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
+                <!--- <cfset local.productDetails = application.obj.updateProductquantity(productId = URL.productId)> --->
+                <cflocation  url="cart.cfm" addtoken="no">
             <cfelseif session.roleId EQ 1>
-                <cflocation  url="admin.cfm" addtoken="no">
+                <cflocation  url="admin.cfm">
             <cfelseif session.roleId EQ 2>
-                <cfif structKeyExists(URL, "productId")>
-                    <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
-                     <cfset local.productDetails = application.obj.updateProductquantity(productId = URL.productId)>
-                    <cfif structKeyExists(URL, "page")>
-                        <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
-                        <cflocation url="order.cfm?productId=#local.encryptedProductId#" addtoken="no">
-                    <cfelseif local.cart EQ 'cart exist'>
-                        <cflocation url="cart.cfm">
-                    <cfelse> 
-                        <cflocation url="cart.cfm">
-                    </cfif>
-                <cfelse>
-                    <cflocation  url="homePage.cfm" addtoken="no">
-                </cfif>
-            <cfelse>
-                <cflocation  url="homePage.cfm" addtoken="no">
+                <cflocation  url="homePage.cfm">
             </cfif>
         </cfif>
     </div>

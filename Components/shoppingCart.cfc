@@ -471,6 +471,29 @@
           PI.fldProductImage_ID = <cfqueryparam value = #arguments.deleteId# cfsqltype = "integer">
       </cfquery>
     </cfif>
+    <cfquery name = "local.getImages" datasource = "#application.dataSource#">
+      SELECT
+        fldImageFileName
+      FROM
+        tblProductImages
+      WHERE
+        fldActive = <cfqueryparam value = 0 cfsqltype = "integer">
+        AND fldDefaultImage =  <cfqueryparam value = 0 cfsqltype = "integer">
+    </cfquery>
+    <cfif queryRecordCount(local.getImages)>
+      <cfloop query = "local.getImages">
+        <cfset local.imagePath = expandPath('../Assets/uploadImages/#local.getImages.fldImageFileName#')>
+        <cffile  action="delete" file = #local.imagePath#>
+      </cfloop>
+      <cfquery name = "local.deleteImages"  datasource = "#application.dataSource#">
+        DELETE
+        FROM
+          tblProductImages
+        WHERE
+          fldActive = <cfqueryparam value = 0 cfsqltype = "integer">
+          AND fldDefaultImage =  <cfqueryparam value = 0 cfsqltype = "integer">
+      </cfquery>
+    </cfif>
     <cfreturn {"status":"true"}>
   </cffunction>
 
@@ -796,7 +819,7 @@
     <cfreturn local.dataArray>
   </cffunction>
 
-  <cffunction name = "viewProducts" returnType = "array" returnFormat = "json" access = "remote">
+  <cffunction name = "viewProducts" returnType = "any" returnFormat = "json" access = "remote">
     <cfargument name = "columnName" required = "false" type = "string">
     <cfargument name = "productSubId" required = "false" type = "integer">
     <cfargument name = "productId" default = 0 required = "false" type = "integer">
@@ -844,7 +867,6 @@
     <cfset local.dataArray = []>
     <cfloop query = "local.viewProduct">
       <cfset local.jsonData = {}>
-      <cfset arrayAppend(local.dataArray, local.jsonData)>
       <cfset local.jsonData['productName'] = local.viewProduct.fldProductName>
       <cfset local.jsonData['price'] = local.viewProduct.fldPrice>
       <cfset local.jsonData['tax'] = local.viewProduct.fldTax>
@@ -862,12 +884,13 @@
       <cfset local.jsonData['brandId'] = local.viewProduct.fldBrand_ID>
       <cfset local.jsonData['brandName'] = local.viewProduct.fldBrandName>
       <cfset local.jsonData['quantity'] = 1>
+      <cfset arrayAppend(local.dataArray, local.jsonData)>
+      <cfset arrayAppend(local.dataArray, {"orderAmount" : local.viewProduct.fldPrice, "orderTax" : (local.viewProduct.fldPrice/100)*local.viewProduct.fldTax})>
     </cfloop>
-    <cfset arrayAppend(local.dataArray, {"orderAmount" :   local.viewProduct.fldPrice, "orderTax" : (local.viewProduct.fldPrice/100)*local.viewProduct.fldTax})>
     <cfreturn local.dataArray>
   </cffunction>
 
-  <cffunction name = "addToCart" returnType = "boolean" access = "remote" returnFormat = "json">
+  <cffunction name = "addToCart" returnType = "any" access = "remote" returnFormat = "json">
     <cfargument name = "productId" type = "integer" required = "true">
     <cfif structKeyExists(session, "role")>
       <cfquery name = "local.fetchCart" datasource = "#application.dataSource#">

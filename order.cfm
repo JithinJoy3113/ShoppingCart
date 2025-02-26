@@ -114,7 +114,7 @@
                                                         </div>
                                                         <div class="priceDetailsDiv d-flex flex-column mt-2">
                                                             <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#"> #item.price * local.quantity#</span></span>
-                                                            <span class="number">Tax : <span class="number" id="tax#item.productId#">#item.totalTax#</span><span> (#numberFormat(item.Tax)# %)</span></span>
+                                                            <span class="number">Tax : <span class="number" id="tax#item.productId#">#decimalFormat(item.totalTax)#</span><span> (#numberFormat(item.Tax)# %)</span></span>
                                                         </div>
                                                     </div>
                                                 </div>

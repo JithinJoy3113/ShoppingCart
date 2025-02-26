@@ -1,4 +1,4 @@
-            <cfif NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME)>
+            <cfif NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME) AND NOT find("admin.cfm", CGI.SCRIPT_NAME)>
                 <cfif find("product.cfm", CGI.SCRIPT_NAME)>
                     <div class="bottomContentsdiv d-flex flex-column">
                         <span class="bottomHead">Top Stories:Brand Directory</span>

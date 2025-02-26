@@ -21,7 +21,7 @@
                                     <div class="randomProducts d-flex flex-column ms-4">
                                         <img src="Assets/uploadImages/#product.file#" class="similarImage mx-auto zoomHover" height="186" alt="">
                                         <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                                            <span class="productsNamespan mx-auto">#product.productName#</span>
+                                            <span class="productsNamespan d-flex justify-content-center">#product.productName#</span>
                                             <div class="similarPriceDiv d-flex align-items-center mt-2">
                                                 <span class="similarPrice text-success">RS.#product.price#</span>
                                                 <!--- <span class="productsReviewspan text-decoration-line-through ms-2">RS.16,999</span>
