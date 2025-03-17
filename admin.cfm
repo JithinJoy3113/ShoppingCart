@@ -47,7 +47,7 @@
                         <div class="addSubcategoryInput categoryFieldDiv">
                             <span class="addCategoryHeading d-flex justify-content-center" id="addSubcategoryHeading"></span>
                             <div class="mt-4 container">
-                                <cfset local.result = application.obj.viewCategory()>
+                                <cfset variables.result = application.obj.viewCategory()>
                                 <span class="removeSpan" id="addSubMessage"></span>
                                 <div class="categoryDropdown row" id="categoryDropdownDiv">
                                     <div class="col">
@@ -55,7 +55,7 @@
                                     </div>
                                     <div class="col">
                                         <select name="categoryDropdown" class="productInput" id="categoryDropdown">
-                                            <cfloop array = "#local.result#" item = "item">
+                                            <cfloop array = "#variables.result#" item = "item">
                                                 <option value=#item.categoryId#>#item.categoryName#</option>
                                             </cfloop>
                                         </select>
@@ -84,8 +84,8 @@
                     <div class="d-flex flex-column" >
                         <span class="pageHead fw-bold mx-auto my-4">List of Categories</span>
                         <div class="pageListDiv d-flex justify-content-center flex-column">
-                            <cfset local.result = application.obj.viewCategory()>
-                            <cfloop array="#local.result#" item = "item">
+                            <cfset variables.result = application.obj.viewCategory()>
+                            <cfloop array="#variables.result#" item = "item">
                                 <div class="pageDisplayDiv d-flex justify-content-between align-items-center" id="#item.categoryId#">
                                     <a href="" class="text-decoration-none text-dark">
                                         <div class="pageNameDiv d-flex text-dark fw-bold overflow-hidden text-truncate">
@@ -94,8 +94,8 @@
                                     </a>
                                     <div class="pageButtonDiv d-flex">
                                         <button type="button" class="pageButton adminEditColor scrollTop" name="editBtn" value=#item.categoryId#  onClick="return categoryAdd(this)"><img width="23" height="23" src="Assets/Images/editBtn.png" alt="create-new"/></button>
-                                        <button type="button" class="pageButton adminDeleteColor scrollTop" name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDeleteButton(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
-                                        <button type="button" class="pageButton adminEditColor scrollTop" name="viewBtn"  value=#item.categoryId# onClick="return viewSubButton(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
+                                        <button type="button" class="pageButton adminDeleteColor scrollTop" name="deleteBtn" value='tblCategory,#item.categoryId#' onClick="categoryDelete(this)"><img width="26" height="26" src="Assets/Images/deleteBtn.png" alt="filled-trash"/></button>
+                                        <button type="button" class="pageButton adminEditColor scrollTop" name="viewBtn"  value=#item.categoryId# onClick="return viewSubCategory(this)"><img src="Assets/Images/goArrow.png" alt="" width="18" height="18"></button>
                                     </div>
                                 </div>
                             </cfloop>
@@ -130,7 +130,7 @@
 
                 </div>
             </div>
-            <div class="imagesUpdateDiv mt-4 mx-auto align-items-center" id="imagesUpdateDiv">
+            <div class="imagesUpdateDiv mx-4 mx-auto align-items-center" id="imagesUpdateDiv">
                 <div class="d-flex justify-content-end px-3 py-3 ms-auto">
                     <button type="button" class="createClose border-0" value="" onclick="imageEditClose()"><img width="35" height="35" src="Assets/Images/close.png" alt="close-window"/></button>
                 </div>
@@ -224,10 +224,13 @@
                             <span class="fw-bold text-danger" id="fileError"></span>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-between productImageDiv" id="imageDisplayDiv">
+                        <input type="hidden" value="add" id="hiddenProductInput">
+                    </div>
                     <div class="addProductButtonDiv d-flex mx-auto mt-3">
                         <button type="button" class="addProductSubmit" name="addProductSubmit" id="addProductSubmit" value="" onclick="return addProductsubmit()">Submit</button>
-                        <button type="button" class="updateProductSubmit" name="updateProductSubmit" id="updateProductSubmit" value="" onclick="return updateProductsubmit(this)">Update</button>
-                        <button type="button" class="addProductClose ms-2" value="" id="addProductClose" onclick="addProductCloseBtn(this)">Close</button>
+                        <button type="button" class="updateProductSubmit" name="updateProductSubmit" id="updateProductSubmit" value="" onclick="return updateProducts(this)">Update</button>
+                        <button type="button" class="addProductClose ms-2" value="" id="addProductCloseBtn" onclick="addProductClose(this)">Close</button>
                     </div>
                 </div>
             </div>

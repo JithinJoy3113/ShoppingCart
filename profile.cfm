@@ -49,8 +49,8 @@
                     </button>
                 </span>
                 <div class = "addressListDiv" id="addressListDiv">
-                    <cfset local.address = application.obj.fetchAddress()>
-                        <cfloop array="#local.address#" item="item">
+                    <cfset variables.address = application.obj.fetchAddress()>
+                        <cfloop array="#variables.address#" item="item">
                            <div class="addressMainDiv d-flex justify-content-between" id="address#item.addressID#">
                                 <div class = "addressDiv d-flex flex-column">
                                     <span class="addressNameSpan fw-bold">#item.firstName# #item.lastName#
@@ -64,8 +64,7 @@
                                     <img src="Assets/Images/dots.png" alt="" class = "addressEditImg" data-value = "#item.addressID#" width="20" height="20">
                                 </div>
                                 <div class="addressEditDiv py-3" id="addressDelete#item.addressID#" data-value = "#item.addressID#">
-                                    <!-- <button type="button">Edit</button> -->
-                                    <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteProfileAddressButton(this)">Delete</button>
+                                    <button type="button bt-2" value = "#item.addressID#" class="addressDltbtn" onClick = "deleteAddress(this)">Delete</button>
                                 </div>
                             </div>
                         </cfloop>
@@ -119,8 +118,8 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center py-3">
-                        <button type="button" value="" class="addAddressClose" onclick="addAddressCloseBtn()">Cancel</button>
-                        <button type="button" value="" class="addCategory" onclick="addAddressBtn()">Submit</button>
+                        <button type="button" value="" class="addAddressCloseBtn" onclick="addAddressClose()">Cancel</button>
+                        <button type="button" value="" class="addCategory" onclick="addAddress()">Submit</button>
                     </div>
                 </form>
             </div>

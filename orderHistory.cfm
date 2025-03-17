@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div id="orderHistoryDisplay">
-
+                    
                 </div>
                 <div class="noOrdersDiv" id="noOrdersDiv">
                     <div class="d-flex flex-column justify-content-center align-items-center">
@@ -45,8 +45,8 @@
         <div class="orderHistoryDiv">
             <div class="orderDiv">
                 <cfif structKeyExists(form, "orderSearch")>
-                    <cfset local.orders = application.obj.getOrders(search = orderSearch)>
-                    <cfif NOT structCount((local.orders))>
+                    <cfset variables.orders = application.obj.getOrders(search = orderSearch)>
+                    <cfif NOT structCount((variables.orders))>
                         <div class="noOrdersDiv">
                             <div class="d-flex flex-column justify-content-center align-items-center">
                                 <img src="Assets/Images/cartEmpty.jpg" alt="" class = "mx-auto cartEmptyImg">
@@ -57,27 +57,27 @@
                         <cfabort>
                     </cfif>
                 <cfelse>
-                    <cfset local.orders = application.obj.getOrders()>
+                    <cfset variables.orders = application.obj.getOrders()>
                 </cfif>
-                <cfif structCount(local.orders)>
+                <cfif structCount(variables.orders)>
                     <form action="" method="post">
                         <div class = "d-flex justify-content-center">
                             <input type="search" class="historySearch" placeholder="Search for order history..." name="orderSearch">
                         </div>
                     </form>
-                    <cfloop collection="#local.orders#" item="orderId">
-                        <cfset local.order = local.orders[orderId][1]>
+                    <cfloop collection="#variables.orders#" item="orderId">
+                        <cfset variables.order = variables.orders[orderId][1]>
                         <div class="orderItemDiv d-flex flex-column mt-5">
                             <div class="orderHead d-flex align-items-center justify-content-between">
                                 <div class="d-flex flex-column">
                                     <span class="orderIdSpan">OrderId : #orderId#</span>
-                                    <span class="orderIdSpan">Order Date : #local.order.orderDate#</span>
+                                    <span class="orderIdSpan">Order Date : #variables.order.orderDate#</span>
                                 </div>
                                 <a href="##" class="text-decoration-none" name="pdfButton" onClick = "pdfDownload('#orderId#')">
                                     <img src="Assets/Images/pdf (1).png" class="fileImage mx-1" width="32px" height="32px">
                                 </a>
                             </div>
-                            <cfloop array="#local.orders[orderId]#" item="items">
+                            <cfloop array="#variables.orders[orderId]#" item="items">
                                 <div class="itemDetailsDiv d-flex flex-column">
                                     <div class="orderProductDiv d-flex align-items-center justify-content-between">
                                         <div class="d-flex flex-column">
@@ -96,18 +96,18 @@
                             </cfloop>
                             <div class="orderDeliveryDiv d-flex justify-content-between">
                                 <div class="orderTotalAmountDiv d-flex flex-column">
-                                    <span class="orderItemPrice">Total Price : #local.order.totalPrice#</span>
-                                    <span class="orderItemPrice">Total Tax : #local.order.totalTax#</span>
-                                    <span class="orderItemTotal fw-bold text-success">Total Amount : #local.order.totalPrice + local.order.totalTax#</span>
+                                    <span class="orderItemPrice">Total Price : #variables.order.totalPrice#</span>
+                                    <span class="orderItemPrice">Total Tax : #variables.order.totalTax#</span>
+                                    <span class="orderItemTotal fw-bold text-success">Total Amount : #variables.order.totalPrice + variables.order.totalTax#</span>
                                 </div>
                                 <div class="shippingAddressDiv d-flex flex-column">
                                     <span class="fw-bold">Address:</span>
-                                    <span class="orderAddressSapn deliveryAddress">#local.order.firstName# #local.order.lastName#, #local.order.address1# #local.order.address2#,
-                                     #local.order.city# #local.order.state# #local.order.pincode#</span>
+                                    <span class="orderAddressSapn deliveryAddress">#variables.order.firstName# #variables.order.lastName#, #variables.order.address1# #variables.order.address2#,
+                                     #variables.order.city# #variables.order.state# #variables.order.pincode#</span>
                                 </div>
                                 <div class="orderContactDiv d-flex flex-column">
                                     <span class="fw-bold">Contact:</span>
-                                    <span class="orderAddressSapn">#local.order.phone#</span>
+                                    <span class="orderAddressSapn">#variables.order.phone#</span>
                                 </div>
                             </div>
                         </div>

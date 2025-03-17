@@ -1,7 +1,9 @@
 <cfoutput>
     <cfif structKeyExists(session, "role")>
-        <cfset local.cartItems = application.obj.cartItems()>
-        <cfif arrayLen(local.cartItems) GT 1>
+        <cfset variables.cartItems = application.obj.cartItems()>
+        <cfset variables.itemsDetails = variables.cartItems['productDetails']>
+        <cfset variables.orderTotal = variables.cartItems['orderTotal']>
+        <cfif structKeyExists(variables.cartItems, "productDetails")>
             <div class="bodyContents d-flex" id = "bodyContents">
                 <div class="bodyLeftdiv w-100">
                     <div class="scroll d-flex flex-column w-100">
@@ -11,51 +13,44 @@
                                 <button class="pinButton">Enter Delivery Pincode</button>
                             </div>
                         </div>
-                        <cfset local.cartId = 0>
-                        <cfset local.totalPrice = 0>
-                        <cfset local.totalTax = 0>
-                        <cfset local.items = arrayLen(local.cartItems)>
-                        <cfloop array="#local.cartItems#" item="item">
-                            <cfif structKeyExists(item, "cartId")>
-                                <cfset local.cartId = item.cartId>
-                                <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id = "#item.cartId#">
-                                    <div class="itemMain d-flex flex-column">
-                                        <div class="itemDiv d-flex">
-                                            <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
-                                            <div class="detailsDiv">
-                                                <div class="d-flex flex-column">
-                                                    <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
-                                                    <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
-                                                    <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
-                                                    <span class = "orderBrand">Brand : #item.brandName#</span>
-                                                </div>
-                                                <div class="priceDetailsDiv d-flex flex-column mt-2">
-                                                    <span class="amount green">Price :<span class="amount green" id = "price#item.cartId#"> #item.totalPrice#</span></span>
-                                                    <span class="number">Tax : <span class="number" id="tax#item.cartId#">#decimalFormat(item.totalTax)#</span><span> (#numberFormat(item.tax)# %)</span></span>
-                                                </div>
+                        <cfset variables.cartId = 0>
+                        <cfset variables.items = arrayLen(variables.itemsDetails)>
+                        <cfloop array="#variables.itemsDetails#" item="item">
+                            <cfset variables.cartId = item.cartId>
+                            <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id = "#item.cartId#">
+                                <div class="itemMain d-flex flex-column">
+                                    <div class="itemDiv d-flex">
+                                        <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
+                                        <div class="detailsDiv">
+                                            <div class="d-flex flex-column">
+                                                <cfset variables.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                                <cfset variables.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
+                                                <a href="product.cfm?productId=#variables.encryptedProductId#&subcategoryId=#variables.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
+                                                <span class = "orderBrand">Brand : #item.brandName#</span>
                                             </div>
-                                        </div>
-                                        <div class="removeDiv d-flex justify-content-between">
-                                            <div class="UpdateQuantityDiv d-flex">
-                                                <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.cartId#" id="minus#item.cartId#" onclick="updateQuantity(this)"
-                                                    <cfif item.quantity EQ 1>
-                                                        disabled
-                                                    </cfif>
-                                                >-</button>
-                                                <span id="quantity#item.cartId#" data-value = "#item.quantity#">#item.quantity#</span>
-                                                <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.cartId#" onclick="updateQuantity(this)">+</button>
+                                            <div class="priceDetailsDiv d-flex flex-column mt-2">
+                                                <span class="amount green">Price :<span class="amount green" id = "price#item.cartId#"> #item.totalPrice#</span></span>
+                                                <span class="number">Tax : <span class="number" id="tax#item.cartId#">#decimalFormat(item.totalTax)#</span><span> (#numberFormat(item.tax)# %)</span></span>
                                             </div>
-                                            <button class="later me-5 border-0" type = "button" value = #item.cartId# onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                         </div>
                                     </div>
+                                    <div class="removeDiv d-flex justify-content-between">
+                                        <div class="UpdateQuantityDiv d-flex">
+                                            <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.cartId#" id="minus#item.cartId#" onclick="updateQuantity(this)"
+                                                <cfif item.quantity EQ 1>
+                                                    disabled
+                                                </cfif>
+                                            >-</button>
+                                            <span id="quantity#item.cartId#" data-value = "#item.quantity#">#item.quantity#</span>
+                                            <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.cartId#" onclick="updateQuantity(this)">+</button>
+                                        </div>
+                                        <button class="later me-5 border-0" type = "button" value = #item.cartId# onClick= "deleteAddress(this)">REMOVE</button>
+                                    </div>
                                 </div>
-                            <cfelse>
-                                <cfset local.totalPrice = item.orderAmount>
-                                <cfset local.totalTax = item.orderTax>
-                            </cfif>
+                            </div>
                         </cfloop>
                         <div class="placeOrderdiv d-flex justify-content-end">
-                            <button class="orderButton" type="button" value="#local.cartId#" onclick = "buyNow(this)">PLACE ORDER</button>
+                            <button class="orderButton" type="button" value="#variables.cartId#" onclick = "buyNow(this)">PLACE ORDER</button>
                         </div>
                     </div>
                 </div>
@@ -66,12 +61,12 @@
                         </div>
                         <div class="priceMaindiv d-flex flex-column">
                             <div class="price d-flex justify-content-between pt-2">
-                                <span class="amount" >Total Price (<span id="totalItems">#local.items-1#</span> items)</span>
-                                <span class="number">&##8377<span class="number" id="cartTotalAmount"> #local.totalPrice#</span></span>
+                                <span class="amount" >Total Price (<span id="totalItems">#variables.items#</span> items)</span>
+                                <span class="number">&##8377<span class="number" id="cartTotalAmount"> #variables.orderTotal['orderAmount']#</span></span>
                             </div>
                             <div class="price d-flex justify-content-between pt-2">
                                 <span class="amount">Total Tax</span>
-                                <span  class="number">&##8377<span class="number" id="cartTotalTax">#local.totalTax#</span></span>
+                                <span  class="number">&##8377<span class="number" id="cartTotalTax">#variables.orderTotal['orderTax']#</span></span>
                             </div>
                             <div class="price d-flex justify-content-between align-items-center">
                                 <span class="amount">Delivery Charges</span>
@@ -82,8 +77,8 @@
                             </div>
                             <div class="price d-flex justify-content-between py-3">
                                 <span class="totalAmount">Total Amount</span>
-                                <cfset local.totalAmount = local.totalPrice+local.totalTax>
-                                <span class="totalAmount" id="cartOrderAmount"><span>&##8377</span> #local.totalAmount#</span>
+                                <cfset variables.totalAmount = variables.orderTotal['orderAmount']+variables.orderTotal['orderTax']>
+                                <span class="totalAmount" id="cartOrderAmount"><span>&##8377</span> #variables.totalAmount#</span>
                             </div>
                         </div>
                     </div>

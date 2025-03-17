@@ -51,13 +51,11 @@
                             <cfif structKeyExists(session, "role") AND NOT find("admin.cfm", CGI.SCRIPT_NAME)>
                                 <a href="cart.cfm" class="menuCartLink text-white text-decoration-none fw-bold me-4">Cart</a>
                                 <div class="cartNumber" id="cartNumber">
-                                        <cfset local.cart = application.obj.cartItems()>
-                                        <cfif arrayLen((local.cart)) EQ 0>
-                                            <cfset local.items = arrayLen((local.cart))>
-                                        <cfelse>
-                                            <cfset local.items = arrayLen((local.cart))-1>
+                                        <cfset variables.cart = application.obj.cartItems()>
+                                        <cfif structKeyExists(variables.cart, "productDetails")>
+                                            <cfset variables.items = arrayLen((variables.cart['productDetails']))>
                                         </cfif>
-                                        #local.items#
+                                        #variables.items#
                                 </div>
                             </cfif>
                         </cfif>
@@ -79,25 +77,25 @@
                 <cfif (NOT find("login.cfm", CGI.SCRIPT_NAME) AND NOT find("userSignUp.cfm", CGI.SCRIPT_NAME))  AND NOT find("admin.cfm", CGI.SCRIPT_NAME)>
                     <div class="homePageDiv d-flex w-100" id="headerNav">
                         <div class="navMenuDiv d-flex justify-content-between w-100">
-                            <cfset local.result= application.obj.viewCategory()>
-                            <cfset local.subCategoryResult= application.obj.viewSubcategory()>
-                            <cfloop array="#local.result#" item="struct" index="i">
+                            <cfset variables.result= application.obj.viewCategory()>
+                            <cfset variables.subCategoryResult= application.obj.viewSubcategory()>
+                            <cfloop array="#variables.result#" item="struct" index="i">
                                 <cfif i EQ 10>
                                     <button type="button" class="categoryLink border-0 fw-bold" id="openBtn">More</button>
                                     <cfbreak>
                                 </cfif>
                                 <div class="categoryNameDiv ">
                                     <div class="categoryHeadDiv" data-value="#struct.categoryId#">
-                                        <cfset local.encryptedCategoryId = urlEncodedFormat(encrypt(struct.categoryId, application.secretKey, "AES", "Base64"))>
-                                        <cfset local.encryptedCategoryName = urlEncodedFormat(encrypt(struct.categoryName, application.secretKey, "AES", "Base64"))>
-                                        <a href="productListing.cfm?categoryId=#local.encryptedCategoryId#&categoryName=#local.encryptedCategoryName#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
+                                        <cfset variables.encryptedCategoryId = urlEncodedFormat(encrypt(struct.categoryId, application.secretKey, "AES", "Base64"))>
+                                        <cfset variables.encryptedCategoryName = urlEncodedFormat(encrypt(struct.categoryName, application.secretKey, "AES", "Base64"))>
+                                        <a href="productListing.cfm?categoryId=#variables.encryptedCategoryId#&categoryName=#variables.encryptedCategoryName#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
                                     </div>
                                     <div class="subCategoryListDiv" id="#struct.categoryId#">
-                                        <cfloop array="#local.subCategoryResult#" item="data">
+                                        <cfloop array="#variables.subCategoryResult#" item="data">
                                             <cfif data.categoryIdTblSub EQ struct.categoryId>
-                                                <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(data.subcategoryId, application.secretKey, "AES", "Base64"))>
-                                                <cfset local.encryptedSubCategoryName = urlEncodedFormat(encrypt(data.subcategoryName, application.secretKey, "AES", "Base64"))>
-                                                <a href="subcategory.cfm?subCategoryId=#local.encryptedSubcategoryId#&subCategoryName=#local.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#data.subcategoryId#">#data.subcategoryName#</a>
+                                                <cfset variables.encryptedSubcategoryId = urlEncodedFormat(encrypt(data.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                                <cfset variables.encryptedSubCategoryName = urlEncodedFormat(encrypt(data.subcategoryName, application.secretKey, "AES", "Base64"))>
+                                                <a href="subcategory.cfm?subCategoryId=#variables.encryptedSubcategoryId#&subCategoryName=#variables.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#data.subcategoryId#">#data.subcategoryName#</a>
                                             </cfif>
                                         </cfloop>
                                     </div>

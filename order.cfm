@@ -37,10 +37,10 @@
                                 </button>
                             </span>
                             <div class = "accordianAddressDiv d-flex flex-column" id="accordianAddressDiv">
-                                <cfset local.address = application.obj.fetchAddress()>
-                                <cfset local.arrayLength = arrayLen(local.address)>
-                                <cfif local.arrayLength GT 0>
-                                    <cfloop array="#local.address#" item="item" index="index">
+                                <cfset variables.address = application.obj.fetchAddress()>
+                                <cfset variables.arrayLength = arrayLen(variables.address)>
+                                <cfif variables.arrayLength GT 0>
+                                    <cfloop array="#variables.address#" item="item" index="index">
                                         <div class="d-flex align-items-center" id="accordianAddressSelect">
                                             <input type="radio" name="addressRadio" value="#item.addressID#" 
                                                 <cfif index == 1>
@@ -63,7 +63,7 @@
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button class="accordianBtn
-                                    <cfif local.arrayLength EQ 0>
+                                    <cfif variables.arrayLength EQ 0>
                                         disabled
                                     </cfif>" type="button" data-bs-toggle="collapse" value="two" id="orderAddressBtn" data-bs-target="##flush-collapseThree" aria-expanded="false" onclick="accordianHead(this)" aria-controls="flush-collapseTwo"
                                 >Save</button>
@@ -78,64 +78,66 @@
                         </button>
                     </h2>
                     <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="##accordionFlushExample">
-                        <div class="accordion-body">
-                            <cfif structKeyExists(URL, "cartId")>
-                                <cfset local.cartItems = application.obj.cartItems()>
-                            <cfelseif structKeyExists(URL, "productId")>
-                                <cfset local.productId = decrypt(URL.productId, application.secretKey, "AES", "Base64")>
-                                <cfset local.cartItems = application.obj.viewProducts(productId = local.productId)>
+                        <div class="accordion-body accordianScroll">
+                            <cfset variables.totalAmount = 0>
+                            <cfif structKeyExists(URL, "productId")>
+                                 <cfset variables.productId = decrypt(URL.productId, application.secretKey, "AES", "Base64")>
                             </cfif>
-                            <cfset local.items = arrayLen(local.cartItems)>
+                            <cfset variables.productDetails = session.updateItems['productDetails']>
+                            <cfif structKeyExists(session.updateItems, 'imageDetails')>
+                                <cfset variables.imageDetails = session.updateItems['imageDetails']>
+                                <cfloop array="#variables.imageDetails#" item="item">
+                                    <cfif item.default EQ 1>
+                                        <cfset variables.fileName = item.fileName>
+                                    </cfif>
+                                </cfloop>
+                            </cfif>
+                            <cfset variables.orderTotal = session.updateItems['orderTotal']>
+                            <cfset variables.items = arrayLen(variables.productDetails)>
+                            
                             <div class = "accordianOrderDiv">
-                                <cfset local.totalPrice = 0>
-                                <cfset local.totalTax = 0>
-                                <cfloop array="#local.cartItems#" item="item">
-                                    <cfif structKeyExists(item, "productId") OR structKeyExists(item, "cartId")>
-                                        <cfif structKeyExists(item, "productId")>
-                                            <cfset local.productId = item.productId>
-                                        </cfif>
-                                        <cfif structKeyExists(item, "quantity")>
-                                            <cfset local.quantity = item.quantity>
-                                        <cfelse>
-                                            <cfset local.quantity = 1>
-                                        </cfif>
-                                        <input type="hidden" id="orderPriceInput#item.productId#" value="#item.price#">
-                                        <input type="hidden" id="orderTaxInput#item.productId#" value="#item.tax#">
-                                        <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id="div#item.productId#">
-                                            <div class="itemMain d-flex flex-column">
-                                                <div class="itemDiv d-flex">
-                                                    <img src="Assets/uploadImages/#item.file#" class="" alt="" width="93" height="112">
-                                                    <div class="detailsDiv">
-                                                        <div class="itemName d-flex flex-column">
-                                                            <cfset local.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
-                                                            <cfset local.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
-                                                            <a href="product.cfm?productId=#local.encryptedProductId#&subcategoryId=#local.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
-                                                            <span class = "orderBrand">Brand : #item.brandName#</span>
-                                                        </div>
-                                                        <div class="priceDetailsDiv d-flex flex-column mt-2">
-                                                            <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#"> #item.price * local.quantity#</span></span>
-                                                            <span class="number">Tax : <span class="number" id="tax#item.productId#">#decimalFormat(item.totalTax)#</span><span> (#numberFormat(item.Tax)# %)</span></span>
-                                                        </div>
+                                <cfloop array="#variables.productDetails#" item="item">
+                                    <cfif structKeyExists(item, "file")>
+                                        <cfset variables.fileName = item.file>
+                                    </cfif>
+                                    <cfif structKeyExists(item, "quantity")>
+                                        <cfset variables.quantity = item.quantity>
+                                    <cfelse>
+                                        <cfset variables.quantity = 1>
+                                    </cfif>
+                                    <input type="hidden" id="orderPriceInput#item.productId#" value="#item.price#">
+                                    <input type="hidden" id="orderTaxInput#item.productId#" value="#item.tax#">
+                                    <div class="cartItemsdiv d-flex flex-column mt-2 bg-white" id="div#item.productId#">
+                                        <div class="itemMain d-flex flex-column">
+                                            <div class="itemDiv d-flex">
+                                                <img src="Assets/uploadImages/#variables.fileName#" class="" alt="" width="93" height="112">
+                                                <div class="detailsDiv">
+                                                    <div class="itemName d-flex flex-column">
+                                                        <cfset variables.encryptedSubcategoryId = urlEncodedFormat(encrypt(item.subcategoryId, application.secretKey, "AES", "Base64"))>
+                                                        <cfset variables.encryptedProductId = urlEncodedFormat(encrypt(item.productId, application.secretKey, "AES", "Base64"))>
+                                                        <a href="product.cfm?productId=#variables.encryptedProductId#&subcategoryId=#variables.encryptedSubcategoryId#" class="nameLink text-decoration-none">#item.productName#</a>
+                                                        <span class = "orderBrand">Brand : #item.brandName#</span>
                                                     </div>
-                                                </div>
-                                                <div class="removeDiv d-flex justify-content-between">
-                                                    <div class="UpdateQuantityDiv d-flex">
-                                                        <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.productId#" id="minus#item.productId#" onclick="updateQuantityOrder(this)"
-                                                            <cfif local.quantity EQ 1>
-                                                                disabled
-                                                            </cfif>
-                                                        >-</button>
-                                                        <span id="quantity#item.productId#" data-value = "#local.quantity#" class = "quantitySpan">#local.quantity#</span>
-                                                        <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.productId#" onclick="updateQuantityOrder(this)">+</button>
+                                                    <div class="priceDetailsDiv d-flex flex-column mt-2">
+                                                        <span class="amount green">Price :<span class="amount green"  id = "price#item.productId#"> #item.price * variables.quantity#</span></span>
+                                                        <span class="number">Tax : <span class="number" id="tax#item.productId#">#decimalFormat(item.totalTax)#</span><span> (#numberFormat(item.Tax)# %)</span></span>
                                                     </div>
-                                                    <button class="later me-2 border-0" type = "button" value = "Remove,#item.productId#"  onClick= "deleteProfileAddressButton(this)">REMOVE</button>
                                                 </div>
                                             </div>
+                                            <div class="removeDiv d-flex justify-content-between">
+                                                <div class="UpdateQuantityDiv d-flex">
+                                                    <button type="button" class = "quantityBtn me-2 minusBtn" value = "Minus,#item.productId#" id="minus#item.productId#" onclick="updateQuantityOrder(this)"
+                                                        <cfif variables.quantity EQ 1>
+                                                            disabled
+                                                        </cfif>
+                                                    >-</button>
+                                                    <span id="quantity#item.productId#" data-value = "#variables.quantity#" class = "quantitySpan">#variables.quantity#</span>
+                                                    <button type="button" class = "quantityBtn ms-2" value = "Plus,#item.productId#" onclick="updateQuantityOrder(this)">+</button>
+                                                </div>
+                                                <button class="later me-2 border-0" type = "button" value = "Remove,#item.productId#"  onClick= "deleteAddress(this)">REMOVE</button>
+                                            </div>
                                         </div>
-                                    <cfelse>
-                                        <cfset local.totalPrice = item.orderAmount>
-                                        <cfset local.totalTax = item.orderTax>
-                                    </cfif>
+                                    </div>
                                 </cfloop>
                             </div>
                             <div class="d-flex justify-content-end">
@@ -162,10 +164,9 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <cfset local.payAmount = local.totalPrice+local.totalTax>
                                 <span class="text-danger fw-bold removeSpan me-4" id="cardError"></span>
-                                <button class="mt-2 accordianBtn disabled" type="button" data-bs-toggle="collapse" value="#local.productId#" onclick="buyProductBtn(this)" aria-expanded="false" aria-controls="flush-collapseOne" id="paymentButon">
-                                    PAY &##8377<span class="btnPrice" id="btnPrice">#local.payAmount#</span>
+                                <button class="mt-2 accordianBtn disabled" type="button" data-bs-toggle="collapse" onclick="buyProduct()" aria-expanded="false" aria-controls="flush-collapseOne" id="paymentButon">
+                                    PAY &##8377<span class="btnPrice" id="btnPrice">#variables.orderTotal.orderAmount+variables.orderTotal.orderTax#</span>
                                 </button>
                             </div>
                         </div>
@@ -179,12 +180,12 @@
                     </div>
                     <div class="priceMaindiv d-flex flex-column">
                         <div class="price d-flex justify-content-between pt-2">
-                            <span class="amount">Price (#local.items-1# items)</span>
-                            <span class="number">&##8377<span class="number" id="orderTotalAmount" data-value="#local.totalPrice#">#local.totalPrice#</span></span>
+                            <span class="amount">Price (#variables.items# items)</span>
+                            <span class="number">&##8377<span class="number" id="orderTotalAmount" data-value="#variables.orderTotal.orderAmount#">#variables.orderTotal.orderAmount#</span></span>
                         </div>
                         <div class="price d-flex justify-content-between pt-2">
                             <span class="amount">Tax</span>
-                            <span class="number">&##8377<span class="number" id="orderTotalTax" data-value="#local.totalTax#">#local.totalTax#</span></span>
+                            <span class="number">&##8377<span class="number" id="orderTotalTax" data-value="#variables.orderTotal.orderTax#">#decimalFormat(variables.orderTotal.orderTax)#</span></span>
                         </div>
                         <div class="price d-flex justify-content-between align-items-center">
                             <span class="amount">Delivery Charges</span>
@@ -195,9 +196,8 @@
                         </div>
                         <div class="price d-flex justify-content-between py-3">
                             <span class="totalAmount">Total Amount</span>
-                            <cfset local.totalAmount = local.totalPrice+local.totalTax>
-                            <span class="totalAmount">&##8377<span class="totalAmount" id="orderAmount" data-value="#local.totalAmount#">#local.totalAmount#</span></span>
-                        </div>                 
+                            <span class="totalAmount">&##8377<span class="totalAmount" id="orderAmount">#variables.orderTotal.orderAmount+variables.orderTotal.orderTax#</span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="safeDiv d-flex mt-4 ps-3">
