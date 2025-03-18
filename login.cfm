@@ -13,18 +13,18 @@
                 <button type="button" name="loginSubmit" class="signUpButton mt-4 mx-auto" id="loginBtn" onclick="return loginValidation()">Login</button>
                 <!--- <a href="signup.cfm" class="text-decoration-none fw-bold mx-auto mt-3 text-dark">Create account</a> --->
                 <span id="existError" class="fw-bold text-danger" ></span>
-            </div>
+            </div> 
         </form>
         <cfif structKeyExists(session, "role")>
             <cfif structKeyExists(URL, "cartLogin")>
-                <cflocation  url="cart.cfm?productId=#local.encryptedProductId#">
+                <cflocation  url="cart.cfm">
             <cfelseif structKeyExists(URL, "page")>
-                <cfset local.productDetails = application.obj.updateProductquantity(productId = URL.productId)>
-                <cfset local.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
-                <cflocation  url="order.cfm?productId=#local.encryptedProductId#">
+                <cfset variables.productDetails = application.obj.updateProductquantity(productId = URL.productId)>
+                <cfset variables.encryptedProductId = urlEncodedFormat(encrypt(URL.productId, application.secretKey, "AES", "Base64"))>
+                <cflocation  url="order.cfm?productId=#variables.encryptedProductId#">
             <cfelseif structKeyExists(session, "role") AND structKeyExists(URL, "productId")>
-                <cfset local.cart = application.obj.addToCart(productId = URL.productId)>
-                <!--- <cfset local.productDetails = application.obj.updateProductquantity(productId = URL.productId)> --->
+                <cfset variables.cart = application.obj.addToCart(productId = URL.productId)>
+                <!--- <cfset variables.productDetails = application.obj.updateProductquantity(productId = URL.productId)> --->
                 <cflocation  url="cart.cfm" addtoken="no">
             <cfelseif session.roleId EQ 1>
                 <cflocation  url="admin.cfm">

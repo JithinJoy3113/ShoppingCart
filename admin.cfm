@@ -224,7 +224,8 @@
                             <span class="fw-bold text-danger" id="fileError"></span>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between productImageDiv" id="imageDisplayDiv">
+                    <span class="text-danger d-none" id="radioSpan">To change Default Image select <img src="Assets/Images/radio.png" alt="" class="ms-2"></span>
+                    <div class="d-flex productImageDiv" id="imageDisplayDiv">
                         <input type="hidden" value="add" id="hiddenProductInput">
                     </div>
                     <div class="addProductButtonDiv d-flex mx-auto mt-3">

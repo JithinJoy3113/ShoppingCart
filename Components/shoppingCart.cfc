@@ -787,7 +787,7 @@
     <cfargument name = "productId" default = 0 required = "false" type = "integer">
     <cfargument name = "columnName" required = "false" type = "string">
     <cfargument name = "offset" type = "integer" required = "false">
-    <cfargument name = "sortBy" type = "string" default = "noSort" required = "false">
+    <cfargument name = "sortBy" type = "string" required = "false">
     <cfargument name = "min" type = "numeric" default = 0 required = "false">
     <cfargument name = "max" type = "string" default = 0 required = "false">
     <cfargument name = "search" type = "string" default = "" required = "false">
