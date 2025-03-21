@@ -1,6 +1,9 @@
 <cfoutput>
-    <cfset variables.subCategoryName = decrypt(URL.subCategoryName, application.secretKey, "AES", "Base64")>
     <cfset variables.subCategoryId = decrypt(URL.subCategoryId, application.secretKey, "AES", "Base64")>
+    <cfset variables.encryptedSubcategoryId = urlEncodedFormat(encrypt(variables.subCategoryId, application.secretKey, "AES", "Base64"))>
+   <!---   <cfif structKeyExists(URL, "filter")>
+        <cfdump  var="#url.filter#">
+     </cfif> --->
     <div class="randomProductsMainDiv " id="randomProductsMainDiv">
         <form action="" method="post" id="productForm">
             <div class="d-flex sortingDiv justify-content-end" >
@@ -41,29 +44,39 @@
                 </div>
             </div>
         </form>
-
-        <cfif structKeyExists(form, "sortProduct")>
-            <cfset variables.randomProducts = application.obj.randomProducts(
+        <cfset variables.sort = 'noSort'>
+        <cfif structKeyExists(form, "sortProduct") AND NOT structKeyExists(form, "filterSubmit")>
+            <cfif NOT structKeyExists(URL, "filter")>
+                <cfset variables.randomProducts = application.obj.randomProducts(
                 subCategoryId = variables.subcategoryId,
                 sortBy = form.sortProduct
             )>
-        <cfelseif structKeyExists(form, "filterSubmit")>
+            <cfelseif structKeyExists(URL, "filter")>
+                <cfset variables.randomProducts = application.obj.randomProducts(
+                    subCategoryId = variables.subcategoryId,
+                    filterRange = URL.filter,
+                    sortBy = form.sortProduct
+                )>
+            </cfif>
+            <cfset variables.sort = form.sortProduct>
+        <cfelseif structKeyExists(URL, "filter") AND NOT structKeyExists(form, "filterSubmit")>
             <cfset variables.randomProducts = application.obj.randomProducts(
-                subCategoryId = variables.subcategoryId,
-                min = form.filterMin,
-                max = form.filterMax
-            )>
+                    subCategoryId = variables.subcategoryId,
+                    filterRange = URL.filter
+                )>
+        <cfelseif structKeyExists(form, "filterSubmit")>
+            <cflocation  url="subCategory.cfm?subCategoryId=#variables.encryptedSubcategoryId#&filter=#form.filterMin#-#urlEncodedFormat(form.filterMax)#" addtoken="no">
         <cfelse>
             <cfset variables.randomProducts = application.obj.randomProducts(subCategoryId = variables.subcategoryId)>
         </cfif>
         <cfif structCount(variables.randomProducts)>
-            <div class="subCategoryHeadDiv">
-                #variables.subCategoryName#
+            <div class="subCategoryHeadingDiv">
+                #variables.randomProducts.subCategoryName#
             </div>
             <div class="randomProductsDiv pt-3 viewHeight" id="viewHeight">
                 <cfset variables.count = 0>
                 <cfloop collection="#variables.randomProducts#" item="item">
-                    <cfif item EQ 'orderTotal'>
+                    <cfif item EQ 'orderTotal' OR item EQ 'subCategoryName'>
                         <cfcontinue>
                     </cfif>
                     <cfset variables.itemsDetails = variables.randomProducts[item].productDetails>
@@ -76,7 +89,7 @@
                                 <cfset variables.count += 1>
                                 <img src="Assets/uploadImages/#variables.fileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                                 <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                                    <span class="productsNamespan d-flex justify-content-center">#variables.itemsDetails.productName#</span>
+                                    <span class="productsNamespanUser d-flex justify-content-center">#variables.itemsDetails.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">
                                         <span class="similarPrice text-success">RS.#variables.itemsDetails.price#</span>
                                     </div>
@@ -95,7 +108,7 @@
         </cfif>
         <cfif structCount(variables.randomProducts) GT 6>
             <div class = "viewMoreDiv d-flex justify-content-center mt-4" id = "viewMoreDiv">
-                <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More" onclick = "return viewMoreSubmit(this,#variables.subCategoryId#)">View More</button>
+                <button type = "button" class = "viewMoreSubmit" id = "viewMoreSubmit" value ="More,#variables.sort#" onclick = "return viewMoreSubmit(this,#variables.subCategoryId#)">View More</button>
                 <button type = "button" class = "viewMoreSubmit d-none" id = "viewMoreSubmitLess" value ="Less" onclick = "return viewMoreSubmit(this)">View Less</button>
             </div>
         </cfif>

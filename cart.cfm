@@ -3,7 +3,7 @@
         <cfset variables.cartItems = application.obj.cartItems()>
         <cfset variables.itemsDetails = variables.cartItems['productDetails']>
         <cfset variables.orderTotal = variables.cartItems['orderTotal']>
-        <cfif structKeyExists(variables.cartItems, "productDetails")>
+        <cfif arrayLen(variables.itemsDetails)>
             <div class="bodyContents d-flex" id = "bodyContents">
                 <div class="bodyLeftdiv w-100">
                     <div class="scroll d-flex flex-column w-100">

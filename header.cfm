@@ -56,6 +56,7 @@
                                             <cfset variables.items = arrayLen((variables.cart['productDetails']))>
                                         </cfif>
                                         #variables.items#
+                                        
                                 </div>
                             </cfif>
                         </cfif>
@@ -87,15 +88,13 @@
                                 <div class="categoryNameDiv ">
                                     <div class="categoryHeadDiv" data-value="#struct.categoryId#">
                                         <cfset variables.encryptedCategoryId = urlEncodedFormat(encrypt(struct.categoryId, application.secretKey, "AES", "Base64"))>
-                                        <cfset variables.encryptedCategoryName = urlEncodedFormat(encrypt(struct.categoryName, application.secretKey, "AES", "Base64"))>
-                                        <a href="productListing.cfm?categoryId=#variables.encryptedCategoryId#&categoryName=#variables.encryptedCategoryName#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
+                                        <a href="productListing.cfm?categoryId=#variables.encryptedCategoryId#" class="categoryLink text-decoration-none">#struct.categoryName#</a>
                                     </div>
                                     <div class="subCategoryListDiv" id="#struct.categoryId#">
                                         <cfloop array="#variables.subCategoryResult#" item="data">
                                             <cfif data.categoryIdTblSub EQ struct.categoryId>
                                                 <cfset variables.encryptedSubcategoryId = urlEncodedFormat(encrypt(data.subcategoryId, application.secretKey, "AES", "Base64"))>
-                                                <cfset variables.encryptedSubCategoryName = urlEncodedFormat(encrypt(data.subcategoryName, application.secretKey, "AES", "Base64"))>
-                                                <a href="subcategory.cfm?subCategoryId=#variables.encryptedSubcategoryId#&subCategoryName=#variables.encryptedSubCategoryName#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#data.subcategoryId#">#data.subcategoryName#</a>
+                                                <a href="subcategory.cfm?subCategoryId=#variables.encryptedSubcategoryId#" class="subcategoryBtn text-decoration-none" type="submit" name="subcategoryBtn" id="#data.subcategoryId#">#data.subcategoryName#</a>
                                             </cfif>
                                         </cfloop>
                                     </div>

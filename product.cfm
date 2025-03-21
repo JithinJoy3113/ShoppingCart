@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div class="deliveryPindiv">
-                        <div class="deliveryPin d-flex">
+                        <div class="deliveryPin d-flex mt-3">
                             <div class="pinDin d-flex">
                                 <span class="colorSpan">Delivery</span>
                             </div>
@@ -107,7 +107,7 @@
                         <span class="colorSpan">Seller</span>
                         <div class="sellerDetailsdiv d-flex flex-column">
                             <div class="sellerName d-flex">
-                                <a href="" class="checkSpan text-decoration-none ms-4 me-2 mt-1">#variables.productDetails.brandName#</a>
+                                <a href="" class="sellerSpan text-decoration-none ms-4 me-2 mt-1">#variables.productDetails.brandName#</a>
                             </div>
                         </div>
                     </div>
@@ -116,9 +116,9 @@
             <div class="similarProductsdiv d-flex flex-column">
                 <span class="similarProductshead mt-4">Similar Products</span>
                 <div class="similarProductsrow d-flex">
-                    <cfset variables.similarProducts = application.obj.randomProducts(subCategoryId = variables.subcategoryId)>
+                    <cfset variables.similarProducts = application.obj.randomProducts(subCategoryId = variables.subCategoryid)>
                     <cfloop collection="#variables.similarProducts#" item="item">
-                        <cfif item EQ 'orderTotal'>
+                        <cfif item EQ 'orderTotal' OR item EQ 'subCategoryName'>
                             <cfcontinue>
                         </cfif>
                         <cfset variables.productDetails = variables.similarProducts[item].productDetails>
@@ -129,7 +129,7 @@
                             <div class="randomProducts d-flex flex-column ms-4">
                                 <img src="Assets/uploadImages/#variables.imageDetails.fileName#" class="similarImage mx-auto zoomHover" height="186" alt="">
                                 <div class="productDiscriptionsdiv d-flex flex-column align-items-center mt-3">
-                                    <span class="productsNamespan d-flex justify-content-center">#variables.productDetails.productName#</span>
+                                    <span class="productsNamespanUser d-flex justify-content-center">#variables.productDetails.productName#</span>
                                     <div class="similarPriceDiv d-flex align-items-center mt-2">
                                         <span class="similarPrice text-success">RS.#variables.productDetails.price#</span>
                                     </div>
